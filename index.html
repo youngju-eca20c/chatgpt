@@ -266,7 +266,7 @@
   /* 적 상태창 (적 위에 올라옴) */
   .enemy-status {
     position: absolute;
-    bottom: 42%;
+    bottom: 60%;
     right: 4%;
     width: 30%;
     max-width: 200px;
@@ -514,60 +514,30 @@
   /* 씬 하단 액션 오버레이 */
   .scene-actions {
     position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
     display: flex;
-    gap: 8px;
+    gap: 6px;
     z-index: 9;
-    width: auto;
   }
   .scene-actions .btn {
-    padding: 8px 18px;
-    font-size: 0.9rem;
-    min-width: 0;
-    border-radius: 999px;
-    border-width: 1.5px;
-    flex: 0 0 auto;
-    box-shadow:
-      0 2px 6px rgba(0,0,0,0.4),
-      inset 0 1px 0 rgba(255,255,255,0.15);
-    backdrop-filter: blur(6px);
-    background: linear-gradient(180deg, rgba(96, 64, 160, 0.85), rgba(58, 32, 112, 0.85));
-    transition: all 0.15s;
-  }
-  .scene-actions .btn.attack {
-    background: linear-gradient(180deg, rgba(232, 64, 96, 0.9), rgba(176, 32, 80, 0.9));
-    border-color: #ff80a0;
-  }
-  .scene-actions .btn.success {
-    background: linear-gradient(180deg, rgba(64, 192, 96, 0.9), rgba(32, 128, 64, 0.9));
-    border-color: #80e0a0;
-  }
-  .scene-actions .btn.gold {
-    background: linear-gradient(180deg, rgba(255, 204, 68, 0.9), rgba(208, 144, 32, 0.9));
-    border-color: #ffe070;
-    color: #4a2810;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    min-width: 70px;
+    box-shadow: 0 3px 0 #2a1855, 0 4px 10px rgba(0,0,0,0.5);
   }
   .scene-actions .btn.magic {
-    background: linear-gradient(180deg, rgba(96, 168, 255, 0.9), rgba(48, 96, 192, 0.9));
+    background: linear-gradient(180deg, #60a8ff, #3060c0);
     border-color: #a0c8ff;
-    color: #fff;
+    box-shadow: 0 3px 0 #1a3a80, 0 4px 10px rgba(0,0,0,0.5);
   }
   .scene-actions .btn.magic:disabled {
-    background: linear-gradient(180deg, rgba(60, 70, 100, 0.7), rgba(40, 50, 80, 0.7));
+    background: linear-gradient(180deg, #4a5a80, #2a3a60);
     border-color: #5060a0;
   }
   .scene-actions .btn:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow:
-      0 4px 10px rgba(0,0,0,0.5),
-      inset 0 1px 0 rgba(255,255,255,0.2);
-    filter: brightness(1.1);
-  }
-  .scene-actions .btn:active:not(:disabled) {
-    transform: translateY(1px);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    box-shadow: 0 5px 0 #2a1855, 0 6px 12px rgba(0,0,0,0.5);
   }
 
   /* 로그 박스 */
@@ -989,7 +959,7 @@
     .scene-box { aspect-ratio: 16/11; }
     .scene-char { width: 26%; bottom: 16%; }
     .scene-char.center { width: 36%; }
-    .enemy-status { bottom: 44%; right: 4%; width: 38%; max-width: none; }
+    .enemy-status { bottom: 60%; right: 4%; width: 38%; max-width: none; }
     .enemy-status-name { font-size: 0.7rem; }
     .enemy-status-stats { font-size: 0.62rem; gap: 4px; }
 
