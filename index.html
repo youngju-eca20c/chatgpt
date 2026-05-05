@@ -331,43 +331,38 @@
     z-index: 10;
   }
 
-  /* 보상 팝업 */
+  /* 보상 팝업 (씬 우측에서 등장 → 배낭 방향으로 이동) */
   .reward-popup {
     position: absolute;
-    top: 38%;
-    left: 50%;
+    top: 28%;
+    right: 8%;
     z-index: 20;
     pointer-events: none;
     text-align: center;
-    animation: rewardAppear 3.2s ease-out forwards;
+    animation: rewardSlide 2.8s cubic-bezier(0.5, 0, 0.4, 1) forwards;
   }
   .reward-popup .reward-icon {
-    font-size: 4rem;
+    font-size: 3.2rem;
     display: inline-block;
-    filter: drop-shadow(0 0 20px #ffcc44) drop-shadow(0 0 40px #ff80c0);
-    animation: rewardSpin 1s ease-out;
+    filter: drop-shadow(0 0 16px #ffcc44) drop-shadow(0 0 32px #ff80c0);
   }
   .reward-popup .reward-label {
     margin-top: 4px;
     background: rgba(0,0,0,0.85);
     border: 2px solid #ffcc44;
-    border-radius: 14px;
-    padding: 4px 14px;
-    font-size: 0.95rem;
+    border-radius: 12px;
+    padding: 3px 10px;
+    font-size: 0.85rem;
     color: #ffcc44;
     white-space: nowrap;
     display: inline-block;
   }
-  @keyframes rewardAppear {
-    0%   { transform: translate(-50%, 30px) scale(0.3); opacity: 0; }
-    15%  { transform: translate(-50%, -10px) scale(1.4); opacity: 1; }
-    25%  { transform: translate(-50%, 0) scale(1); }
-    80%  { transform: translate(-50%, 0) scale(1); opacity: 1; }
-    100% { transform: translate(-50%, -40px) scale(0.7); opacity: 0; }
-  }
-  @keyframes rewardSpin {
-    0%   { transform: rotate(-180deg) scale(0.3); }
-    100% { transform: rotate(0) scale(1); }
+  @keyframes rewardSlide {
+    0%   { transform: translate(120%, 0) scale(0.3) rotate(-180deg); opacity: 0; }
+    18%  { transform: translate(0, -8px) scale(1.25) rotate(0); opacity: 1; }
+    28%  { transform: translate(0, 0) scale(1) rotate(0); }
+    65%  { transform: translate(0, 0) scale(1) rotate(0); opacity: 1; }
+    100% { transform: translate(20%, 220%) scale(0.4) rotate(360deg); opacity: 0; }
   }
   /* 반짝이 입자 */
   .sparkle {
@@ -377,31 +372,68 @@
     background: radial-gradient(circle, #ffe070, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
-    animation: sparkleFly 1.6s ease-out forwards;
+    animation: sparkleFly 1.4s ease-out forwards;
   }
   @keyframes sparkleFly {
     0%   { transform: translate(0,0) scale(0.3); opacity: 1; }
-    100% { transform: translate(var(--dx), var(--dy)) scale(1.5); opacity: 0; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(1.4); opacity: 0; }
   }
+  /* 배낭 흔들림 (보상 도착 시) */
+  @keyframes bagBounce {
+    0%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-6px) rotate(-2deg); }
+    70% { transform: translateY(2px) rotate(1deg); }
+  }
+  .bag-bounce { animation: bagBounce 0.5s ease-out; }
 
   /* 씬 하단 액션 오버레이 */
   .scene-actions {
     position: absolute;
-    bottom: 8px;
-    left: 8px;
-    right: 8px;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    gap: 6px;
+    gap: 8px;
     z-index: 9;
+    width: auto;
   }
   .scene-actions .btn {
-    padding: 10px 12px;
-    font-size: 0.95rem;
-    min-width: 70px;
-    box-shadow: 0 3px 0 #2a1855, 0 4px 10px rgba(0,0,0,0.5);
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    min-width: 0;
+    border-radius: 999px;
+    border-width: 1.5px;
+    flex: 0 0 auto;
+    box-shadow:
+      0 2px 6px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+    backdrop-filter: blur(6px);
+    background: linear-gradient(180deg, rgba(96, 64, 160, 0.85), rgba(58, 32, 112, 0.85));
+    transition: all 0.15s;
+  }
+  .scene-actions .btn.attack {
+    background: linear-gradient(180deg, rgba(232, 64, 96, 0.9), rgba(176, 32, 80, 0.9));
+    border-color: #ff80a0;
+  }
+  .scene-actions .btn.success {
+    background: linear-gradient(180deg, rgba(64, 192, 96, 0.9), rgba(32, 128, 64, 0.9));
+    border-color: #80e0a0;
+  }
+  .scene-actions .btn.gold {
+    background: linear-gradient(180deg, rgba(255, 204, 68, 0.9), rgba(208, 144, 32, 0.9));
+    border-color: #ffe070;
+    color: #4a2810;
   }
   .scene-actions .btn:hover:not(:disabled) {
-    box-shadow: 0 5px 0 #2a1855, 0 6px 12px rgba(0,0,0,0.5);
+    transform: translateY(-1px);
+    box-shadow:
+      0 4px 10px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    filter: brightness(1.1);
+  }
+  .scene-actions .btn:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
   }
 
   /* 로그 박스 */
@@ -1674,21 +1706,28 @@ function showRewardPopup(icon, label) {
   `;
   box.appendChild(pop);
 
-  // 반짝이 입자 8개
+  // 우측 등장 위치에 반짝이 입자 8개
   for (let i = 0; i < 8; i++) {
     const s = document.createElement('div');
     s.className = 'sparkle';
-    s.style.left = '50%';
-    s.style.top = '40%';
+    s.style.right = '14%';
+    s.style.top = '32%';
     const angle = (Math.PI * 2 * i) / 8;
-    s.style.setProperty('--dx', Math.cos(angle) * 80 + 'px');
-    s.style.setProperty('--dy', Math.sin(angle) * 80 + 'px');
-    s.style.animationDelay = (i * 0.05) + 's';
+    s.style.setProperty('--dx', Math.cos(angle) * 60 + 'px');
+    s.style.setProperty('--dy', Math.sin(angle) * 60 + 'px');
+    s.style.animationDelay = (i * 0.04) + 's';
     box.appendChild(s);
-    setTimeout(() => s.remove(), 1700);
+    setTimeout(() => s.remove(), 1500);
   }
 
-  setTimeout(() => pop.remove(), 3300);
+  setTimeout(() => pop.remove(), 2900);
+  // 배낭 흔들림 (팝업 사라질 즈음)
+  setTimeout(() => {
+    const bp = document.querySelector('.backpack');
+    if (!bp) return;
+    bp.classList.add('bag-bounce');
+    setTimeout(() => bp.classList.remove('bag-bounce'), 600);
+  }, 2400);
 }
 
 // ============= 진행 =============
@@ -1784,19 +1823,30 @@ function tryFlee() {
   }
 }
 
+function rollEquipment() {
+  // 종류를 먼저 균등 추첨 (무기/방어구/장신구 각 1/3)
+  const kinds = ['weapon', 'armor', 'acc'];
+  const kind = kinds[rand(0, 2)];
+  const pool = EQUIPMENTS.filter(e => e.kind === kind);
+  // 층에 따른 등급 (5층마다 한 단계 상승, 최대 끝까지)
+  const tier = Math.min(pool.length - 1, Math.floor(floor / 5) + 1);
+  const idx = rand(0, tier);
+  return pool[idx];
+}
+
 function victory() {
   log(`☠ ${enemy.name} 처치! +${enemy.gold} 보상`, 'gain');
   showDialog('승리!');
   inBattle = false;
   $('scene-enemy').classList.add('hidden');
   const r = Math.random();
-  if (r < 0.4) {
+  if (r < 0.35) {
     const heal = 20 + rand(0, 15);
     potions.push({ name:'붉은 물약', heal });
     log(`🧪 붉은 물약(+${heal}) 획득!`, 'gain');
     showRewardPopup('🧪', `붉은 물약 +${heal}`);
-  } else if (r < 0.7) {
-    const eq = EQUIPMENTS[rand(0, Math.min(EQUIPMENTS.length - 1, Math.floor(floor / 3)))];
+  } else if (r < 0.85) {
+    const eq = rollEquipment();
     equipments.push({ ...eq, equipped:false });
     log(`${eq.icon} ${eq.name} 획득!`, 'gain');
     showRewardPopup(eq.icon, eq.name);
@@ -1813,14 +1863,14 @@ function victory() {
 
 function rewardItem() {
   const r = Math.random();
-  if (r < 0.5) {
+  if (r < 0.4) {
     const heal = 25 + rand(0, 20);
     potions.push({ name:'붉은 물약', heal });
     log(`🕯 빈 방에서 물약(+${heal}) 발견!`, 'gain');
     showDialog('물약 발견!');
     showRewardPopup('🧪', `붉은 물약 +${heal}`);
-  } else if (r < 0.85) {
-    const eq = EQUIPMENTS[rand(0, Math.min(EQUIPMENTS.length - 1, Math.floor(floor / 3) + 1))];
+  } else if (r < 0.9) {
+    const eq = rollEquipment();
     equipments.push({ ...eq, equipped:false });
     log(`${eq.icon} 보물상자에서 ${eq.name} 발견!`, 'gain');
     showDialog(`${eq.name}!`);
@@ -1873,9 +1923,10 @@ function answerQuiz(picked, answer) {
     showDialog('정답!');
     const heal = 40;
     player.hp = Math.min(player.maxHp, player.hp + heal);
-    const eq = EQUIPMENTS[Math.min(EQUIPMENTS.length - 1, Math.floor(floor / 2))];
+    const eq = rollEquipment();
     equipments.push({ ...eq, equipped:false });
     log(`HP +${heal}, ${eq.name} 획득!`, 'gain');
+    showRewardPopup(eq.icon, eq.name);
   } else {
     const dmg = 25;
     player.hp -= dmg;
@@ -1917,9 +1968,10 @@ function finishMash(count, target) {
   if (count >= target) {
     log(`✨ ${count}회 연타 성공!`, 'gain');
     showDialog('성공!');
-    const eq = EQUIPMENTS[Math.min(EQUIPMENTS.length - 1, Math.floor(floor / 2) + 1)];
+    const eq = rollEquipment();
     equipments.push({ ...eq, equipped:false });
     log(`${eq.name} 획득!`, 'gain');
+    showRewardPopup(eq.icon, eq.name);
   } else {
     const dmg = 35;
     player.hp -= dmg;
