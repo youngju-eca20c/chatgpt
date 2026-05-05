@@ -511,33 +511,63 @@
   }
   .mp-shake { animation: mpShake 0.3s; }
 
-  /* 씬 하단 액션 오버레이 */
+  /* 씬 하단 액션 오버레이 (알약형) */
   .scene-actions {
     position: absolute;
-    bottom: 8px;
-    left: 8px;
-    right: 8px;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    gap: 6px;
+    gap: 8px;
     z-index: 9;
+    width: auto;
   }
   .scene-actions .btn {
-    padding: 10px 12px;
-    font-size: 0.95rem;
-    min-width: 70px;
-    box-shadow: 0 3px 0 #2a1855, 0 4px 10px rgba(0,0,0,0.5);
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    min-width: 0;
+    border-radius: 999px;
+    border-width: 1.5px;
+    flex: 0 0 auto;
+    box-shadow:
+      0 2px 6px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.15);
+    backdrop-filter: blur(6px);
+    background: linear-gradient(180deg, rgba(96, 64, 160, 0.85), rgba(58, 32, 112, 0.85));
+    transition: all 0.15s;
+  }
+  .scene-actions .btn.attack {
+    background: linear-gradient(180deg, rgba(232, 64, 96, 0.9), rgba(176, 32, 80, 0.9));
+    border-color: #ff80a0;
+  }
+  .scene-actions .btn.success {
+    background: linear-gradient(180deg, rgba(64, 192, 96, 0.9), rgba(32, 128, 64, 0.9));
+    border-color: #80e0a0;
+  }
+  .scene-actions .btn.gold {
+    background: linear-gradient(180deg, rgba(255, 204, 68, 0.9), rgba(208, 144, 32, 0.9));
+    border-color: #ffe070;
+    color: #4a2810;
   }
   .scene-actions .btn.magic {
-    background: linear-gradient(180deg, #60a8ff, #3060c0);
+    background: linear-gradient(180deg, rgba(96, 168, 255, 0.9), rgba(48, 96, 192, 0.9));
     border-color: #a0c8ff;
-    box-shadow: 0 3px 0 #1a3a80, 0 4px 10px rgba(0,0,0,0.5);
+    color: #fff;
   }
   .scene-actions .btn.magic:disabled {
-    background: linear-gradient(180deg, #4a5a80, #2a3a60);
+    background: linear-gradient(180deg, rgba(60, 70, 100, 0.7), rgba(40, 50, 80, 0.7));
     border-color: #5060a0;
   }
   .scene-actions .btn:hover:not(:disabled) {
-    box-shadow: 0 5px 0 #2a1855, 0 6px 12px rgba(0,0,0,0.5);
+    transform: translateY(-1px);
+    box-shadow:
+      0 4px 10px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+    filter: brightness(1.1);
+  }
+  .scene-actions .btn:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
   }
 
   /* 로그 박스 */
