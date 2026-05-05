@@ -78,7 +78,7 @@
   .container {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 14px;
+    padding: 10px;
   }
 
   .area-title {
@@ -1237,17 +1237,8 @@
   </defs>
 </svg>
 
-<!-- ===== 헤더 ===== -->
-<header class="topbar">
-  <div class="logo">동물농장</div>
-  <div class="breadcrumb">탑 ›&nbsp;<span id="bc-floor">1층</span></div>
-</header>
-
 <!-- ===== 본체 ===== -->
 <div class="container">
-  <h2 class="area-title">저주받은 탑</h2>
-  <div class="area-sub">탑에서 획득한 영혼을 모아 끝까지 오르라</div>
-
   <!-- 캐릭터 선택 -->
   <div id="char-select" class="char-select-panel">
     <div class="select-title">영혼을 빌릴 그릇을 선택하라</div>
@@ -1470,7 +1461,6 @@ document.querySelectorAll('.char-card').forEach(card => {
 // ============= UI =============
 function updateUI() {
   $('floor-text').textContent = `제 ${floor} 층`;
-  $('bc-floor').textContent = `${floor}층`;
   const hpPct = (player.hp / player.maxHp) * 100;
   $('player-hp-fill').style.width = hpPct + '%';
   $('player-hp-text').textContent = `${player.hp}/${player.maxHp}`;
