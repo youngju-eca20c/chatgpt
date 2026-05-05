@@ -263,28 +263,39 @@
   .door.pos-r3 { right: 6%; }
   .door svg { width: 100%; height: 100%; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.7)); }
 
-  /* 적 상태창 (씬 상단) */
+  /* 적 상태창 (적 위에 올라옴) */
   .enemy-status {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    right: 8px;
-    background: linear-gradient(180deg, rgba(60,10,30,0.92), rgba(40,5,20,0.92));
-    border: 2px solid #c02050;
-    border-radius: 10px;
-    padding: 6px 10px;
+    bottom: 42%;
+    right: 4%;
+    width: 30%;
+    max-width: 200px;
+    background: linear-gradient(180deg, rgba(60,10,30,0.94), rgba(40,5,20,0.94));
+    border: 1.5px solid #c02050;
+    border-radius: 8px;
+    padding: 4px 7px 5px;
     z-index: 8;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.6);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.6), 0 0 12px rgba(192,32,80,0.3);
+  }
+  /* 말풍선 꼬리 (캐릭터 가리킴) */
+  .enemy-status::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #c02050;
   }
   .enemy-status-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: 6px;
   }
   .enemy-status-name {
     font-family: 'Black Han Sans', sans-serif;
-    font-size: 0.95rem;
+    font-size: 0.75rem;
     color: #ff80a0;
     text-shadow: 1px 1px 2px #000;
     white-space: nowrap;
@@ -294,21 +305,21 @@
   }
   .enemy-status-stats {
     display: flex;
-    gap: 8px;
-    font-size: 0.78rem;
+    gap: 6px;
+    font-size: 0.68rem;
     color: #ffcc44;
     flex-shrink: 0;
   }
   .enemy-status-stats span { white-space: nowrap; }
   .enemy-hp-bar {
     width: 100%;
-    height: 12px;
+    height: 9px;
     background: var(--hp-track);
-    border: 1.5px solid #1a0a2a;
-    border-radius: 6px;
+    border: 1px solid #1a0a2a;
+    border-radius: 5px;
     overflow: hidden;
     position: relative;
-    margin-top: 4px;
+    margin-top: 3px;
   }
   .enemy-hp-fill {
     height: 100%;
@@ -320,11 +331,10 @@
     position: absolute;
     inset: 0;
     text-align: center;
-    line-height: 9px;
-    font-size: 0.65rem;
+    line-height: 7px;
+    font-size: 0.55rem;
     color: #fff;
     text-shadow: 1px 1px 2px #000;
-    font-weight: bold;
   }
 
   /* 대화 풍선 */
@@ -979,6 +989,9 @@
     .scene-box { aspect-ratio: 16/11; }
     .scene-char { width: 26%; bottom: 16%; }
     .scene-char.center { width: 36%; }
+    .enemy-status { bottom: 44%; right: 4%; width: 38%; max-width: none; }
+    .enemy-status-name { font-size: 0.7rem; }
+    .enemy-status-stats { font-size: 0.62rem; gap: 4px; }
 
     .log-box { height: 100px; font-size: 0.82rem; padding: 10px; }
 
