@@ -700,21 +700,32 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
     cursor: pointer;
     position: relative;
     transition: all 0.15s;
+    padding: 2px;
+    gap: 1px;
   }
   .bp-item:hover { border-color: #ff80c0; transform: scale(1.05); }
+  .bp-item .bp-icon { font-size: 1.4rem; line-height: 1; }
   .bp-item .bp-qty {
     position: absolute;
     bottom: 1px;
     right: 3px;
     font-size: 0.65rem;
     color: var(--gold);
-    font-weight: bold;
     text-shadow: 1px 1px 0 #000;
   }
+  .bp-item .bp-stats {
+    display: flex;
+    gap: 3px;
+    font-size: 0.58rem;
+    line-height: 1;
+    margin-top: 1px;
+    text-shadow: 1px 1px 0 #000;
+  }
+  .bp-item .bp-stats .atk { color: #ff9090; }
+  .bp-item .bp-stats .hp  { color: #90ff90; }
   .bp-empty {
     grid-column: 1 / -1;
     text-align: center;
@@ -1810,7 +1821,14 @@ function renderBackpack() {
   items.forEach(it => {
     const el = document.createElement('div');
     el.className = 'bp-item';
-    el.innerHTML = `<span>${it.icon}</span>${it.label?`<span class="bp-qty">${it.label}</span>`:''}`;
+    let statsHtml = '';
+    if (it.type === 'equip') {
+      const parts = [];
+      if (it.data.atk) parts.push(`<span class="atk">⚔${it.data.atk}</span>`);
+      if (it.data.hp)  parts.push(`<span class="hp">♥${it.data.hp}</span>`);
+      statsHtml = `<span class="bp-stats">${parts.join('')}</span>`;
+    }
+    el.innerHTML = `<span class="bp-icon">${it.icon}</span>${statsHtml}${it.label?`<span class="bp-qty">${it.label}</span>`:''}`;
     el.title = it.type === 'potion'
       ? `${it.data.name} (HP +${it.data.heal})`
       : `${it.data.name} (ATK+${it.data.atk}, HP+${it.data.hp})`;
