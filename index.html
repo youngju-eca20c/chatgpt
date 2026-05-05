@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>동물농장 - 저주받은 탑</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Jua&family=Black+Han+Sans&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Black+Han+Sans&display=swap');
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
@@ -29,12 +29,13 @@
   html, body { min-height: 100vh; overflow-x: hidden; }
 
   body {
-    font-family: 'Jua', 'Apple SD Gothic Neo', sans-serif;
+    font-family: 'Gowun Dodum', 'Apple SD Gothic Neo', sans-serif;
     color: var(--text);
     background:
       radial-gradient(ellipse at top, #2a1a55 0%, #0e0820 70%, #000 100%);
     padding: 0;
     -webkit-font-smoothing: antialiased;
+    font-weight: 400;
   }
 
   /* === 헤더 === */
@@ -157,7 +158,7 @@
   }
   .stat-row:last-child { border-bottom: none; }
   .stat-row .label { color: var(--text-dim); }
-  .stat-row .val { color: #fff; font-weight: bold; }
+  .stat-row .val { color: #fff; }
 
   .hp-block { margin: 8px 0 4px; }
   .hp-bar {
@@ -314,7 +315,7 @@
   /* 대화 풍선 */
   .dialog-bubble {
     position: absolute;
-    top: 78%;
+    top: 64%;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(0,0,0,0.85);
@@ -328,6 +329,79 @@
     overflow: hidden;
     text-overflow: ellipsis;
     z-index: 10;
+  }
+
+  /* 보상 팝업 */
+  .reward-popup {
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    z-index: 20;
+    pointer-events: none;
+    text-align: center;
+    animation: rewardAppear 3.2s ease-out forwards;
+  }
+  .reward-popup .reward-icon {
+    font-size: 4rem;
+    display: inline-block;
+    filter: drop-shadow(0 0 20px #ffcc44) drop-shadow(0 0 40px #ff80c0);
+    animation: rewardSpin 1s ease-out;
+  }
+  .reward-popup .reward-label {
+    margin-top: 4px;
+    background: rgba(0,0,0,0.85);
+    border: 2px solid #ffcc44;
+    border-radius: 14px;
+    padding: 4px 14px;
+    font-size: 0.95rem;
+    color: #ffcc44;
+    white-space: nowrap;
+    display: inline-block;
+  }
+  @keyframes rewardAppear {
+    0%   { transform: translate(-50%, 30px) scale(0.3); opacity: 0; }
+    15%  { transform: translate(-50%, -10px) scale(1.4); opacity: 1; }
+    25%  { transform: translate(-50%, 0) scale(1); }
+    80%  { transform: translate(-50%, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-50%, -40px) scale(0.7); opacity: 0; }
+  }
+  @keyframes rewardSpin {
+    0%   { transform: rotate(-180deg) scale(0.3); }
+    100% { transform: rotate(0) scale(1); }
+  }
+  /* 반짝이 입자 */
+  .sparkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, #ffe070, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sparkleFly 1.6s ease-out forwards;
+  }
+  @keyframes sparkleFly {
+    0%   { transform: translate(0,0) scale(0.3); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(1.5); opacity: 0; }
+  }
+
+  /* 씬 하단 액션 오버레이 */
+  .scene-actions {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    z-index: 9;
+  }
+  .scene-actions .btn {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    min-width: 70px;
+    box-shadow: 0 3px 0 #2a1855, 0 4px 10px rgba(0,0,0,0.5);
+  }
+  .scene-actions .btn:hover:not(:disabled) {
+    box-shadow: 0 5px 0 #2a1855, 0 6px 12px rgba(0,0,0,0.5);
   }
 
   /* 로그 박스 */
@@ -438,7 +512,7 @@
     padding: 4px 10px;
     border-radius: 8px;
     cursor: pointer;
-    font-family: 'Jua', sans-serif;
+    font-family: 'Gowun Dodum', sans-serif;
     font-size: 0.78rem;
   }
   .bp-tab.active {
@@ -495,17 +569,16 @@
   .btn {
     flex: 1;
     min-width: 100px;
-    padding: 14px 16px;
+    padding: 12px 16px;
     background: linear-gradient(180deg, #6040a0, #3a2070);
     border: 2px solid #8060c0;
     color: #fff;
-    font-family: 'Jua', sans-serif;
+    font-family: 'Gowun Dodum', sans-serif;
     font-size: 1rem;
     cursor: pointer;
     border-radius: 12px;
     box-shadow: 0 4px 0 #2a1855, 0 5px 12px rgba(0,0,0,0.4);
     transition: all 0.1s;
-    font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
   }
   .btn:hover:not(:disabled) {
@@ -1259,6 +1332,9 @@
 
           <!-- 대화 -->
           <div class="dialog-bubble hidden" id="dialog-bubble">...</div>
+
+          <!-- 씬 하단 액션 -->
+          <div class="scene-actions" id="scene-actions"></div>
         </div>
 
         <div class="log-box" id="log"></div>
@@ -1287,26 +1363,6 @@
       <div class="bp-grid" id="bp-grid"></div>
     </div>
 
-    <!-- 액션 -->
-    <div class="actions" id="actions">
-      <div id="door-actions">
-        <p style="text-align:center;color:var(--text-dim);width:100%;font-size:0.9rem;margin-bottom:6px;">~ 문을 클릭해서 들어가세요 ~</p>
-      </div>
-
-      <div id="battle-actions" class="hidden" style="display:flex;gap:8px;width:100%;">
-        <button class="btn attack" onclick="playerAttack()">⚔ 공격</button>
-        <button class="btn gold" onclick="useFirstPotion()">🧪 물약</button>
-        <button class="btn" onclick="tryFlee()">💨 도망</button>
-      </div>
-
-      <div id="continue-actions" class="hidden" style="display:flex;gap:8px;width:100%;">
-        <button class="btn success" onclick="nextFloor()">▲ 다음 층으로</button>
-      </div>
-
-      <div id="end-actions" class="hidden" style="display:flex;gap:8px;width:100%;">
-        <button class="btn gold" onclick="restart()">🕯 다시 도전</button>
-      </div>
-    </div>
 
     <!-- 미니게임 (전체 모달처럼) -->
     <div id="mini-game" class="hidden" style="background:linear-gradient(180deg,#3a2070,#2a1855);border:3px solid #6040a0;border-radius:12px;padding:16px;margin-top:10px;"></div>
@@ -1521,15 +1577,6 @@ function usePotion(i) {
   updateUI();
 }
 
-function useFirstPotion() {
-  if (potions.length === 0) {
-    showDialog('물약이 없다!');
-    log('물약이 없습니다.', 'danger');
-    return;
-  }
-  usePotion(0);
-}
-
 function applyEquip(e, on) {
   if (on) {
     e.equipped = true;
@@ -1573,15 +1620,17 @@ function toggleEquip(i) {
 }
 
 // ============= 씬 전환 =============
+function setSceneActions(html) {
+  $('scene-actions').innerHTML = html;
+}
+
 function showDoorScene() {
   $('scene-bg-use').setAttribute('href', '#bg-doors');
   $('door-overlay').classList.remove('hidden');
   $('scene-player').classList.add('hidden');
   $('scene-enemy').classList.add('hidden');
-  $('door-actions').classList.remove('hidden');
-  $('battle-actions').classList.add('hidden');
-  $('continue-actions').classList.add('hidden');
   $('mini-game').classList.add('hidden');
+  setSceneActions('');
   showDialog('어느 문으로 들어갈까?', 3000);
 }
 
@@ -1590,10 +1639,11 @@ function showBattleScene() {
   $('door-overlay').classList.add('hidden');
   $('scene-player').classList.remove('hidden');
   $('scene-enemy').classList.remove('hidden');
-  $('door-actions').classList.add('hidden');
-  $('battle-actions').classList.remove('hidden');
-  $('continue-actions').classList.add('hidden');
   $('mini-game').classList.add('hidden');
+  setSceneActions(`
+    <button class="btn attack" onclick="playerAttack()">⚔ 공격</button>
+    <button class="btn" onclick="tryFlee()">💨 도망</button>
+  `);
 }
 
 function showRewardScene() {
@@ -1601,9 +1651,42 @@ function showRewardScene() {
   $('door-overlay').classList.add('hidden');
   $('scene-player').classList.remove('hidden');
   $('scene-enemy').classList.add('hidden');
-  $('door-actions').classList.add('hidden');
-  $('battle-actions').classList.add('hidden');
-  $('continue-actions').classList.remove('hidden');
+  setSceneActions(`<button class="btn success" onclick="nextFloor()">▲ 다음 층으로</button>`);
+}
+
+function showEndScene() {
+  setSceneActions(`<button class="btn gold" onclick="restart()">🕯 다시 도전</button>`);
+}
+
+// ============= 보상 팝업/이펙트 =============
+function showRewardPopup(icon, label) {
+  const old = document.querySelector('.reward-popup');
+  if (old) old.remove();
+
+  const box = $('scene-box');
+  const pop = document.createElement('div');
+  pop.className = 'reward-popup';
+  pop.innerHTML = `
+    <div class="reward-icon">${icon}</div>
+    <div class="reward-label">${label}</div>
+  `;
+  box.appendChild(pop);
+
+  // 반짝이 입자 8개
+  for (let i = 0; i < 8; i++) {
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    s.style.left = '50%';
+    s.style.top = '40%';
+    const angle = (Math.PI * 2 * i) / 8;
+    s.style.setProperty('--dx', Math.cos(angle) * 80 + 'px');
+    s.style.setProperty('--dy', Math.sin(angle) * 80 + 'px');
+    s.style.animationDelay = (i * 0.05) + 's';
+    box.appendChild(s);
+    setTimeout(() => s.remove(), 1700);
+  }
+
+  setTimeout(() => pop.remove(), 3300);
 }
 
 // ============= 진행 =============
@@ -1679,7 +1762,7 @@ function enemyAttack() {
 }
 
 function setBattleButtons(enabled) {
-  document.querySelectorAll('#battle-actions .btn').forEach(b => b.disabled = !enabled);
+  document.querySelectorAll('#scene-actions .btn').forEach(b => b.disabled = !enabled);
 }
 
 function tryFlee() {
@@ -1710,14 +1793,17 @@ function victory() {
     const heal = 20 + rand(0, 15);
     potions.push({ name:'붉은 물약', heal });
     log(`🧪 붉은 물약(+${heal}) 획득!`, 'gain');
+    showRewardPopup('🧪', `붉은 물약 +${heal}`);
   } else if (r < 0.7) {
     const eq = EQUIPMENTS[rand(0, Math.min(EQUIPMENTS.length - 1, Math.floor(floor / 3)))];
     equipments.push({ ...eq, equipped:false });
     log(`${eq.icon} ${eq.name} 획득!`, 'gain');
+    showRewardPopup(eq.icon, eq.name);
   } else {
     const heal = Math.floor(player.maxHp * 0.15);
     player.hp = Math.min(player.maxHp, player.hp + heal);
     log(`✨ 회복의 기운... HP +${heal}`, 'gain');
+    showRewardPopup('✨', `HP +${heal} 회복`);
   }
   enemy = null;
   showRewardScene();
@@ -1731,11 +1817,13 @@ function rewardItem() {
     potions.push({ name:'붉은 물약', heal });
     log(`🕯 빈 방에서 물약(+${heal}) 발견!`, 'gain');
     showDialog('물약 발견!');
+    showRewardPopup('🧪', `붉은 물약 +${heal}`);
   } else if (r < 0.85) {
     const eq = EQUIPMENTS[rand(0, Math.min(EQUIPMENTS.length - 1, Math.floor(floor / 3) + 1))];
     equipments.push({ ...eq, equipped:false });
     log(`${eq.icon} 보물상자에서 ${eq.name} 발견!`, 'gain');
     showDialog(`${eq.name}!`);
+    showRewardPopup(eq.icon, eq.name);
   } else {
     log('💀 아무것도 없다... 차가운 정적뿐.', 'system');
     showDialog('아무것도 없다...');
@@ -1757,9 +1845,7 @@ function triggerMiniGame() {
   $('door-overlay').classList.add('hidden');
   $('scene-player').classList.remove('hidden');
   $('scene-enemy').classList.add('hidden');
-  $('door-actions').classList.add('hidden');
-  $('battle-actions').classList.add('hidden');
-  $('continue-actions').classList.add('hidden');
+  setSceneActions('');
 
   $('mini-game').classList.remove('hidden');
   const games = [quizGame, mashGame, timingGame];
@@ -1932,23 +2018,20 @@ function finalBoss() {
 function gameOver() {
   inBattle = false;
   document.querySelectorAll('.btn').forEach(b => b.disabled = false);
-  $('door-actions').classList.add('hidden');
-  $('battle-actions').classList.add('hidden');
-  $('continue-actions').classList.add('hidden');
   $('mini-game').classList.add('hidden');
-  $('end-actions').classList.remove('hidden');
   $('door-overlay').classList.add('hidden');
+  $('scene-enemy').classList.add('hidden');
+  showEndScene();
   showDialog('영혼이 소멸했다...', 5000);
   log('━ 영혼이 탑에 잠식되었다 ━', 'danger');
   log(`도달 층: ${floor}층`, 'system');
 }
 
 function triumph() {
-  $('door-actions').classList.add('hidden');
-  $('battle-actions').classList.add('hidden');
-  $('continue-actions').classList.add('hidden');
   $('mini-game').classList.add('hidden');
-  $('end-actions').classList.remove('hidden');
+  $('door-overlay').classList.add('hidden');
+  $('scene-enemy').classList.add('hidden');
+  showEndScene();
   showDialog('탑의 정상에 섰다!', 5000);
   log('━━ 탑의 정상에 섰다! ━━', 'gain');
   log('저주는 풀렸고, 새벽이 밝아온다.', 'gain');
@@ -1961,7 +2044,7 @@ function restart() {
   $('log').innerHTML = '';
   $('main-game').classList.add('hidden');
   $('char-select').classList.remove('hidden');
-  $('end-actions').classList.add('hidden');
+  setSceneActions('');
   document.querySelectorAll('.btn').forEach(b => b.disabled = false);
 }
 </script>
