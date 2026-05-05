@@ -1487,7 +1487,7 @@
         <div class="char-bigportrait"><svg><use href="#char-dugong"/></svg></div>
         <div>
           <div class="char-name">듀공</div>
-          <div class="char-stats">HP 120 · MP 30<br/>ATK 10 · SPD 4</div>
+          <div class="char-stats">HP 120 · MP 50<br/>ATK 10 · SPD 4</div>
           <div class="char-desc">"두꺼운 살가죽의 수호자"</div>
         </div>
       </div>
@@ -1503,7 +1503,7 @@
         <div class="char-bigportrait"><svg><use href="#char-dolphin"/></svg></div>
         <div>
           <div class="char-name">돌고래</div>
-          <div class="char-stats">HP 100 · MP 80<br/>ATK 12 · SPD 9</div>
+          <div class="char-stats">HP 100 · MP 50<br/>ATK 12 · SPD 9</div>
           <div class="char-desc">"바다에서 온 영민한 자"</div>
         </div>
       </div>
@@ -1612,9 +1612,9 @@
 <script>
 // ============= 게임 데이터 =============
 const CHARACTERS = {
-  dugong:  { name:'듀공',  svg:'char-dugong',  hp:120, mp:30, atk:10, spd:4 },
+  dugong:  { name:'듀공',  svg:'char-dugong',  hp:120, mp:50, atk:10, spd:4 },
   dog:     { name:'강아지', svg:'char-dog',     hp:90,  mp:50, atk:14, spd:7 },
-  dolphin: { name:'돌고래', svg:'char-dolphin', hp:100, mp:80, atk:12, spd:9 }
+  dolphin: { name:'돌고래', svg:'char-dolphin', hp:100, mp:50, atk:12, spd:9 }
 };
 
 const MONSTERS = {
@@ -1824,7 +1824,6 @@ function applyEquip(e, on) {
     e.equipped = true;
     player.atk += e.atk;
     player.maxHp += e.hp;
-    player.hp += e.hp;
   } else {
     e.equipped = false;
     player.atk -= e.atk;
