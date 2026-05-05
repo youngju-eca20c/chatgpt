@@ -401,6 +401,106 @@
   }
   .bag-bounce { animation: bagBounce 0.5s ease-out; }
 
+  /* === 마법 공격 이펙트 === */
+  .magic-orb {
+    position: absolute;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, #c0e0ff 25%, #6080ff 60%, #2040a0 100%);
+    box-shadow: 0 0 24px #80a0ff, 0 0 48px #4080ff, 0 0 80px rgba(120,180,255,0.5);
+    z-index: 15;
+    pointer-events: none;
+    animation: orbFly 0.55s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+  }
+  @keyframes orbFly {
+    0%   { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+    18%  { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+    100% {
+      transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1);
+      opacity: 1;
+    }
+  }
+  /* 마법 트레일 */
+  .magic-trail {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(192,224,255,0.8), rgba(96,128,255,0.3) 60%, transparent);
+    z-index: 14;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: trailFade 0.5s ease-out forwards;
+  }
+  @keyframes trailFade {
+    0%   { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+  }
+  /* 마법 폭발 */
+  .magic-explosion {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      rgba(255,255,255,0.95) 0%,
+      rgba(180,220,255,0.7) 30%,
+      rgba(80,130,255,0.4) 60%,
+      transparent 80%);
+    box-shadow: 0 0 60px #80a0ff;
+    z-index: 16;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.3);
+    animation: magicExplode 0.6s ease-out forwards;
+  }
+  @keyframes magicExplode {
+    0%   { transform: translate(-50%, -50%) scale(0.3); opacity: 1; }
+    50%  { transform: translate(-50%, -50%) scale(2.6); opacity: 0.9; }
+    100% { transform: translate(-50%, -50%) scale(3.2); opacity: 0; }
+  }
+  /* 마법 입자 */
+  .magic-spark {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff, #80c0ff 50%, transparent);
+    box-shadow: 0 0 8px #a0c0ff;
+    z-index: 16;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: magicSpark 0.8s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+  }
+  @keyframes magicSpark {
+    0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+    100% {
+      transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.4);
+      opacity: 0;
+    }
+  }
+  /* 화면 플래시 */
+  .magic-flash {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 70% 50%, rgba(180,220,255,0.4), transparent 60%);
+    z-index: 13;
+    pointer-events: none;
+    animation: magicFlash 0.4s ease-out forwards;
+  }
+  @keyframes magicFlash {
+    0%   { opacity: 0; }
+    30%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  /* MP 부족 시 흔들림 */
+  @keyframes mpShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+  .mp-shake { animation: mpShake 0.3s; }
+
   /* 씬 하단 액션 오버레이 */
   .scene-actions {
     position: absolute;
@@ -438,6 +538,15 @@
     background: linear-gradient(180deg, rgba(255, 204, 68, 0.9), rgba(208, 144, 32, 0.9));
     border-color: #ffe070;
     color: #4a2810;
+  }
+  .scene-actions .btn.magic {
+    background: linear-gradient(180deg, rgba(96, 168, 255, 0.9), rgba(48, 96, 192, 0.9));
+    border-color: #a0c8ff;
+    color: #fff;
+  }
+  .scene-actions .btn.magic:disabled {
+    background: linear-gradient(180deg, rgba(60, 70, 100, 0.7), rgba(40, 50, 80, 0.7));
+    border-color: #5060a0;
   }
   .scene-actions .btn:hover:not(:disabled) {
     transform: translateY(-1px);
@@ -1801,6 +1910,8 @@ function showFountainScene() {
   $('mini-game').classList.add('hidden');
 }
 
+const MAGIC_COST = 10;
+
 function showBattleScene() {
   $('scene-bg-use').setAttribute('href', '#bg-room');
   $('door-overlay').classList.add('hidden');
@@ -1809,6 +1920,7 @@ function showBattleScene() {
   $('mini-game').classList.add('hidden');
   setSceneActions(`
     <button class="btn attack" onclick="playerAttack()">⚔ 공격</button>
+    <button class="btn magic" onclick="magicAttack()">🔮 마법 (${MAGIC_COST})</button>
     <button class="btn" onclick="tryFlee()">💨 도망</button>
   `);
 }
@@ -1932,6 +2044,112 @@ function playerAttack() {
   if (enemy.hp <= 0) { victory(); return; }
   setBattleButtons(false);
   setTimeout(enemyAttack, 600);
+}
+
+// === 마법 공격 ===
+function magicAttack() {
+  if (!inBattle) return;
+  if (player.mp < MAGIC_COST) {
+    showDialog('마나가 부족하다!');
+    log(`🔮 마나가 부족하다 (${player.mp}/${MAGIC_COST})`, 'danger');
+    const bar = document.querySelector('.mp-bar');
+    if (bar) {
+      bar.classList.add('mp-shake');
+      setTimeout(() => bar.classList.remove('mp-shake'), 350);
+    }
+    return;
+  }
+  setBattleButtons(false);
+  player.mp -= MAGIC_COST;
+  const dmg = Math.floor(player.atk * 1.7) + rand(0, 6);
+
+  log(`🔮 마법 시전! (MP -${MAGIC_COST})`, 'system');
+  showDialog('마법!');
+  spawnMagicEffect(() => {
+    enemy.hp -= dmg;
+    log(`✨ 마법이 ${enemy.name}을(를) 강타! ${dmg}의 피해`, 'important');
+    showDialog(`마법 ${dmg} 피해!`);
+    $('scene-enemy').classList.add('hit-flash');
+    setTimeout(() => $('scene-enemy').classList.remove('hit-flash'), 400);
+    updateUI();
+    if (enemy.hp <= 0) { victory(); return; }
+    setTimeout(enemyAttack, 500);
+  });
+}
+
+function spawnMagicEffect(onImpact) {
+  const box = $('scene-box');
+  const boxRect = box.getBoundingClientRect();
+  const pRect = $('scene-player').getBoundingClientRect();
+  const eRect = $('scene-enemy').getBoundingClientRect();
+  const startX = pRect.left + pRect.width * 0.7 - boxRect.left;
+  const startY = pRect.top  + pRect.height * 0.4 - boxRect.top;
+  const endX   = eRect.left + eRect.width  * 0.5 - boxRect.left;
+  const endY   = eRect.top  + eRect.height * 0.4 - boxRect.top;
+  const dx = endX - startX;
+  const dy = endY - startY;
+
+  // 오브
+  const orb = document.createElement('div');
+  orb.className = 'magic-orb';
+  orb.style.left = startX + 'px';
+  orb.style.top  = startY + 'px';
+  orb.style.setProperty('--dx', dx + 'px');
+  orb.style.setProperty('--dy', dy + 'px');
+  box.appendChild(orb);
+
+  // 트레일 — 50ms 마다
+  const trailTimer = setInterval(() => {
+    const r = orb.getBoundingClientRect();
+    if (r.width === 0) { clearInterval(trailTimer); return; }
+    const t = document.createElement('div');
+    t.className = 'magic-trail';
+    t.style.left = (r.left + r.width / 2 - boxRect.left) + 'px';
+    t.style.top  = (r.top  + r.height / 2 - boxRect.top) + 'px';
+    box.appendChild(t);
+    setTimeout(() => t.remove(), 500);
+  }, 40);
+
+  // 충돌 시점
+  setTimeout(() => {
+    clearInterval(trailTimer);
+    orb.remove();
+
+    // 폭발
+    const exp = document.createElement('div');
+    exp.className = 'magic-explosion';
+    exp.style.left = endX + 'px';
+    exp.style.top  = endY + 'px';
+    box.appendChild(exp);
+    setTimeout(() => exp.remove(), 600);
+
+    // 화면 플래시
+    const flash = document.createElement('div');
+    flash.className = 'magic-flash';
+    box.appendChild(flash);
+    setTimeout(() => flash.remove(), 400);
+
+    // 입자 12개
+    for (let i = 0; i < 12; i++) {
+      const s = document.createElement('div');
+      s.className = 'magic-spark';
+      s.style.left = endX + 'px';
+      s.style.top  = endY + 'px';
+      const angle = (Math.PI * 2 * i) / 12 + Math.random() * 0.4;
+      const dist = 60 + Math.random() * 40;
+      s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+      s.style.animationDelay = (Math.random() * 0.1) + 's';
+      box.appendChild(s);
+      setTimeout(() => s.remove(), 900);
+    }
+
+    // 카메라 흔들림
+    box.classList.add('shake');
+    setTimeout(() => box.classList.remove('shake'), 300);
+
+    onImpact();
+  }, 550);
 }
 
 function enemyAttack() {
