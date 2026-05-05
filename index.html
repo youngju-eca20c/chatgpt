@@ -4,120 +4,222 @@
 <meta charset="UTF-8" />
 <title>저주받은 탑 - Cursed Tower</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Nanum+Gothic+Coding&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;800&family=Nanum+Gothic+Coding&display=swap');
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html, body { min-height: 100vh; }
+
   body {
     font-family: 'Nanum Gothic Coding', monospace;
-    background: radial-gradient(ellipse at center, #1a0505 0%, #000 80%);
     color: #c9b9b9;
-    min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     padding: 20px;
     overflow-x: hidden;
+    position: relative;
+    background: #000;
   }
 
-  body::before {
-    content: '';
+  /* === 배경 SVG === */
+  #bg-scene {
     position: fixed;
     inset: 0;
-    background-image:
-      radial-gradient(2px 2px at 20% 30%, #5a2a2a, transparent),
-      radial-gradient(1px 1px at 70% 60%, #4a1a1a, transparent),
-      radial-gradient(1.5px 1.5px at 40% 80%, #6a3030, transparent);
-    pointer-events: none;
-    opacity: 0.4;
+    width: 100%;
+    height: 100%;
     z-index: 0;
+    pointer-events: none;
+  }
+
+  /* 떠다니는 불꽃 입자 */
+  .ember {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #ff6633, #aa2200, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    animation: float-up linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes float-up {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    10%  { opacity: 0.9; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(-100vh) translateX(40px); opacity: 0; }
+  }
+
+  /* 안개 */
+  .fog {
+    position: fixed;
+    bottom: -50px;
+    left: 0;
+    width: 200%;
+    height: 250px;
+    background: radial-gradient(ellipse at center, rgba(120,40,40,0.15), transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    animation: drift 40s linear infinite;
+  }
+  .fog.f2 { animation-duration: 60s; opacity: 0.6; bottom: 100px; }
+
+  @keyframes drift {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
   }
 
   #game {
     width: 100%;
-    max-width: 900px;
+    max-width: 920px;
     position: relative;
-    z-index: 1;
+    z-index: 2;
   }
 
+  /* === 타이틀 === */
+  .title-wrap { text-align: center; margin-bottom: 25px; position: relative; }
+
   h1 {
-    font-family: 'Cinzel', serif;
-    font-size: 2.5rem;
-    text-align: center;
-    color: #8b0000;
-    text-shadow: 0 0 10px #5a0000, 0 0 20px #2a0000;
-    letter-spacing: 4px;
-    margin-bottom: 10px;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: transparent;
+    background: linear-gradient(180deg, #d04a4a 0%, #8b0000 50%, #4a0000 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    text-shadow: 0 0 40px rgba(139, 0, 0, 0.6);
+    letter-spacing: 6px;
+    filter: drop-shadow(0 0 12px rgba(139, 0, 0, 0.5));
+  }
+
+  h1::before, h1::after {
+    content: '✦';
+    font-size: 1.5rem;
+    color: #5a2020;
+    margin: 0 20px;
+    vertical-align: middle;
   }
 
   .subtitle {
-    text-align: center;
-    color: #5a4a4a;
-    font-size: 0.9rem;
-    margin-bottom: 30px;
-    letter-spacing: 2px;
+    color: #6a4a4a;
+    font-size: 0.85rem;
+    margin-top: 8px;
+    letter-spacing: 8px;
+    font-family: 'Cinzel', serif;
   }
 
+  /* === 패널 (양각 액자 느낌) === */
   .panel {
-    background: linear-gradient(180deg, #1a0a0a 0%, #0a0303 100%);
+    background:
+      linear-gradient(180deg, rgba(26,10,10,0.92) 0%, rgba(10,3,3,0.95) 100%);
     border: 1px solid #3a1a1a;
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 20px;
     margin-bottom: 15px;
-    box-shadow: 0 0 20px rgba(139, 0, 0, 0.2), inset 0 0 30px rgba(0,0,0,0.5);
+    box-shadow:
+      0 0 25px rgba(139, 0, 0, 0.25),
+      inset 0 0 40px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(139, 0, 0, 0.15);
+    position: relative;
   }
 
-  /* 캐릭터 선택 */
+  /* 액자 코너 장식 */
+  .panel::before, .panel::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #5a1a1a;
+  }
+  .panel::before {
+    top: -1px; left: -1px;
+    border-right: none; border-bottom: none;
+  }
+  .panel::after {
+    bottom: -1px; right: -1px;
+    border-left: none; border-top: none;
+  }
+
+  /* === 캐릭터 선택 === */
+  .select-title {
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: #c9b9b9;
+    margin-bottom: 5px;
+    letter-spacing: 3px;
+  }
+  .select-sub {
+    text-align: center;
+    color: #6a4a4a;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
   .char-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+    gap: 18px;
     margin-top: 15px;
   }
 
   .char-card {
-    background: #1f0a0a;
+    background: linear-gradient(180deg, #1f0a0a 0%, #0a0303 100%);
     border: 2px solid #3a1a1a;
-    padding: 20px;
-    border-radius: 4px;
+    padding: 18px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.35s;
     text-align: center;
+    position: relative;
+    overflow: hidden;
   }
 
-  .char-card:hover {
-    border-color: #8b0000;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 20px rgba(139, 0, 0, 0.5);
+  .char-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 30%, rgba(139,0,0,0.15), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
   }
 
-  .char-emoji {
-    font-size: 3.5rem;
-    margin-bottom: 10px;
-    filter: grayscale(0.3) drop-shadow(0 0 8px rgba(139,0,0,0.5));
+  .char-card:hover { border-color: #8b0000; transform: translateY(-4px); box-shadow: 0 8px 25px rgba(139, 0, 0, 0.5); }
+  .char-card:hover::before { opacity: 1; }
+
+  .char-portrait {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 10px;
+    filter: drop-shadow(0 4px 8px rgba(139, 0, 0, 0.6));
   }
 
   .char-name {
     font-family: 'Cinzel', serif;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     color: #c9b9b9;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    letter-spacing: 2px;
   }
 
   .char-stats {
     font-size: 0.85rem;
     color: #8a7a7a;
-    line-height: 1.6;
+    line-height: 1.7;
   }
 
   .char-desc {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: #6a5a5a;
     margin-top: 8px;
     font-style: italic;
   }
 
-  /* 상태창 */
+  /* === 상태창 === */
   .status-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -126,79 +228,99 @@
   }
 
   .status-card {
-    background: linear-gradient(180deg, #1a0a0a, #0a0303);
+    background: linear-gradient(180deg, rgba(26,10,10,0.92), rgba(10,3,3,0.95));
     border: 1px solid #3a1a1a;
     padding: 15px;
-    border-radius: 4px;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 12px;
+    align-items: center;
+    position: relative;
   }
 
-  .status-card.enemy {
-    border-color: #5a0000;
-    box-shadow: 0 0 15px rgba(139, 0, 0, 0.3);
+  .status-card.enemy { border-color: #5a0000; box-shadow: 0 0 20px rgba(139, 0, 0, 0.35); }
+
+  .portrait-slot {
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, #1a0606 0%, #050202 100%);
+    border: 1px solid #3a1a1a;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
   }
+
+  .portrait-slot svg { width: 78px; height: 78px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+
+  .status-info { display: flex; flex-direction: column; }
 
   .status-name {
     font-family: 'Cinzel', serif;
-    font-size: 1.1rem;
-    margin-bottom: 8px;
+    font-size: 1.05rem;
     color: #c9b9b9;
+    margin-bottom: 6px;
   }
-
   .enemy .status-name { color: #d04a4a; }
 
   .hp-bar {
     width: 100%;
-    height: 18px;
+    height: 16px;
     background: #1a0303;
     border: 1px solid #3a1a1a;
     border-radius: 2px;
     overflow: hidden;
     position: relative;
-    margin: 5px 0;
   }
 
   .hp-fill {
     height: 100%;
-    background: linear-gradient(90deg, #4a0000, #8b0000, #c00);
+    background: linear-gradient(90deg, #4a0000, #8b0000, #c00 70%, #ff3030);
     transition: width 0.4s;
+    box-shadow: inset 0 0 8px rgba(255, 60, 60, 0.5);
   }
 
   .hp-text {
     position: absolute;
     inset: 0;
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #fff;
     text-shadow: 1px 1px 2px #000;
-    line-height: 18px;
+    line-height: 16px;
+    font-weight: bold;
   }
 
   .stat-line {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: #8a7a7a;
-    margin-top: 4px;
+    margin-top: 6px;
   }
 
-  /* 층 표시 */
+  /* === 층 표시 === */
   .floor-indicator {
     text-align: center;
-    font-family: 'Cinzel', serif;
-    font-size: 1.4rem;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.5rem;
     color: #d04a4a;
-    text-shadow: 0 0 8px #5a0000;
+    text-shadow: 0 0 10px #5a0000, 0 0 20px #2a0000;
     margin-bottom: 15px;
-    letter-spacing: 3px;
+    letter-spacing: 4px;
+    font-weight: 700;
   }
 
-  /* 로그 */
+  /* === 로그 === */
   #log {
-    height: 180px;
+    height: 170px;
     overflow-y: auto;
     background: #050202;
     border: 1px solid #2a1010;
-    padding: 12px;
-    font-size: 0.9rem;
-    line-height: 1.6;
+    padding: 12px 14px;
+    font-size: 0.88rem;
+    line-height: 1.65;
     border-radius: 3px;
   }
 
@@ -208,57 +330,59 @@
   #log .danger { color: #ff4a4a; }
   #log .system { color: #8a8a4a; font-style: italic; }
 
-  /* 버튼 */
-  .btn-row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
+  /* === 버튼 === */
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
 
   .btn {
     flex: 1;
     min-width: 120px;
-    padding: 14px 20px;
+    padding: 13px 20px;
     background: linear-gradient(180deg, #2a0808, #1a0303);
     border: 1px solid #5a1010;
     color: #c9b9b9;
     font-family: 'Cinzel', serif;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
     border-radius: 3px;
     transition: all 0.2s;
     letter-spacing: 1px;
+    position: relative;
   }
 
   .btn:hover:not(:disabled) {
     background: linear-gradient(180deg, #4a1010, #2a0606);
     border-color: #8b0000;
-    box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+    box-shadow: 0 0 12px rgba(139, 0, 0, 0.6);
+    transform: translateY(-1px);
   }
 
-  .btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
   .btn.door {
-    padding: 30px 20px;
-    font-size: 1.1rem;
-    background: linear-gradient(180deg, #1a0a0a, #050202);
+    padding: 35px 20px;
+    font-size: 1.05rem;
+    background:
+      linear-gradient(180deg, rgba(26,10,10,0.9), rgba(5,2,2,0.95)),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='100'><path d='M30 5 L55 5 Q55 50 30 50 Q5 50 5 5 Z' fill='%23200505' stroke='%23501010' stroke-width='1.5'/><circle cx='42' cy='30' r='2' fill='%23801010'/></svg>");
+    background-size: cover, 60px 100px;
+    background-position: center, center;
+    background-repeat: no-repeat, repeat-x;
   }
 
   .btn.door:hover {
-    background: linear-gradient(180deg, #3a1010, #1a0606);
+    background:
+      linear-gradient(180deg, rgba(74,16,16,0.85), rgba(26,6,6,0.95)),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='100'><path d='M30 5 L55 5 Q55 50 30 50 Q5 50 5 5 Z' fill='%23401010' stroke='%23801010' stroke-width='1.5'/><circle cx='42' cy='30' r='2' fill='%23ff3030'/></svg>");
+    background-size: cover, 60px 100px;
+    background-position: center, center;
+    background-repeat: no-repeat, repeat-x;
   }
 
   .btn.danger { border-color: #8b0000; color: #d04a4a; }
   .btn.success { border-color: #2a5a2a; color: #6ac06a; }
 
-  /* 인벤토리 */
-  .inv-section {
-    margin-top: 10px;
-  }
+  /* === 인벤토리 === */
+  .inv-section { margin-top: 15px; }
 
   .inv-title {
     font-family: 'Cinzel', serif;
@@ -268,67 +392,50 @@
     letter-spacing: 2px;
   }
 
-  .inv-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+  .inv-list { display: flex; flex-wrap: wrap; gap: 8px; }
 
   .inv-item {
     background: #1a0a0a;
     border: 1px solid #3a1a1a;
     padding: 6px 12px;
     border-radius: 3px;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     cursor: pointer;
     transition: all 0.2s;
   }
 
-  .inv-item:hover {
-    border-color: #8b0000;
-    background: #2a0a0a;
-  }
+  .inv-item:hover { border-color: #8b0000; background: #2a0a0a; }
+  .inv-item.equipped { border-color: #a08020; color: #d4b060; box-shadow: 0 0 8px rgba(160, 128, 32, 0.3); }
 
-  .inv-item.equipped {
-    border-color: #a08020;
-    color: #d4b060;
-  }
-
-  /* 특수 이벤트 */
-  #mini-game {
-    text-align: center;
-    padding: 30px 20px;
-  }
+  /* === 미니게임 === */
+  #mini-game { text-align: center; padding: 30px 20px; }
 
   .mg-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1.5rem;
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.6rem;
     color: #d04a4a;
     margin-bottom: 15px;
-    text-shadow: 0 0 10px #5a0000;
+    text-shadow: 0 0 12px #5a0000;
+    letter-spacing: 3px;
   }
 
-  .mg-desc {
-    color: #a99a9a;
-    margin-bottom: 20px;
-    line-height: 1.6;
-  }
+  .mg-desc { color: #a99a9a; margin-bottom: 20px; line-height: 1.7; }
 
   .mash-btn {
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    background: radial-gradient(circle, #5a0000, #1a0000);
+    background: radial-gradient(circle, #5a0000 0%, #1a0000 100%);
     border: 3px solid #8b0000;
     color: #fff;
     font-family: 'Cinzel', serif;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     cursor: pointer;
-    box-shadow: 0 0 30px rgba(139,0,0,0.6);
+    box-shadow: 0 0 35px rgba(139,0,0,0.7), inset 0 0 30px rgba(0,0,0,0.5);
     transition: transform 0.05s;
+    letter-spacing: 2px;
   }
-
-  .mash-btn:active { transform: scale(0.95); }
+  .mash-btn:active { transform: scale(0.94); }
 
   .timing-bar {
     position: relative;
@@ -355,7 +462,7 @@
     width: 4px;
     height: 100%;
     background: #d04a4a;
-    box-shadow: 0 0 8px #d04a4a;
+    box-shadow: 0 0 10px #d04a4a;
   }
 
   .quiz-options {
@@ -366,21 +473,31 @@
     margin: 0 auto;
   }
 
-  /* 페이드 */
+  /* === 애니메이션 === */
   @keyframes shake {
     0%,100% { transform: translateX(0); }
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
   }
-
   .shake { animation: shake 0.3s; }
 
   @keyframes flash {
-    0%,100% { background-color: transparent; }
-    50% { background-color: rgba(139,0,0,0.3); }
+    0%,100% { background: linear-gradient(180deg, rgba(26,10,10,0.92), rgba(10,3,3,0.95)); }
+    50% { background: rgba(139,0,0,0.4); }
   }
-
   .flash { animation: flash 0.4s; }
+
+  @keyframes torchFlicker {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.85; transform: scale(0.95); }
+  }
+  .torch-flame { animation: torchFlicker 0.4s ease-in-out infinite; transform-origin: center bottom; }
+
+  @keyframes idle {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  .idle { animation: idle 2.5s ease-in-out infinite; }
 
   .hidden { display: none !important; }
 
@@ -388,35 +505,443 @@
   ::-webkit-scrollbar { width: 8px; }
   ::-webkit-scrollbar-track { background: #0a0303; }
   ::-webkit-scrollbar-thumb { background: #3a1a1a; border-radius: 4px; }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 2rem; letter-spacing: 3px; }
+    .char-grid { grid-template-columns: 1fr; }
+    .char-portrait { width: 90px; height: 90px; }
+  }
 </style>
 </head>
 <body>
 
-<div id="game">
-  <h1>저주받은 탑</h1>
-  <div class="subtitle">~ THE CURSED TOWER ~</div>
+<!-- ============= 배경 SVG (탑, 달, 별, 박쥐) ============= -->
+<svg id="bg-scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="skyGrad" cx="50%" cy="20%" r="100%">
+      <stop offset="0%" stop-color="#2a0a0a"/>
+      <stop offset="40%" stop-color="#100303"/>
+      <stop offset="100%" stop-color="#000"/>
+    </radialGradient>
+    <radialGradient id="moonGrad" cx="40%" cy="40%">
+      <stop offset="0%" stop-color="#fff5d8"/>
+      <stop offset="60%" stop-color="#d8b878"/>
+      <stop offset="100%" stop-color="#5a4020"/>
+    </radialGradient>
+    <radialGradient id="moonGlow" cx="50%" cy="50%">
+      <stop offset="0%" stop-color="rgba(255, 220, 150, 0.4)"/>
+      <stop offset="100%" stop-color="rgba(255, 220, 150, 0)"/>
+    </radialGradient>
+    <linearGradient id="towerGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a0606"/>
+      <stop offset="100%" stop-color="#000"/>
+    </linearGradient>
+    <filter id="blur1"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
 
-  <!-- 캐릭터 선택 화면 -->
+  <!-- 하늘 -->
+  <rect width="1600" height="900" fill="url(#skyGrad)"/>
+
+  <!-- 별 -->
+  <g fill="#aa9988" opacity="0.7">
+    <circle cx="120" cy="100" r="1.2"/>
+    <circle cx="240" cy="80" r="1.5"/>
+    <circle cx="360" cy="160" r="1"/>
+    <circle cx="480" cy="50" r="1.4"/>
+    <circle cx="700" cy="120" r="1.2"/>
+    <circle cx="820" cy="60" r="1"/>
+    <circle cx="940" cy="190" r="1.5"/>
+    <circle cx="1080" cy="80" r="1.3"/>
+    <circle cx="1240" cy="150" r="1"/>
+    <circle cx="1380" cy="60" r="1.4"/>
+    <circle cx="1500" cy="130" r="1.1"/>
+    <circle cx="60" cy="200" r="1.2"/>
+    <circle cx="180" cy="280" r="1"/>
+    <circle cx="540" cy="240" r="1.3"/>
+    <circle cx="1140" cy="280" r="1.1"/>
+    <circle cx="1340" cy="240" r="1.4"/>
+  </g>
+
+  <!-- 달 (보름달 - 핏빛) -->
+  <circle cx="1280" cy="180" r="120" fill="url(#moonGlow)"/>
+  <circle cx="1280" cy="180" r="65" fill="url(#moonGrad)"/>
+  <circle cx="1260" cy="170" r="6" fill="#8a7040" opacity="0.5"/>
+  <circle cx="1295" cy="195" r="9" fill="#8a7040" opacity="0.4"/>
+  <circle cx="1270" cy="205" r="4" fill="#8a7040" opacity="0.5"/>
+
+  <!-- 멀리 있는 산 -->
+  <path d="M0 700 L150 540 L280 620 L420 480 L580 580 L720 460 L880 560 L1040 470 L1200 590 L1380 510 L1600 580 L1600 900 L0 900 Z"
+        fill="#0a0303" opacity="0.9"/>
+
+  <!-- 탑 (중앙 메인) -->
+  <g>
+    <!-- 탑 본체 -->
+    <path d="M720 900 L720 350 L740 320 L740 280 L720 260 L720 200 L760 160 L840 160 L880 200 L880 260 L860 280 L860 320 L880 350 L880 900 Z"
+          fill="url(#towerGrad)" stroke="#3a1010" stroke-width="2"/>
+    <!-- 창문들 (불 켜진) -->
+    <rect x="785" y="380" width="30" height="50" fill="#5a2010" rx="3"/>
+    <rect x="788" y="385" width="24" height="40" fill="#ff8030" opacity="0.8" rx="2"/>
+    <rect x="785" y="500" width="30" height="50" fill="#5a2010" rx="3"/>
+    <rect x="788" y="505" width="24" height="40" fill="#ff6020" opacity="0.7" rx="2"/>
+    <rect x="785" y="620" width="30" height="50" fill="#5a2010" rx="3"/>
+    <rect x="788" y="625" width="24" height="40" fill="#ff8030" opacity="0.6" rx="2"/>
+    <rect x="785" y="740" width="30" height="50" fill="#5a2010" rx="3"/>
+    <rect x="788" y="745" width="24" height="40" fill="#ff5020" opacity="0.5" rx="2"/>
+    <!-- 첨탑 (지붕) -->
+    <path d="M720 200 L800 100 L880 200 Z" fill="#1a0606" stroke="#3a1010" stroke-width="2"/>
+    <line x1="800" y1="100" x2="800" y2="60" stroke="#3a1010" stroke-width="2"/>
+    <path d="M790 60 L800 40 L810 60 L800 70 Z" fill="#5a1010"/>
+    <!-- 톱니 흉벽 -->
+    <rect x="720" y="260" width="10" height="15" fill="#1a0606"/>
+    <rect x="745" y="260" width="10" height="15" fill="#1a0606"/>
+    <rect x="770" y="260" width="10" height="15" fill="#1a0606"/>
+    <rect x="795" y="260" width="10" height="15" fill="#1a0606"/>
+    <rect x="820" y="260" width="10" height="15" fill="#1a0606"/>
+    <rect x="845" y="260" width="10" height="15" fill="#1a0606"/>
+    <rect x="870" y="260" width="10" height="15" fill="#1a0606"/>
+  </g>
+
+  <!-- 사이드 작은 탑들 -->
+  <path d="M180 900 L180 600 L200 580 L260 580 L280 600 L280 900 Z" fill="#0a0303" stroke="#2a0808" stroke-width="1.5"/>
+  <path d="M180 600 L230 540 L280 600 Z" fill="#0a0303" stroke="#2a0808" stroke-width="1.5"/>
+  <rect x="218" y="640" width="22" height="35" fill="#5a2010" rx="2"/>
+  <rect x="220" y="643" width="18" height="29" fill="#ff7020" opacity="0.6" rx="1"/>
+
+  <path d="M1320 900 L1320 650 L1340 630 L1400 630 L1420 650 L1420 900 Z" fill="#0a0303" stroke="#2a0808" stroke-width="1.5"/>
+  <path d="M1320 650 L1370 590 L1420 650 Z" fill="#0a0303" stroke="#2a0808" stroke-width="1.5"/>
+  <rect x="1358" y="690" width="22" height="35" fill="#5a2010" rx="2"/>
+  <rect x="1360" y="693" width="18" height="29" fill="#ff7020" opacity="0.6" rx="1"/>
+
+  <!-- 멀리 나는 박쥐들 -->
+  <g fill="#0a0303" opacity="0.8">
+    <path d="M400 240 q-8 -4 -14 0 q-3 -4 -10 -2 q5 4 10 2 q3 4 7 2 q4 2 7 -2 q5 2 10 -2 q-7 -2 -10 2 z"/>
+    <path d="M1100 320 q-6 -3 -10 0 q-2 -3 -7 -1 q4 3 7 1 q2 3 5 1 q3 1 5 -1 q4 1 7 -1 q-5 -1 -7 1 z"/>
+    <path d="M620 180 q-5 -2 -8 0 q-2 -2 -6 -1 q3 2 6 1 q2 2 4 1 q2 1 4 -1 q3 1 6 -1 q-4 -1 -6 1 z"/>
+  </g>
+
+  <!-- 안개 -->
+  <ellipse cx="800" cy="850" rx="900" ry="60" fill="rgba(80,20,20,0.3)" filter="url(#blur1)"/>
+</svg>
+
+<div class="fog"></div>
+<div class="fog f2"></div>
+
+<!-- ============= SVG 캐릭터 정의 ============= -->
+<svg width="0" height="0" style="position:absolute" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 듀공 -->
+    <symbol id="char-dugong" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="68" rx="28" ry="6" fill="#000" opacity="0.4"/>
+      <!-- 몸통 -->
+      <ellipse cx="50" cy="55" rx="36" ry="28" fill="#5a6878"/>
+      <ellipse cx="50" cy="55" rx="32" ry="24" fill="#7a8898"/>
+      <!-- 갑옷 -->
+      <path d="M22 55 Q22 40 50 38 Q78 40 78 55" fill="#3a3a4a" stroke="#1a1a2a" stroke-width="1"/>
+      <circle cx="35" cy="48" r="2" fill="#1a1a2a"/>
+      <circle cx="50" cy="44" r="2" fill="#1a1a2a"/>
+      <circle cx="65" cy="48" r="2" fill="#1a1a2a"/>
+      <!-- 얼굴 -->
+      <ellipse cx="50" cy="32" rx="22" ry="18" fill="#8a98a8"/>
+      <!-- 눈 -->
+      <ellipse cx="42" cy="30" rx="2.5" ry="3.5" fill="#1a0a0a"/>
+      <ellipse cx="58" cy="30" rx="2.5" ry="3.5" fill="#1a0a0a"/>
+      <circle cx="42.5" cy="29" r="0.8" fill="#fff"/>
+      <circle cx="58.5" cy="29" r="0.8" fill="#fff"/>
+      <!-- 콧구멍 -->
+      <ellipse cx="46" cy="38" rx="1" ry="1.5" fill="#3a3a4a"/>
+      <ellipse cx="54" cy="38" rx="1" ry="1.5" fill="#3a3a4a"/>
+      <!-- 입 -->
+      <path d="M44 42 Q50 45 56 42" stroke="#3a3a4a" stroke-width="1.2" fill="none"/>
+      <!-- 지느러미 -->
+      <ellipse cx="18" cy="60" rx="8" ry="5" fill="#5a6878" transform="rotate(-20 18 60)"/>
+      <ellipse cx="82" cy="60" rx="8" ry="5" fill="#5a6878" transform="rotate(20 82 60)"/>
+      <!-- 흉터 -->
+      <line x1="35" y1="20" x2="42" y2="26" stroke="#5a1010" stroke-width="1"/>
+    </symbol>
+
+    <!-- 강아지 -->
+    <symbol id="char-dog" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="80" rx="22" ry="4" fill="#000" opacity="0.4"/>
+      <!-- 몸통 -->
+      <ellipse cx="50" cy="62" rx="22" ry="20" fill="#6a4a3a"/>
+      <ellipse cx="50" cy="62" rx="19" ry="17" fill="#8a6a4a"/>
+      <!-- 다리 -->
+      <rect x="38" y="72" width="6" height="10" rx="2" fill="#4a3020"/>
+      <rect x="56" y="72" width="6" height="10" rx="2" fill="#4a3020"/>
+      <!-- 머리 -->
+      <ellipse cx="50" cy="38" rx="20" ry="17" fill="#7a5a3a"/>
+      <!-- 귀 -->
+      <path d="M32 28 L28 12 L42 22 Z" fill="#5a3a20"/>
+      <path d="M68 28 L72 12 L58 22 Z" fill="#5a3a20"/>
+      <path d="M33 25 L31 16 L40 22 Z" fill="#3a2010"/>
+      <path d="M67 25 L69 16 L60 22 Z" fill="#3a2010"/>
+      <!-- 눈 -->
+      <ellipse cx="42" cy="36" rx="3" ry="3.5" fill="#1a0a0a"/>
+      <ellipse cx="58" cy="36" rx="3" ry="3.5" fill="#1a0a0a"/>
+      <circle cx="43" cy="35" r="1" fill="#fff"/>
+      <circle cx="59" cy="35" r="1" fill="#fff"/>
+      <!-- 코 -->
+      <ellipse cx="50" cy="44" rx="3" ry="2.5" fill="#1a0a0a"/>
+      <!-- 입 -->
+      <path d="M50 47 Q46 52 42 50" stroke="#1a0a0a" stroke-width="1.2" fill="none"/>
+      <path d="M50 47 Q54 52 58 50" stroke="#1a0a0a" stroke-width="1.2" fill="none"/>
+      <!-- 송곳니 -->
+      <path d="M46 50 L45 54 L47 51 Z" fill="#fff"/>
+      <path d="M54 50 L55 54 L53 51 Z" fill="#fff"/>
+      <!-- 작은 검 (등에 멘) -->
+      <line x1="22" y1="55" x2="14" y2="40" stroke="#aaa" stroke-width="2"/>
+      <rect x="20" y="55" width="4" height="3" fill="#5a3010"/>
+      <line x1="14" y1="40" x2="11" y2="36" stroke="#dddd99" stroke-width="2.5"/>
+    </symbol>
+
+    <!-- 돌고래 -->
+    <symbol id="char-dolphin" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="80" rx="26" ry="5" fill="#000" opacity="0.4"/>
+      <!-- 빛 후광 -->
+      <circle cx="50" cy="50" r="40" fill="rgba(120, 180, 220, 0.1)"/>
+      <!-- 몸통 -->
+      <path d="M20 55 Q15 35 35 28 Q60 22 80 35 Q92 45 88 55 Q88 65 75 70 Q60 75 40 72 Q22 70 20 55 Z"
+            fill="#3a5a7a"/>
+      <path d="M22 55 Q18 38 36 32 Q58 26 76 38 Q88 47 84 55 Q84 63 73 67 Q58 71 40 68 Q24 66 22 55 Z"
+            fill="#5a7a9a"/>
+      <!-- 흰 배 -->
+      <ellipse cx="55" cy="62" rx="20" ry="6" fill="#aac0d8" opacity="0.7"/>
+      <!-- 등 지느러미 -->
+      <path d="M50 28 L60 18 L62 30 Z" fill="#3a5a7a"/>
+      <!-- 꼬리 -->
+      <path d="M85 50 L98 38 L96 50 L98 62 Z" fill="#3a5a7a"/>
+      <!-- 옆 지느러미 -->
+      <path d="M40 65 L32 78 L48 70 Z" fill="#3a5a7a"/>
+      <!-- 눈 -->
+      <ellipse cx="32" cy="48" rx="3" ry="3.5" fill="#fff"/>
+      <ellipse cx="32" cy="48" rx="2" ry="2.5" fill="#1a0a0a"/>
+      <circle cx="32.5" cy="47" r="0.8" fill="#fff"/>
+      <!-- 입 (반달) -->
+      <path d="M22 56 Q18 60 22 62" stroke="#1a2a3a" stroke-width="1.2" fill="none"/>
+      <!-- 신비로운 빛 점들 -->
+      <circle cx="50" cy="38" r="1" fill="#aacfee" opacity="0.8"/>
+      <circle cx="65" cy="50" r="1" fill="#aacfee" opacity="0.8"/>
+      <circle cx="40" cy="55" r="0.8" fill="#aacfee" opacity="0.8"/>
+    </symbol>
+
+    <!-- 박쥐 -->
+    <symbol id="mon-bat" viewBox="0 0 100 100">
+      <!-- 날개 -->
+      <path d="M50 50 Q30 35 10 40 Q15 50 18 55 Q12 50 8 60 Q15 55 25 60 Q35 55 50 55 Z" fill="#1a0606" stroke="#3a1010" stroke-width="1"/>
+      <path d="M50 50 Q70 35 90 40 Q85 50 82 55 Q88 50 92 60 Q85 55 75 60 Q65 55 50 55 Z" fill="#1a0606" stroke="#3a1010" stroke-width="1"/>
+      <!-- 몸통 -->
+      <ellipse cx="50" cy="52" rx="6" ry="10" fill="#0a0303"/>
+      <!-- 머리 -->
+      <ellipse cx="50" cy="42" rx="8" ry="7" fill="#1a0606"/>
+      <!-- 귀 -->
+      <path d="M44 36 L42 28 L48 38 Z" fill="#1a0606"/>
+      <path d="M56 36 L58 28 L52 38 Z" fill="#1a0606"/>
+      <!-- 빨간 눈 -->
+      <circle cx="46" cy="42" r="1.5" fill="#ff2020"/>
+      <circle cx="54" cy="42" r="1.5" fill="#ff2020"/>
+      <!-- 송곳니 -->
+      <path d="M48 47 L47 51 L49 48 Z" fill="#fff"/>
+      <path d="M52 47 L53 51 L51 48 Z" fill="#fff"/>
+    </symbol>
+
+    <!-- 스켈레톤 -->
+    <symbol id="mon-skel" viewBox="0 0 100 100">
+      <!-- 두개골 -->
+      <ellipse cx="50" cy="42" rx="22" ry="24" fill="#d8d0bc"/>
+      <ellipse cx="50" cy="40" rx="20" ry="22" fill="#e8e0c8"/>
+      <!-- 눈구멍 -->
+      <ellipse cx="40" cy="40" rx="5" ry="7" fill="#000"/>
+      <ellipse cx="60" cy="40" rx="5" ry="7" fill="#000"/>
+      <circle cx="40" cy="42" r="1.5" fill="#ff3030"/>
+      <circle cx="60" cy="42" r="1.5" fill="#ff3030"/>
+      <!-- 코 -->
+      <path d="M50 48 L46 56 L50 58 L54 56 Z" fill="#000"/>
+      <!-- 이빨 -->
+      <rect x="38" y="60" width="3" height="6" fill="#fff"/>
+      <rect x="43" y="60" width="3" height="6" fill="#fff"/>
+      <rect x="48" y="60" width="3" height="6" fill="#fff"/>
+      <rect x="53" y="60" width="3" height="6" fill="#fff"/>
+      <rect x="58" y="60" width="3" height="6" fill="#fff"/>
+      <!-- 척추 시작 -->
+      <rect x="46" y="68" width="8" height="20" fill="#c8c0ac"/>
+      <line x1="46" y1="74" x2="54" y2="74" stroke="#000" stroke-width="0.5"/>
+      <line x1="46" y1="80" x2="54" y2="80" stroke="#000" stroke-width="0.5"/>
+      <!-- 갈비뼈 일부 -->
+      <line x1="38" y1="76" x2="46" y2="74" stroke="#a89c80" stroke-width="2"/>
+      <line x1="62" y1="76" x2="54" y2="74" stroke="#a89c80" stroke-width="2"/>
+    </symbol>
+
+    <!-- 스켈레톤 워리어 -->
+    <symbol id="mon-skelw" viewBox="0 0 100 100">
+      <!-- 뿔 투구 그림자 -->
+      <path d="M22 28 L18 12 L30 22 Z" fill="#2a2a2a"/>
+      <path d="M78 28 L82 12 L70 22 Z" fill="#2a2a2a"/>
+      <!-- 두개골 -->
+      <ellipse cx="50" cy="44" rx="22" ry="24" fill="#bcb4a0"/>
+      <ellipse cx="50" cy="42" rx="20" ry="22" fill="#ccc4ac"/>
+      <!-- 투구 -->
+      <path d="M28 32 Q28 18 50 16 Q72 18 72 32 L72 38 L28 38 Z" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="1"/>
+      <path d="M48 16 L52 16 L52 32 L48 32 Z" fill="#1a1a1a"/>
+      <!-- 뿔 -->
+      <path d="M28 32 L18 14 L30 28 Z" fill="#5a5a5a" stroke="#1a1a1a" stroke-width="0.8"/>
+      <path d="M72 32 L82 14 L70 28 Z" fill="#5a5a5a" stroke="#1a1a1a" stroke-width="0.8"/>
+      <!-- 눈구멍 (불타는 눈) -->
+      <ellipse cx="40" cy="44" rx="5" ry="6" fill="#000"/>
+      <ellipse cx="60" cy="44" rx="5" ry="6" fill="#000"/>
+      <circle cx="40" cy="44" r="2.5" fill="#ff3030"/>
+      <circle cx="60" cy="44" r="2.5" fill="#ff3030"/>
+      <circle cx="40" cy="44" r="4" fill="#ff3030" opacity="0.4"/>
+      <circle cx="60" cy="44" r="4" fill="#ff3030" opacity="0.4"/>
+      <!-- 코 -->
+      <path d="M50 50 L46 58 L50 60 L54 58 Z" fill="#000"/>
+      <!-- 이빨 -->
+      <path d="M38 62 L42 70 L46 62 L50 70 L54 62 L58 70 L62 62 Z" fill="#fff" stroke="#1a1a1a" stroke-width="0.5"/>
+      <!-- 어깨 갑주 -->
+      <path d="M22 78 Q35 70 50 72 Q65 70 78 78 L78 88 L22 88 Z" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="1"/>
+      <circle cx="32" cy="80" r="2" fill="#5a5a5a"/>
+      <circle cx="68" cy="80" r="2" fill="#5a5a5a"/>
+    </symbol>
+
+    <!-- 뱀파이어 남작 -->
+    <symbol id="mon-vampB" viewBox="0 0 100 100">
+      <!-- 망토 -->
+      <path d="M30 50 L20 90 L80 90 L70 50 Q60 60 50 60 Q40 60 30 50 Z" fill="#3a0a0a" stroke="#1a0303" stroke-width="1"/>
+      <!-- 옷깃 -->
+      <path d="M35 48 L32 60 L40 56 L50 62 L60 56 L68 60 L65 48 Z" fill="#1a0303"/>
+      <!-- 머리 -->
+      <ellipse cx="50" cy="36" rx="16" ry="18" fill="#e0d0c0"/>
+      <ellipse cx="50" cy="36" rx="14" ry="16" fill="#f0e0d0"/>
+      <!-- 머리카락 (검은) -->
+      <path d="M34 30 Q34 22 50 20 Q66 22 66 30 L66 26 Q60 18 50 18 Q40 18 34 26 Z" fill="#0a0303"/>
+      <!-- 눈 -->
+      <ellipse cx="44" cy="36" rx="2.5" ry="3" fill="#ff2020"/>
+      <ellipse cx="56" cy="36" rx="2.5" ry="3" fill="#ff2020"/>
+      <circle cx="44" cy="35" r="0.8" fill="#fff"/>
+      <circle cx="56" cy="35" r="0.8" fill="#fff"/>
+      <!-- 입 -->
+      <path d="M45 45 Q50 47 55 45" stroke="#5a1010" stroke-width="0.8" fill="none"/>
+      <!-- 송곳니 -->
+      <path d="M47 46 L46 50 L48 47 Z" fill="#fff"/>
+      <path d="M53 46 L54 50 L52 47 Z" fill="#fff"/>
+      <!-- 핏자국 -->
+      <path d="M52 50 L52 53" stroke="#8b0000" stroke-width="1.2"/>
+    </symbol>
+
+    <!-- 뱀파이어 백작 -->
+    <symbol id="mon-vampC" viewBox="0 0 100 100">
+      <!-- 망토 (더 화려) -->
+      <path d="M28 50 L18 92 L82 92 L72 50 Q60 62 50 62 Q40 62 28 50 Z" fill="#5a0a0a" stroke="#1a0303" stroke-width="1"/>
+      <path d="M50 62 L44 92 L56 92 Z" fill="#3a0606"/>
+      <!-- 옷깃 (높은) -->
+      <path d="M30 48 L26 64 L36 56 L50 64 L64 56 L74 64 L70 48 Z" fill="#1a0303" stroke="#5a0a0a" stroke-width="0.5"/>
+      <path d="M30 48 L34 30 L40 48 Z" fill="#1a0303"/>
+      <path d="M70 48 L66 30 L60 48 Z" fill="#1a0303"/>
+      <!-- 머리 -->
+      <ellipse cx="50" cy="34" rx="16" ry="18" fill="#dcccbc"/>
+      <ellipse cx="50" cy="34" rx="14" ry="16" fill="#ecdccc"/>
+      <!-- 머리카락 (위로 솟은) -->
+      <path d="M34 28 Q34 18 50 16 Q66 18 66 28 L66 22 Q66 12 50 10 Q34 12 34 22 Z" fill="#0a0303"/>
+      <!-- 흰 줄 (귀족 표시) -->
+      <path d="M50 16 L52 8" stroke="#aaa" stroke-width="2"/>
+      <!-- 눈 (더 강렬) -->
+      <ellipse cx="44" cy="34" rx="3" ry="3.5" fill="#ff2020"/>
+      <ellipse cx="56" cy="34" rx="3" ry="3.5" fill="#ff2020"/>
+      <circle cx="44" cy="33" r="1" fill="#fff"/>
+      <circle cx="56" cy="33" r="1" fill="#fff"/>
+      <circle cx="44" cy="34" r="5" fill="#ff2020" opacity="0.3"/>
+      <circle cx="56" cy="34" r="5" fill="#ff2020" opacity="0.3"/>
+      <!-- 입 -->
+      <path d="M44 44 Q50 48 56 44" stroke="#5a1010" stroke-width="1" fill="none"/>
+      <!-- 송곳니 (더 긴) -->
+      <path d="M46 45 L45 52 L48 46 Z" fill="#fff"/>
+      <path d="M54 45 L55 52 L52 46 Z" fill="#fff"/>
+      <!-- 메달 -->
+      <circle cx="50" cy="68" r="4" fill="#a08020" stroke="#5a4010" stroke-width="0.8"/>
+      <path d="M50 65 L52 68 L50 71 L48 68 Z" fill="#5a4010"/>
+    </symbol>
+
+    <!-- 뱀파이어 공작 (보스) -->
+    <symbol id="mon-vampD" viewBox="0 0 100 100">
+      <!-- 망토 (가장 거대) -->
+      <path d="M22 48 L8 95 L92 95 L78 48 Q60 64 50 64 Q40 64 22 48 Z" fill="#7a0a0a" stroke="#1a0303" stroke-width="1.5"/>
+      <path d="M50 64 L42 95 L58 95 Z" fill="#5a0606"/>
+      <!-- 망토 안감 -->
+      <path d="M22 48 L26 52 L8 95 Z" fill="#3a0606"/>
+      <path d="M78 48 L74 52 L92 95 Z" fill="#3a0606"/>
+      <!-- 어깨 장식 (가시) -->
+      <path d="M22 50 L18 38 L28 46 Z" fill="#0a0303" stroke="#5a1010"/>
+      <path d="M78 50 L82 38 L72 46 Z" fill="#0a0303" stroke="#5a1010"/>
+      <!-- 옷깃 (왕관 같은) -->
+      <path d="M28 48 L24 70 L36 60 L50 68 L64 60 L76 70 L72 48 Z" fill="#1a0303" stroke="#7a1010" stroke-width="0.8"/>
+      <path d="M28 48 L30 26 L38 48 Z" fill="#1a0303" stroke="#7a1010" stroke-width="0.5"/>
+      <path d="M72 48 L70 26 L62 48 Z" fill="#1a0303" stroke="#7a1010" stroke-width="0.5"/>
+      <!-- 왕관 -->
+      <path d="M36 16 L40 6 L44 12 L50 4 L56 12 L60 6 L64 16 Z" fill="#a08020" stroke="#5a4010" stroke-width="0.8"/>
+      <circle cx="50" cy="10" r="1.5" fill="#ff2020"/>
+      <circle cx="42" cy="13" r="1" fill="#a02030"/>
+      <circle cx="58" cy="13" r="1" fill="#a02030"/>
+      <!-- 머리 -->
+      <ellipse cx="50" cy="32" rx="16" ry="17" fill="#d0c0b0"/>
+      <ellipse cx="50" cy="32" rx="14" ry="15" fill="#e0d0c0"/>
+      <!-- 눈 (불타오름) -->
+      <circle cx="44" cy="32" r="6" fill="#ff2020" opacity="0.4"/>
+      <circle cx="56" cy="32" r="6" fill="#ff2020" opacity="0.4"/>
+      <ellipse cx="44" cy="32" rx="3.5" ry="4" fill="#ff2020"/>
+      <ellipse cx="56" cy="32" rx="3.5" ry="4" fill="#ff2020"/>
+      <ellipse cx="44" cy="32" rx="1.5" ry="2" fill="#ffaa00"/>
+      <ellipse cx="56" cy="32" rx="1.5" ry="2" fill="#ffaa00"/>
+      <!-- 입 (송곳니 강조) -->
+      <path d="M42 42 Q50 48 58 42" stroke="#5a1010" stroke-width="1.2" fill="#1a0303"/>
+      <path d="M46 44 L44 54 L48 45 Z" fill="#fff"/>
+      <path d="M54 44 L56 54 L52 45 Z" fill="#fff"/>
+      <!-- 핏자국 -->
+      <path d="M48 50 L48 58" stroke="#8b0000" stroke-width="1.5"/>
+      <path d="M52 51 L52 56" stroke="#8b0000" stroke-width="1.2"/>
+      <!-- 메달 -->
+      <circle cx="50" cy="74" r="6" fill="#a08020" stroke="#5a4010" stroke-width="1"/>
+      <path d="M50 70 L53 74 L50 78 L47 74 Z" fill="#ff2020"/>
+    </symbol>
+
+    <!-- 횃불 -->
+    <symbol id="torch" viewBox="0 0 40 80">
+      <rect x="17" y="40" width="6" height="35" fill="#3a2010"/>
+      <rect x="14" y="38" width="12" height="6" fill="#5a3020"/>
+      <ellipse cx="20" cy="30" rx="10" ry="14" fill="#ff8030" opacity="0.8" class="torch-flame"/>
+      <ellipse cx="20" cy="28" rx="6" ry="10" fill="#ffcc40" opacity="0.9" class="torch-flame"/>
+      <ellipse cx="20" cy="26" rx="3" ry="6" fill="#ffffaa" opacity="0.8" class="torch-flame"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============= 게임 본체 ============= -->
+<div id="game">
+  <div class="title-wrap">
+    <h1>저주받은 탑</h1>
+    <div class="subtitle">~ THE CURSED TOWER ~</div>
+  </div>
+
+  <!-- 캐릭터 선택 -->
   <div id="char-select" class="panel">
-    <div class="status-name" style="text-align:center;font-size:1.3rem;">영혼을 빌릴 그릇을 선택하라</div>
+    <div class="select-title">영혼을 빌릴 그릇을 선택하라</div>
+    <div class="select-sub">~ choose your vessel ~</div>
     <div class="char-grid">
       <div class="char-card" data-char="dugong">
-        <div class="char-emoji">🦭</div>
+        <svg class="char-portrait idle"><use href="#char-dugong"/></svg>
         <div class="char-name">듀공</div>
-        <div class="char-stats">HP 120 / ATK 10<br/>SPD 4</div>
+        <div class="char-stats">HP 120 · ATK 10<br/>SPD 4</div>
         <div class="char-desc">"두꺼운 살가죽의 수호자"</div>
       </div>
       <div class="char-card" data-char="dog">
-        <div class="char-emoji">🐕</div>
+        <svg class="char-portrait idle"><use href="#char-dog"/></svg>
         <div class="char-name">강아지</div>
-        <div class="char-stats">HP 90 / ATK 14<br/>SPD 7</div>
+        <div class="char-stats">HP 90 · ATK 14<br/>SPD 7</div>
         <div class="char-desc">"날쌘 송곳니의 충견"</div>
       </div>
       <div class="char-card" data-char="dolphin">
-        <div class="char-emoji">🐬</div>
+        <svg class="char-portrait idle"><use href="#char-dolphin"/></svg>
         <div class="char-name">돌고래</div>
-        <div class="char-stats">HP 100 / ATK 12<br/>SPD 9</div>
-        <div class="char-desc">"바다에서 찾아온 영민한 자"</div>
+        <div class="char-stats">HP 100 · ATK 12<br/>SPD 9</div>
+        <div class="char-desc">"바다에서 온 영민한 자"</div>
       </div>
     </div>
   </div>
@@ -427,20 +952,30 @@
 
     <div class="status-row">
       <div class="status-card" id="player-card">
-        <div class="status-name" id="player-name">플레이어</div>
-        <div class="hp-bar">
-          <div class="hp-fill" id="player-hp-fill" style="width:100%"></div>
-          <div class="hp-text" id="player-hp-text">100/100</div>
+        <div class="portrait-slot">
+          <svg id="player-portrait" class="idle"><use href="#char-dugong" id="player-portrait-use"/></svg>
         </div>
-        <div class="stat-line" id="player-stats">ATK 10 · SPD 5</div>
+        <div class="status-info">
+          <div class="status-name" id="player-name">플레이어</div>
+          <div class="hp-bar">
+            <div class="hp-fill" id="player-hp-fill" style="width:100%"></div>
+            <div class="hp-text" id="player-hp-text">100/100</div>
+          </div>
+          <div class="stat-line" id="player-stats">ATK 10 · SPD 5</div>
+        </div>
       </div>
       <div class="status-card enemy hidden" id="enemy-card">
-        <div class="status-name" id="enemy-name">???</div>
-        <div class="hp-bar">
-          <div class="hp-fill" id="enemy-hp-fill" style="width:100%"></div>
-          <div class="hp-text" id="enemy-hp-text">??/??</div>
+        <div class="portrait-slot">
+          <svg id="enemy-portrait" class="idle"><use href="#mon-bat" id="enemy-portrait-use"/></svg>
         </div>
-        <div class="stat-line" id="enemy-stats">ATK ? · SPD ?</div>
+        <div class="status-info">
+          <div class="status-name" id="enemy-name">???</div>
+          <div class="hp-bar">
+            <div class="hp-fill" id="enemy-hp-fill" style="width:100%"></div>
+            <div class="hp-text" id="enemy-hp-text">??/??</div>
+          </div>
+          <div class="stat-line" id="enemy-stats">ATK ? · SPD ?</div>
+        </div>
       </div>
     </div>
 
@@ -448,10 +983,8 @@
       <div id="log"></div>
     </div>
 
-    <!-- 행동 영역 -->
     <div class="panel" id="action-area">
 
-      <!-- 문 선택 -->
       <div id="door-actions">
         <div style="text-align:center;color:#8a7a7a;margin-bottom:10px;letter-spacing:2px;">~ 두 개의 문이 너를 응시한다 ~</div>
         <div class="btn-row">
@@ -460,7 +993,6 @@
         </div>
       </div>
 
-      <!-- 전투 -->
       <div id="battle-actions" class="hidden">
         <div class="btn-row">
           <button class="btn danger" onclick="playerAttack()">⚔ 공격</button>
@@ -469,24 +1001,20 @@
         </div>
       </div>
 
-      <!-- 보상 / 다음 -->
       <div id="continue-actions" class="hidden">
         <div class="btn-row">
           <button class="btn success" onclick="nextFloor()">▲ 다음 층으로 오르다</button>
         </div>
       </div>
 
-      <!-- 미니게임 -->
       <div id="mini-game" class="hidden"></div>
 
-      <!-- 게임 오버 / 클리어 -->
       <div id="end-actions" class="hidden">
         <div class="btn-row">
           <button class="btn" onclick="restart()">🕯 다시 도전하다</button>
         </div>
       </div>
 
-      <!-- 인벤토리 -->
       <div class="inv-section">
         <div class="inv-title">━━ 소지품 ━━</div>
         <div class="inv-list" id="potion-list"></div>
@@ -500,18 +1028,18 @@
 <script>
 // ============= 게임 데이터 =============
 const CHARACTERS = {
-  dugong:  { name:'듀공',  emoji:'🦭', hp:120, atk:10, spd:4 },
-  dog:     { name:'강아지', emoji:'🐕', hp:90,  atk:14, spd:7 },
-  dolphin: { name:'돌고래', emoji:'🐬', hp:100, atk:12, spd:9 }
+  dugong:  { name:'듀공',  svg:'char-dugong',  hp:120, atk:10, spd:4 },
+  dog:     { name:'강아지', svg:'char-dog',     hp:90,  atk:14, spd:7 },
+  dolphin: { name:'돌고래', svg:'char-dolphin', hp:100, atk:12, spd:9 }
 };
 
 const MONSTERS = {
-  bat:        { name:'박쥐',         emoji:'🦇', hp:25, atk:6,  spd:8, gold:5 },
-  skeleton:   { name:'스켈레톤',     emoji:'💀', hp:40, atk:9,  spd:5, gold:10 },
-  skeletonW:  { name:'스켈레톤 워리어', emoji:'☠️', hp:90, atk:18, spd:6, gold:30 },
-  vampireB:   { name:'뱀파이어 남작', emoji:'🧛', hp:70, atk:15, spd:7, gold:25 },
-  vampireC:   { name:'뱀파이어 백작', emoji:'🧛‍♂️', hp:140,atk:24, spd:9, gold:60 },
-  vampireD:   { name:'뱀파이어 공작', emoji:'🩸', hp:280,atk:40, spd:11, gold:150 }
+  bat:        { name:'박쥐',         svg:'mon-bat',   hp:25, atk:6,  spd:8, gold:5 },
+  skeleton:   { name:'스켈레톤',     svg:'mon-skel',  hp:40, atk:9,  spd:5, gold:10 },
+  skeletonW:  { name:'스켈레톤 워리어', svg:'mon-skelw', hp:90, atk:18, spd:6, gold:30 },
+  vampireB:   { name:'뱀파이어 남작', svg:'mon-vampB', hp:70, atk:15, spd:7, gold:25 },
+  vampireC:   { name:'뱀파이어 백작', svg:'mon-vampC', hp:140,atk:24, spd:9, gold:60 },
+  vampireD:   { name:'뱀파이어 공작', svg:'mon-vampD', hp:280,atk:40, spd:11, gold:150 }
 };
 
 const EQUIPMENTS = [
@@ -530,15 +1058,9 @@ const QUIZZES = [
   { q:'박쥐는 무엇을 이용해 길을 찾는가?', opts:['시각','초음파','후각','텔레파시'], a:1 }
 ];
 
-// ============= 게임 상태 =============
-let player = null;
-let enemy = null;
-let floor = 1;
-let inBattle = false;
-let potions = []; // {name, heal}
-let equipments = []; // {name, atk, hp, equipped}
+let player = null, enemy = null, floor = 1, inBattle = false;
+let potions = [], equipments = [];
 
-// ============= 유틸 =============
 function $(id) { return document.getElementById(id); }
 function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function log(msg, cls='') {
@@ -549,20 +1071,29 @@ function log(msg, cls='') {
   $('log').scrollTop = $('log').scrollHeight;
 }
 
-// ============= 캐릭터 선택 =============
+// 떠다니는 불꽃 입자 생성
+function spawnEmbers() {
+  for (let i = 0; i < 18; i++) {
+    const e = document.createElement('div');
+    e.className = 'ember';
+    e.style.left = Math.random() * 100 + 'vw';
+    e.style.bottom = Math.random() * 30 + 'vh';
+    e.style.animationDuration = (4 + Math.random() * 6) + 's';
+    e.style.animationDelay = Math.random() * 6 + 's';
+    document.body.appendChild(e);
+  }
+}
+spawnEmbers();
+
+// 캐릭터 선택
 document.querySelectorAll('.char-card').forEach(card => {
   card.addEventListener('click', () => {
     const key = card.dataset.char;
     const c = CHARACTERS[key];
     player = {
-      name: c.name,
-      emoji: c.emoji,
-      maxHp: c.hp,
-      hp: c.hp,
-      baseAtk: c.atk,
-      atk: c.atk,
-      spd: c.spd,
-      bonusHp: 0
+      name: c.name, svg: c.svg,
+      maxHp: c.hp, hp: c.hp,
+      baseAtk: c.atk, atk: c.atk, spd: c.spd
     };
     potions = [
       { name:'붉은 물약', heal:30 },
@@ -570,18 +1101,18 @@ document.querySelectorAll('.char-card').forEach(card => {
     ];
     equipments = [];
     floor = 1;
+    $('player-portrait-use').setAttribute('href', '#' + c.svg);
     $('char-select').classList.add('hidden');
     $('main-game').classList.remove('hidden');
-    log(`너는 ${c.emoji} ${c.name}의 영혼으로 탑에 발을 들였다...`, 'system');
-    log('탑의 첫번째 층, 두 개의 문이 너를 응시한다.', 'system');
+    log(`너는 ${c.name}의 영혼으로 탑에 발을 들였다...`, 'system');
+    log('탑의 첫 번째 층, 두 개의 문이 너를 응시한다.', 'system');
     updateUI();
   });
 });
 
-// ============= UI 갱신 =============
 function updateUI() {
   $('floor-text').textContent = `제 ${floor} 층`;
-  $('player-name').textContent = `${player.emoji} ${player.name}`;
+  $('player-name').textContent = player.name;
   const hpPct = (player.hp / player.maxHp) * 100;
   $('player-hp-fill').style.width = hpPct + '%';
   $('player-hp-text').textContent = `${player.hp}/${player.maxHp}`;
@@ -589,7 +1120,8 @@ function updateUI() {
 
   if (enemy) {
     $('enemy-card').classList.remove('hidden');
-    $('enemy-name').textContent = `${enemy.emoji} ${enemy.name}`;
+    $('enemy-name').textContent = enemy.name;
+    $('enemy-portrait-use').setAttribute('href', '#' + enemy.svg);
     const ePct = (enemy.hp / enemy.maxHp) * 100;
     $('enemy-hp-fill').style.width = ePct + '%';
     $('enemy-hp-text').textContent = `${enemy.hp}/${enemy.maxHp}`;
@@ -598,7 +1130,6 @@ function updateUI() {
     $('enemy-card').classList.add('hidden');
   }
 
-  // 인벤토리
   const pList = $('potion-list');
   pList.innerHTML = '';
   if (potions.length === 0) pList.innerHTML = '<span style="color:#5a4a4a;font-size:0.85rem;">(비어있음)</span>';
@@ -622,7 +1153,6 @@ function updateUI() {
   });
 }
 
-// ============= 인벤토리 =============
 function usePotion(i) {
   const p = potions[i];
   if (!p) return;
@@ -633,51 +1163,31 @@ function usePotion(i) {
 }
 
 function toggleEquip(i) {
-  if (inBattle) {
-    log('전투 중에는 장비를 바꿀 수 없다!', 'danger');
-    return;
-  }
+  if (inBattle) { log('전투 중에는 장비를 바꿀 수 없다!', 'danger'); return; }
   const e = equipments[i];
   if (e.equipped) {
     e.equipped = false;
-    player.atk -= e.atk;
-    player.maxHp -= e.hp;
+    player.atk -= e.atk; player.maxHp -= e.hp;
     player.hp = Math.min(player.hp, player.maxHp);
     log(`${e.name} 해제`, 'system');
   } else {
-    // 같은 카테고리(atk vs hp 위주) 자동 해제는 단순화 — 사용자가 알아서 관리
     e.equipped = true;
-    player.atk += e.atk;
-    player.maxHp += e.hp;
+    player.atk += e.atk; player.maxHp += e.hp;
     player.hp += e.hp;
     log(`${e.name} 장착! ATK+${e.atk}, HP+${e.hp}`, 'gain');
   }
   updateUI();
 }
 
-function openInventory() {
-  log('소지품에서 직접 물약을 클릭해 사용하라.', 'system');
-}
+function openInventory() { log('소지품에서 직접 물약을 클릭해 사용하라.', 'system'); }
 
-// ============= 문 선택 / 진행 =============
 function chooseDoor(side) {
   $('door-actions').classList.add('hidden');
   log(`${side === 'left' ? '왼쪽' : '오른쪽'} 문을 열었다...`, 'important');
-
-  // 5층마다 특수 이벤트
-  if (floor % 5 === 0) {
-    triggerMiniGame();
-    return;
-  }
-
-  // 60% 전투, 40% 아이템
+  if (floor % 5 === 0) { triggerMiniGame(); return; }
   const r = Math.random();
-  if (r < 0.6) {
-    spawnEnemy();
-  } else {
-    rewardItem();
-    showContinue();
-  }
+  if (r < 0.6) spawnEnemy();
+  else { rewardItem(); showContinue(); }
 }
 
 function spawnEnemy() {
@@ -690,23 +1200,17 @@ function spawnEnemy() {
 
   const key = pool[rand(0, pool.length - 1)];
   const m = MONSTERS[key];
-  // 층마다 약간의 스케일링
   const scale = 1 + (floor - 1) * 0.05;
   enemy = {
-    name: m.name,
-    emoji: m.emoji,
-    maxHp: Math.floor(m.hp * scale),
-    hp: Math.floor(m.hp * scale),
-    atk: Math.floor(m.atk * scale),
-    spd: m.spd,
-    gold: m.gold
+    name: m.name, svg: m.svg,
+    maxHp: Math.floor(m.hp * scale), hp: Math.floor(m.hp * scale),
+    atk: Math.floor(m.atk * scale), spd: m.spd, gold: m.gold
   };
   inBattle = true;
-  log(`${enemy.emoji} ${enemy.name}이(가) 어둠 속에서 나타났다!`, 'danger');
+  log(`${enemy.name}이(가) 어둠 속에서 나타났다!`, 'danger');
   $('battle-actions').classList.remove('hidden');
   updateUI();
 
-  // 선공 판정 - 적이 빠르면 적 선공
   if (enemy.spd > player.spd) {
     log('적이 더 빠르다! 선공을 빼앗겼다!', 'danger');
     setTimeout(enemyAttack, 700);
@@ -721,12 +1225,7 @@ function playerAttack() {
   $('enemy-card').classList.add('shake');
   setTimeout(() => $('enemy-card').classList.remove('shake'), 300);
   updateUI();
-
-  if (enemy.hp <= 0) {
-    victory();
-    return;
-  }
-  // 행동 잠금 후 적 차례
+  if (enemy.hp <= 0) { victory(); return; }
   setBattleButtons(false);
   setTimeout(enemyAttack, 600);
 }
@@ -739,11 +1238,7 @@ function enemyAttack() {
   $('player-card').classList.add('flash');
   setTimeout(() => $('player-card').classList.remove('flash'), 400);
   updateUI();
-
-  if (player.hp <= 0) {
-    gameOver();
-    return;
-  }
+  if (player.hp <= 0) { gameOver(); return; }
   setBattleButtons(true);
 }
 
@@ -753,12 +1248,10 @@ function setBattleButtons(enabled) {
 
 function tryFlee() {
   if (!inBattle) return;
-  // 플레이어 SPD가 높을수록 도망 성공률 ↑
   const chance = 0.3 + (player.spd - enemy.spd) * 0.05;
   if (Math.random() < chance) {
     log('💨 도망에 성공했다... 한 층을 헤매다 다시 문 앞에 섰다.', 'system');
-    inBattle = false;
-    enemy = null;
+    inBattle = false; enemy = null;
     $('battle-actions').classList.add('hidden');
     showContinue();
     updateUI();
@@ -773,8 +1266,6 @@ function victory() {
   log(`☠ ${enemy.name}을(를) 쓰러뜨렸다! (+${enemy.gold} 보상)`, 'gain');
   inBattle = false;
   $('battle-actions').classList.add('hidden');
-
-  // 보상
   const r = Math.random();
   if (r < 0.4) {
     const heal = 20 + rand(0, 15);
@@ -809,37 +1300,25 @@ function rewardItem() {
   }
 }
 
-function showContinue() {
-  $('continue-actions').classList.remove('hidden');
-  updateUI();
-}
+function showContinue() { $('continue-actions').classList.remove('hidden'); updateUI(); }
 
 function nextFloor() {
   $('continue-actions').classList.add('hidden');
   floor++;
-  if (floor > 20) {
-    triumph();
-    return;
-  }
+  if (floor > 20) { triumph(); return; }
   log(`━━━ 제 ${floor} 층에 올랐다 ━━━`, 'system');
   $('door-actions').classList.remove('hidden');
   updateUI();
 }
 
-// ============= 미니게임 (특수 층) =============
 function triggerMiniGame() {
   $('mini-game').classList.remove('hidden');
+  if (floor === 20) { finalBoss(); return; }
   const games = [quizGame, mashGame, timingGame];
-  // 5층 = 퀴즈, 10층 = 연타, 15층 = 타이밍, 20층 = 보스(=공작)
-  if (floor === 20) {
-    finalBoss();
-    return;
-  }
   const idx = (floor / 5 - 1) % games.length;
   games[Math.floor(idx)]();
 }
 
-// 퀴즈
 function quizGame() {
   const q = QUIZZES[rand(0, QUIZZES.length - 1)];
   const mg = $('mini-game');
@@ -873,12 +1352,10 @@ function answerQuiz(picked, answer) {
   updateUI();
 }
 
-// 연타 게임
 function mashGame() {
   const mg = $('mini-game');
   log('━━ 특수 층: 무너지는 다리 ━━', 'system');
   let count = 0;
-  let timeLeft = 5;
   const target = 30;
   mg.innerHTML = `
     <div class="mg-title">🌉 무너지는 다리 🌉</div>
@@ -887,22 +1364,14 @@ function mashGame() {
     <div style="font-size:1.5rem;color:#fff;margin:10px;">연타: <span id="mash-count">0</span> / ${target}</div>
     <button class="mash-btn" id="mash-btn">⚡ 연타!</button>
   `;
-
   const btn = $('mash-btn');
-  btn.addEventListener('click', () => {
-    count++;
-    $('mash-count').textContent = count;
-  });
-
+  btn.addEventListener('click', () => { count++; $('mash-count').textContent = count; });
   const startT = Date.now();
   const tick = setInterval(() => {
     const elapsed = (Date.now() - startT) / 1000;
-    timeLeft = Math.max(0, 5 - elapsed);
-    $('mash-time').textContent = timeLeft.toFixed(1);
-    if (timeLeft <= 0) {
-      clearInterval(tick);
-      finishMash(count, target);
-    }
+    const tl = Math.max(0, 5 - elapsed);
+    $('mash-time').textContent = tl.toFixed(1);
+    if (tl <= 0) { clearInterval(tick); finishMash(count, target); }
   }, 50);
 }
 
@@ -924,7 +1393,6 @@ function finishMash(count, target) {
   updateUI();
 }
 
-// 타이밍 게임
 function timingGame() {
   const mg = $('mini-game');
   log('━━ 특수 층: 룬 봉인 ━━', 'system');
@@ -938,9 +1406,7 @@ function timingGame() {
     <div style="margin:10px;color:#c9b9b9;">시도: <span id="timing-tries">0</span> / 3 · 성공: <span id="timing-hits">0</span></div>
     <button class="btn danger" id="timing-stop" style="max-width:200px;margin:0 auto;">⛧ 봉인하기</button>
   `;
-
   let tries = 0, hits = 0, pos = 0, dir = 1;
-  // 매 시도마다 랜덤 영역
   function newZone() {
     const zoneStart = rand(20, 65);
     const zoneWidth = rand(12, 22);
@@ -951,7 +1417,6 @@ function timingGame() {
     z.dataset.end = zoneStart + zoneWidth;
   }
   newZone();
-
   const cursor = $('timing-cursor');
   const anim = setInterval(() => {
     pos += dir * 1.8;
@@ -959,23 +1424,17 @@ function timingGame() {
     if (pos <= 0) { pos = 0; dir = 1; }
     cursor.style.left = pos + '%';
   }, 16);
-
   $('timing-stop').addEventListener('click', () => {
     const z = $('timing-zone');
     const start = parseFloat(z.dataset.start);
     const end = parseFloat(z.dataset.end);
     const ok = pos >= start && pos <= end;
-    tries++;
-    if (ok) hits++;
+    tries++; if (ok) hits++;
     $('timing-tries').textContent = tries;
     $('timing-hits').textContent = hits;
     log(ok ? `✓ 성공!` : `✗ 빗나감!`, ok ? 'gain' : 'danger');
-    if (tries >= 3) {
-      clearInterval(anim);
-      finishTiming(hits);
-    } else {
-      newZone();
-    }
+    if (tries >= 3) { clearInterval(anim); finishTiming(hits); }
+    else newZone();
   });
 }
 
@@ -999,28 +1458,22 @@ function finishTiming(hits) {
   updateUI();
 }
 
-// 최종 보스
 function finalBoss() {
   log('━━━ 최종 층: 탑의 주인 ━━━', 'system');
   const m = MONSTERS.vampireD;
   enemy = {
-    name: '탑의 주인 - ' + m.name,
-    emoji: m.emoji,
-    maxHp: Math.floor(m.hp * 1.5),
-    hp: Math.floor(m.hp * 1.5),
-    atk: Math.floor(m.atk * 1.2),
-    spd: m.spd,
-    gold: 999
+    name: '탑의 주인 - ' + m.name, svg: m.svg,
+    maxHp: Math.floor(m.hp * 1.5), hp: Math.floor(m.hp * 1.5),
+    atk: Math.floor(m.atk * 1.2), spd: m.spd, gold: 999
   };
   inBattle = true;
   $('mini-game').classList.add('hidden');
   $('battle-actions').classList.remove('hidden');
   log(`👑 "감히 내 탑에 발을 들이다니..."`, 'danger');
-  log(`${enemy.emoji} ${enemy.name} 등장!`, 'danger');
+  log(`${enemy.name} 등장!`, 'danger');
   updateUI();
 }
 
-// ============= 종료 =============
 function gameOver() {
   inBattle = false;
   document.querySelectorAll('#battle-actions .btn, #door-actions .btn').forEach(b => b.disabled = true);
@@ -1044,12 +1497,9 @@ function triumph() {
 }
 
 function restart() {
-  enemy = null;
-  player = null;
-  potions = [];
-  equipments = [];
-  floor = 1;
-  inBattle = false;
+  enemy = null; player = null;
+  potions = []; equipments = [];
+  floor = 1; inBattle = false;
   $('log').innerHTML = '';
   $('main-game').classList.add('hidden');
   $('char-select').classList.remove('hidden');
