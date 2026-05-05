@@ -288,7 +288,7 @@
   .log-box .system { color: #ffcc44; font-style: italic; }
   .log-box .system::before { content: '◆ '; }
 
-  /* === 우측 아이템 슬롯 === */
+  /* === 우측 장착칸 === */
   .right-col {
     background: linear-gradient(180deg, #3a2070 0%, #2a1855 100%);
     border: 2px solid #6040a0;
@@ -313,6 +313,7 @@
     border-radius: 10px;
     margin-bottom: 6px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-size: 1.4rem;
@@ -321,27 +322,102 @@
     transition: all 0.2s;
   }
   .slot:hover { border-color: #ff80c0; transform: scale(1.05); }
-  .slot.equipped { border-color: var(--gold); box-shadow: 0 0 10px rgba(255, 204, 68, 0.6); }
-  .slot .badge {
+  .slot.equipped { border-color: var(--gold); box-shadow: 0 0 10px rgba(255, 204, 68, 0.6); background: linear-gradient(180deg, #4a3010, #2a1808); }
+  .slot.empty { opacity: 0.4; cursor: default; }
+  .slot.empty:hover { transform: none; border-color: #4a3080; }
+  .slot .slot-kind {
     position: absolute;
-    top: -4px;
-    right: -4px;
-    background: var(--gold);
-    color: #5a3010;
-    font-size: 0.6rem;
-    padding: 1px 5px;
-    border-radius: 8px;
-    font-weight: bold;
+    top: 2px;
+    left: 4px;
+    font-size: 0.55rem;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    pointer-events: none;
   }
-  .slot.empty { opacity: 0.5; }
-  .slot .qty {
+  .slot .slot-bonus {
     position: absolute;
     bottom: 2px;
     right: 4px;
+    font-size: 0.6rem;
+    color: var(--gold);
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #000;
+  }
+
+  /* === 배낭 === */
+  .backpack {
+    background: linear-gradient(180deg, #3a2070 0%, #2a1855 100%);
+    border: 2px solid #6040a0;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 12px;
+    box-shadow: 0 3px 0 #1a0e3a;
+  }
+  .bp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .bp-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    color: #ffcc44;
+    letter-spacing: 1px;
+  }
+  .bp-title::before { content: '🎒 '; }
+  .bp-tabs { display: flex; gap: 4px; }
+  .bp-tab {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid #4a3080;
+    color: var(--text-dim);
+    padding: 4px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Jua', sans-serif;
+    font-size: 0.78rem;
+  }
+  .bp-tab.active {
+    background: linear-gradient(180deg, #6040a0, #3a2070);
+    border-color: #8060c0;
+    color: #fff;
+  }
+  .bp-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+  }
+  .bp-item {
+    aspect-ratio: 1/1;
+    background: linear-gradient(180deg, #1a0e3a, #0e0820);
+    border: 2px solid #4a3080;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .bp-item:hover { border-color: #ff80c0; transform: scale(1.05); }
+  .bp-item .bp-qty {
+    position: absolute;
+    bottom: 1px;
+    right: 3px;
     font-size: 0.65rem;
     color: var(--gold);
     font-weight: bold;
     text-shadow: 1px 1px 0 #000;
+  }
+  .bp-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    padding: 12px;
+    font-style: italic;
   }
 
   /* === 액션 버튼 === */
@@ -575,15 +651,24 @@
     .stats-card { padding: 8px; }
     .stat-row { font-size: 0.8rem; padding: 3px 0; }
 
-    /* 모바일 우측: 가로 슬롯 4개 */
+    /* 모바일 우측: 가로 장착칸 4개 */
     .right-col {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: 60px repeat(4, 1fr);
       gap: 6px;
       padding: 8px;
+      align-items: center;
     }
-    .slot-title { display: none; }
+    .slot-title {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      letter-spacing: 0;
+      font-size: 0.7rem;
+      margin: 0;
+      grid-row: 1;
+    }
     .right-col .slot { margin-bottom: 0; }
+    .bp-grid { grid-template-columns: repeat(6, 1fr); }
 
     .scene-box { aspect-ratio: 16/11; }
     .scene-char { width: 26%; bottom: 16%; }
@@ -608,8 +693,9 @@
 
   @media (max-width: 380px) {
     .logo { font-size: 1.1rem; }
-    .right-col { grid-template-columns: repeat(4, 1fr); }
+    .right-col { grid-template-columns: 50px repeat(4, 1fr); }
     .btn { min-width: 70px; font-size: 0.9rem; }
+    .bp-grid { grid-template-columns: repeat(5, 1fr); }
   }
 </style>
 </head>
@@ -1099,15 +1185,27 @@
         <div class="log-box" id="log"></div>
       </section>
 
-      <!-- 우측: 아이템 슬롯 -->
+      <!-- 우측: 장착칸 (장비만) -->
       <aside class="right-col">
-        <div class="slot-title">아이템</div>
-        <div class="slot empty" id="slot-0"></div>
-        <div class="slot empty" id="slot-1"></div>
-        <div class="slot empty" id="slot-2"></div>
-        <div class="slot empty" id="slot-3"></div>
-        <div class="slot empty" id="slot-4"></div>
+        <div class="slot-title">장착</div>
+        <div class="slot empty" id="eq-weapon" data-kind="weapon"><span class="slot-kind">무기</span></div>
+        <div class="slot empty" id="eq-armor" data-kind="armor"><span class="slot-kind">방어구</span></div>
+        <div class="slot empty" id="eq-acc1" data-kind="acc"><span class="slot-kind">장신구</span></div>
+        <div class="slot empty" id="eq-acc2" data-kind="acc"><span class="slot-kind">장신구</span></div>
       </aside>
+    </div>
+
+    <!-- 배낭 -->
+    <div class="backpack">
+      <div class="bp-header">
+        <div class="bp-title">배낭</div>
+        <div class="bp-tabs">
+          <button class="bp-tab active" data-tab="all" onclick="switchTab('all')">전체</button>
+          <button class="bp-tab" data-tab="potion" onclick="switchTab('potion')">소모품</button>
+          <button class="bp-tab" data-tab="equip" onclick="switchTab('equip')">장비</button>
+        </div>
+      </div>
+      <div class="bp-grid" id="bp-grid"></div>
     </div>
 
     <!-- 액션 -->
@@ -1154,12 +1252,15 @@ const MONSTERS = {
 };
 
 const EQUIPMENTS = [
-  { name:'녹슨 검',     icon:'🗡', atk:3,  hp:0  },
-  { name:'은빛 단검',    icon:'🔪', atk:6,  hp:0  },
-  { name:'흑요석 검',   icon:'⚔️', atk:10, hp:0  },
-  { name:'가죽 갑옷',    icon:'🥋', atk:0,  hp:15 },
-  { name:'사슬 갑옷',    icon:'👘', atk:0,  hp:30 },
-  { name:'저주받은 갑주', icon:'🗿', atk:5,  hp:50 }
+  { name:'녹슨 검',     icon:'🗡', kind:'weapon', atk:3,  hp:0  },
+  { name:'은빛 단검',    icon:'🔪', kind:'weapon', atk:6,  hp:0  },
+  { name:'흑요석 검',   icon:'⚔️', kind:'weapon', atk:10, hp:0  },
+  { name:'가죽 갑옷',    icon:'🥋', kind:'armor',  atk:0,  hp:15 },
+  { name:'사슬 갑옷',    icon:'👘', kind:'armor',  atk:0,  hp:30 },
+  { name:'저주받은 갑주', icon:'🗿', kind:'armor',  atk:5,  hp:50 },
+  { name:'늑대 송곳니',  icon:'🦷', kind:'acc',    atk:2,  hp:5  },
+  { name:'마녀의 부적',  icon:'📿', kind:'acc',    atk:0,  hp:20 },
+  { name:'어둠의 반지',  icon:'💍', kind:'acc',    atk:4,  hp:10 }
 ];
 
 const QUIZZES = [
@@ -1171,6 +1272,7 @@ const QUIZZES = [
 
 let player = null, enemy = null, floor = 1, inBattle = false;
 let potions = [], equipments = [];
+let bpTab = 'all';
 
 // ============= 유틸 =============
 function $(id) { return document.getElementById(id); }
@@ -1229,38 +1331,89 @@ function updateUI() {
   $('stat-spd').textContent = player.spd;
   $('stat-hp').textContent = `${player.hp}/${player.maxHp}`;
 
-  // 적 (대화창 위에 HP 띄우기는 dialog 활용)
-
-  // 슬롯
-  const slots = [];
-  potions.forEach(p => slots.push({ type:'potion', icon:'🧪', label:`+${p.heal}`, data:p }));
-  equipments.forEach(e => slots.push({ type:'equip', icon:e.icon, label:e.equipped?'★':'', data:e }));
-
-  for (let i = 0; i < 5; i++) {
-    const el = $(`slot-${i}`);
-    el.innerHTML = '';
-    el.className = 'slot';
-    el.onclick = null;
-    if (slots[i]) {
-      el.classList.remove('empty');
-      if (slots[i].type === 'equip' && slots[i].data.equipped) el.classList.add('equipped');
-      el.innerHTML = `<span style="font-size:1.6rem">${slots[i].icon}</span><span class="qty">${slots[i].label}</span>`;
-      const idx = i;
-      el.onclick = () => useSlot(slots[idx]);
-    } else {
-      el.classList.add('empty');
-    }
-  }
+  renderEquipSlots();
+  renderBackpack();
 }
 
-function useSlot(s) {
-  if (s.type === 'potion') {
-    const i = potions.indexOf(s.data);
-    if (i >= 0) usePotion(i);
-  } else if (s.type === 'equip') {
-    const i = equipments.indexOf(s.data);
-    if (i >= 0) toggleEquip(i);
+function getEquippedByKind() {
+  const result = { weapon: null, armor: null, acc: [] };
+  equipments.forEach(e => {
+    if (!e.equipped) return;
+    if (e.kind === 'acc') result.acc.push(e);
+    else result[e.kind] = e;
+  });
+  return result;
+}
+
+function renderEquipSlots() {
+  const eq = getEquippedByKind();
+  const slots = [
+    { id: 'eq-weapon', kind: '무기',   item: eq.weapon },
+    { id: 'eq-armor',  kind: '방어구', item: eq.armor },
+    { id: 'eq-acc1',   kind: '장신구', item: eq.acc[0] },
+    { id: 'eq-acc2',   kind: '장신구', item: eq.acc[1] }
+  ];
+  slots.forEach(s => {
+    const el = $(s.id);
+    el.className = 'slot';
+    el.onclick = null;
+    if (s.item) {
+      el.classList.add('equipped');
+      const bonus = (s.item.atk ? `A+${s.item.atk}` : '') + (s.item.hp ? ` H+${s.item.hp}` : '');
+      el.innerHTML = `
+        <span class="slot-kind">${s.kind}</span>
+        <span style="font-size:1.6rem">${s.item.icon}</span>
+        <span class="slot-bonus">${bonus.trim()}</span>
+      `;
+      const target = s.item;
+      el.onclick = () => {
+        const i = equipments.indexOf(target);
+        if (i >= 0) toggleEquip(i);
+      };
+    } else {
+      el.classList.add('empty');
+      el.innerHTML = `<span class="slot-kind">${s.kind}</span>`;
+    }
+  });
+}
+
+function switchTab(tab) {
+  bpTab = tab;
+  document.querySelectorAll('.bp-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  renderBackpack();
+}
+
+function renderBackpack() {
+  const grid = $('bp-grid');
+  grid.innerHTML = '';
+  const items = [];
+  if (bpTab === 'all' || bpTab === 'potion') {
+    potions.forEach((p, i) => items.push({ type:'potion', icon:'🧪', label:`+${p.heal}`, idx:i, data:p }));
   }
+  if (bpTab === 'all' || bpTab === 'equip') {
+    equipments.forEach((e, i) => {
+      if (!e.equipped) items.push({ type:'equip', icon:e.icon, label:'', idx:i, data:e });
+    });
+  }
+  if (items.length === 0) {
+    grid.innerHTML = '<div class="bp-empty">배낭이 비어있다...</div>';
+    return;
+  }
+  items.forEach(it => {
+    const el = document.createElement('div');
+    el.className = 'bp-item';
+    el.innerHTML = `<span>${it.icon}</span>${it.label?`<span class="bp-qty">${it.label}</span>`:''}`;
+    el.title = it.type === 'potion'
+      ? `${it.data.name} (HP +${it.data.heal})`
+      : `${it.data.name} (ATK+${it.data.atk}, HP+${it.data.hp})`;
+    el.onclick = () => {
+      if (it.type === 'potion') usePotion(it.idx);
+      else toggleEquip(it.idx);
+    };
+    grid.appendChild(el);
+  });
 }
 
 function usePotion(i) {
@@ -1282,6 +1435,20 @@ function useFirstPotion() {
   usePotion(0);
 }
 
+function applyEquip(e, on) {
+  if (on) {
+    e.equipped = true;
+    player.atk += e.atk;
+    player.maxHp += e.hp;
+    player.hp += e.hp;
+  } else {
+    e.equipped = false;
+    player.atk -= e.atk;
+    player.maxHp -= e.hp;
+    player.hp = Math.min(player.hp, player.maxHp);
+  }
+}
+
 function toggleEquip(i) {
   if (inBattle) {
     showDialog('전투 중에는 불가!');
@@ -1290,16 +1457,21 @@ function toggleEquip(i) {
   }
   const e = equipments[i];
   if (e.equipped) {
-    e.equipped = false;
-    player.atk -= e.atk;
-    player.maxHp -= e.hp;
-    player.hp = Math.min(player.hp, player.maxHp);
+    applyEquip(e, false);
     log(`${e.name} 해제`, 'system');
   } else {
-    e.equipped = true;
-    player.atk += e.atk;
-    player.maxHp += e.hp;
-    player.hp += e.hp;
+    // 같은 종류 자동 교체
+    if (e.kind === 'weapon' || e.kind === 'armor') {
+      const cur = equipments.find(x => x.equipped && x.kind === e.kind);
+      if (cur) { applyEquip(cur, false); log(`${cur.name} 해제`, 'system'); }
+    } else if (e.kind === 'acc') {
+      const accCount = equipments.filter(x => x.equipped && x.kind === 'acc').length;
+      if (accCount >= 2) {
+        const cur = equipments.find(x => x.equipped && x.kind === 'acc');
+        if (cur) { applyEquip(cur, false); log(`${cur.name} 해제`, 'system'); }
+      }
+    }
+    applyEquip(e, true);
     log(`${e.name} 장착! ATK+${e.atk}, HP+${e.hp}`, 'gain');
   }
   updateUI();
