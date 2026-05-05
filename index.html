@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>저주받은 탑 - Cursed Tower</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Nanum+Gothic+Coding&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nanum Gothic Coding', monospace;
+    background: radial-gradient(ellipse at center, #1a0505 0%, #000 80%);
+    color: #c9b9b9;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%, #5a2a2a, transparent),
+      radial-gradient(1px 1px at 70% 60%, #4a1a1a, transparent),
+      radial-gradient(1.5px 1.5px at 40% 80%, #6a3030, transparent);
+    pointer-events: none;
+    opacity: 0.4;
+    z-index: 0;
+  }
+
+  #game {
+    width: 100%;
+    max-width: 900px;
+    position: relative;
+    z-index: 1;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    text-align: center;
+    color: #8b0000;
+    text-shadow: 0 0 10px #5a0000, 0 0 20px #2a0000;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #5a4a4a;
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+  }
+
+  .panel {
+    background: linear-gradient(180deg, #1a0a0a 0%, #0a0303 100%);
+    border: 1px solid #3a1a1a;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 0 20px rgba(139, 0, 0, 0.2), inset 0 0 30px rgba(0,0,0,0.5);
+  }
+
+  /* 캐릭터 선택 */
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .char-card {
+    background: #1f0a0a;
+    border: 2px solid #3a1a1a;
+    padding: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+  }
+
+  .char-card:hover {
+    border-color: #8b0000;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 20px rgba(139, 0, 0, 0.5);
+  }
+
+  .char-emoji {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+    filter: grayscale(0.3) drop-shadow(0 0 8px rgba(139,0,0,0.5));
+  }
+
+  .char-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: #c9b9b9;
+    margin-bottom: 8px;
+  }
+
+  .char-stats {
+    font-size: 0.85rem;
+    color: #8a7a7a;
+    line-height: 1.6;
+  }
+
+  .char-desc {
+    font-size: 0.8rem;
+    color: #6a5a5a;
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* 상태창 */
+  .status-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .status-card {
+    background: linear-gradient(180deg, #1a0a0a, #0a0303);
+    border: 1px solid #3a1a1a;
+    padding: 15px;
+    border-radius: 4px;
+  }
+
+  .status-card.enemy {
+    border-color: #5a0000;
+    box-shadow: 0 0 15px rgba(139, 0, 0, 0.3);
+  }
+
+  .status-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #c9b9b9;
+  }
+
+  .enemy .status-name { color: #d04a4a; }
+
+  .hp-bar {
+    width: 100%;
+    height: 18px;
+    background: #1a0303;
+    border: 1px solid #3a1a1a;
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+    margin: 5px 0;
+  }
+
+  .hp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4a0000, #8b0000, #c00);
+    transition: width 0.4s;
+  }
+
+  .hp-text {
+    position: absolute;
+    inset: 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #fff;
+    text-shadow: 1px 1px 2px #000;
+    line-height: 18px;
+  }
+
+  .stat-line {
+    font-size: 0.85rem;
+    color: #8a7a7a;
+    margin-top: 4px;
+  }
+
+  /* 층 표시 */
+  .floor-indicator {
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    color: #d04a4a;
+    text-shadow: 0 0 8px #5a0000;
+    margin-bottom: 15px;
+    letter-spacing: 3px;
+  }
+
+  /* 로그 */
+  #log {
+    height: 180px;
+    overflow-y: auto;
+    background: #050202;
+    border: 1px solid #2a1010;
+    padding: 12px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    border-radius: 3px;
+  }
+
+  #log p { margin-bottom: 4px; color: #a99a9a; }
+  #log .important { color: #d04a4a; font-weight: bold; }
+  #log .gain { color: #6ac06a; }
+  #log .danger { color: #ff4a4a; }
+  #log .system { color: #8a8a4a; font-style: italic; }
+
+  /* 버튼 */
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 14px 20px;
+    background: linear-gradient(180deg, #2a0808, #1a0303);
+    border: 1px solid #5a1010;
+    color: #c9b9b9;
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .btn:hover:not(:disabled) {
+    background: linear-gradient(180deg, #4a1010, #2a0606);
+    border-color: #8b0000;
+    box-shadow: 0 0 10px rgba(139, 0, 0, 0.5);
+  }
+
+  .btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .btn.door {
+    padding: 30px 20px;
+    font-size: 1.1rem;
+    background: linear-gradient(180deg, #1a0a0a, #050202);
+  }
+
+  .btn.door:hover {
+    background: linear-gradient(180deg, #3a1010, #1a0606);
+  }
+
+  .btn.danger { border-color: #8b0000; color: #d04a4a; }
+  .btn.success { border-color: #2a5a2a; color: #6ac06a; }
+
+  /* 인벤토리 */
+  .inv-section {
+    margin-top: 10px;
+  }
+
+  .inv-title {
+    font-family: 'Cinzel', serif;
+    color: #8a7a7a;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+    letter-spacing: 2px;
+  }
+
+  .inv-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .inv-item {
+    background: #1a0a0a;
+    border: 1px solid #3a1a1a;
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .inv-item:hover {
+    border-color: #8b0000;
+    background: #2a0a0a;
+  }
+
+  .inv-item.equipped {
+    border-color: #a08020;
+    color: #d4b060;
+  }
+
+  /* 특수 이벤트 */
+  #mini-game {
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .mg-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: #d04a4a;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px #5a0000;
+  }
+
+  .mg-desc {
+    color: #a99a9a;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .mash-btn {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #5a0000, #1a0000);
+    border: 3px solid #8b0000;
+    color: #fff;
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(139,0,0,0.6);
+    transition: transform 0.05s;
+  }
+
+  .mash-btn:active { transform: scale(0.95); }
+
+  .timing-bar {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    height: 40px;
+    background: #0a0303;
+    border: 2px solid #3a1a1a;
+    margin: 20px auto;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .timing-zone {
+    position: absolute;
+    height: 100%;
+    background: rgba(106, 192, 106, 0.3);
+    border-left: 2px solid #6ac06a;
+    border-right: 2px solid #6ac06a;
+  }
+
+  .timing-cursor {
+    position: absolute;
+    width: 4px;
+    height: 100%;
+    background: #d04a4a;
+    box-shadow: 0 0 8px #d04a4a;
+  }
+
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* 페이드 */
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  .shake { animation: shake 0.3s; }
+
+  @keyframes flash {
+    0%,100% { background-color: transparent; }
+    50% { background-color: rgba(139,0,0,0.3); }
+  }
+
+  .flash { animation: flash 0.4s; }
+
+  .hidden { display: none !important; }
+
+  /* 스크롤바 */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #0a0303; }
+  ::-webkit-scrollbar-thumb { background: #3a1a1a; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div id="game">
+  <h1>저주받은 탑</h1>
+  <div class="subtitle">~ THE CURSED TOWER ~</div>
+
+  <!-- 캐릭터 선택 화면 -->
+  <div id="char-select" class="panel">
+    <div class="status-name" style="text-align:center;font-size:1.3rem;">영혼을 빌릴 그릇을 선택하라</div>
+    <div class="char-grid">
+      <div class="char-card" data-char="dugong">
+        <div class="char-emoji">🦭</div>
+        <div class="char-name">듀공</div>
+        <div class="char-stats">HP 120 / ATK 10<br/>SPD 4</div>
+        <div class="char-desc">"두꺼운 살가죽의 수호자"</div>
+      </div>
+      <div class="char-card" data-char="dog">
+        <div class="char-emoji">🐕</div>
+        <div class="char-name">강아지</div>
+        <div class="char-stats">HP 90 / ATK 14<br/>SPD 7</div>
+        <div class="char-desc">"날쌘 송곳니의 충견"</div>
+      </div>
+      <div class="char-card" data-char="dolphin">
+        <div class="char-emoji">🐬</div>
+        <div class="char-name">돌고래</div>
+        <div class="char-stats">HP 100 / ATK 12<br/>SPD 9</div>
+        <div class="char-desc">"바다에서 찾아온 영민한 자"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 게임 본체 -->
+  <div id="main-game" class="hidden">
+    <div class="floor-indicator" id="floor-text">제 1 층</div>
+
+    <div class="status-row">
+      <div class="status-card" id="player-card">
+        <div class="status-name" id="player-name">플레이어</div>
+        <div class="hp-bar">
+          <div class="hp-fill" id="player-hp-fill" style="width:100%"></div>
+          <div class="hp-text" id="player-hp-text">100/100</div>
+        </div>
+        <div class="stat-line" id="player-stats">ATK 10 · SPD 5</div>
+      </div>
+      <div class="status-card enemy hidden" id="enemy-card">
+        <div class="status-name" id="enemy-name">???</div>
+        <div class="hp-bar">
+          <div class="hp-fill" id="enemy-hp-fill" style="width:100%"></div>
+          <div class="hp-text" id="enemy-hp-text">??/??</div>
+        </div>
+        <div class="stat-line" id="enemy-stats">ATK ? · SPD ?</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div id="log"></div>
+    </div>
+
+    <!-- 행동 영역 -->
+    <div class="panel" id="action-area">
+
+      <!-- 문 선택 -->
+      <div id="door-actions">
+        <div style="text-align:center;color:#8a7a7a;margin-bottom:10px;letter-spacing:2px;">~ 두 개의 문이 너를 응시한다 ~</div>
+        <div class="btn-row">
+          <button class="btn door" onclick="chooseDoor('left')">⛧ 왼쪽 문 ⛧</button>
+          <button class="btn door" onclick="chooseDoor('right')">⛧ 오른쪽 문 ⛧</button>
+        </div>
+      </div>
+
+      <!-- 전투 -->
+      <div id="battle-actions" class="hidden">
+        <div class="btn-row">
+          <button class="btn danger" onclick="playerAttack()">⚔ 공격</button>
+          <button class="btn" onclick="openInventory()">🧪 아이템</button>
+          <button class="btn" onclick="tryFlee()">💨 도망치기</button>
+        </div>
+      </div>
+
+      <!-- 보상 / 다음 -->
+      <div id="continue-actions" class="hidden">
+        <div class="btn-row">
+          <button class="btn success" onclick="nextFloor()">▲ 다음 층으로 오르다</button>
+        </div>
+      </div>
+
+      <!-- 미니게임 -->
+      <div id="mini-game" class="hidden"></div>
+
+      <!-- 게임 오버 / 클리어 -->
+      <div id="end-actions" class="hidden">
+        <div class="btn-row">
+          <button class="btn" onclick="restart()">🕯 다시 도전하다</button>
+        </div>
+      </div>
+
+      <!-- 인벤토리 -->
+      <div class="inv-section">
+        <div class="inv-title">━━ 소지품 ━━</div>
+        <div class="inv-list" id="potion-list"></div>
+        <div class="inv-title" style="margin-top:10px;">━━ 장비 ━━</div>
+        <div class="inv-list" id="equip-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============= 게임 데이터 =============
+const CHARACTERS = {
+  dugong:  { name:'듀공',  emoji:'🦭', hp:120, atk:10, spd:4 },
+  dog:     { name:'강아지', emoji:'🐕', hp:90,  atk:14, spd:7 },
+  dolphin: { name:'돌고래', emoji:'🐬', hp:100, atk:12, spd:9 }
+};
+
+const MONSTERS = {
+  bat:        { name:'박쥐',         emoji:'🦇', hp:25, atk:6,  spd:8, gold:5 },
+  skeleton:   { name:'스켈레톤',     emoji:'💀', hp:40, atk:9,  spd:5, gold:10 },
+  skeletonW:  { name:'스켈레톤 워리어', emoji:'☠️', hp:90, atk:18, spd:6, gold:30 },
+  vampireB:   { name:'뱀파이어 남작', emoji:'🧛', hp:70, atk:15, spd:7, gold:25 },
+  vampireC:   { name:'뱀파이어 백작', emoji:'🧛‍♂️', hp:140,atk:24, spd:9, gold:60 },
+  vampireD:   { name:'뱀파이어 공작', emoji:'🩸', hp:280,atk:40, spd:11, gold:150 }
+};
+
+const EQUIPMENTS = [
+  { name:'녹슨 검',    atk:3,  hp:0  },
+  { name:'은빛 단검',  atk:6,  hp:0  },
+  { name:'흑요석 검', atk:10, hp:0  },
+  { name:'가죽 갑옷',  atk:0,  hp:15 },
+  { name:'사슬 갑옷',  atk:0,  hp:30 },
+  { name:'저주받은 갑주', atk:5, hp:50 }
+];
+
+const QUIZZES = [
+  { q:'밤하늘에 가장 두려운 별자리는?', opts:['오리온','전갈자리','북두칠성','용자리'], a:1 },
+  { q:'뱀파이어가 가장 싫어하는 것은?', opts:['마늘','사과','거울','은'], a:0 },
+  { q:'스켈레톤은 무엇으로 이루어져 있나?', opts:['살','뼈','영혼','진흙'], a:1 },
+  { q:'박쥐는 무엇을 이용해 길을 찾는가?', opts:['시각','초음파','후각','텔레파시'], a:1 }
+];
+
+// ============= 게임 상태 =============
+let player = null;
+let enemy = null;
+let floor = 1;
+let inBattle = false;
+let potions = []; // {name, heal}
+let equipments = []; // {name, atk, hp, equipped}
+
+// ============= 유틸 =============
+function $(id) { return document.getElementById(id); }
+function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function log(msg, cls='') {
+  const p = document.createElement('p');
+  if (cls) p.className = cls;
+  p.textContent = msg;
+  $('log').appendChild(p);
+  $('log').scrollTop = $('log').scrollHeight;
+}
+
+// ============= 캐릭터 선택 =============
+document.querySelectorAll('.char-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const key = card.dataset.char;
+    const c = CHARACTERS[key];
+    player = {
+      name: c.name,
+      emoji: c.emoji,
+      maxHp: c.hp,
+      hp: c.hp,
+      baseAtk: c.atk,
+      atk: c.atk,
+      spd: c.spd,
+      bonusHp: 0
+    };
+    potions = [
+      { name:'붉은 물약', heal:30 },
+      { name:'붉은 물약', heal:30 }
+    ];
+    equipments = [];
+    floor = 1;
+    $('char-select').classList.add('hidden');
+    $('main-game').classList.remove('hidden');
+    log(`너는 ${c.emoji} ${c.name}의 영혼으로 탑에 발을 들였다...`, 'system');
+    log('탑의 첫번째 층, 두 개의 문이 너를 응시한다.', 'system');
+    updateUI();
+  });
+});
+
+// ============= UI 갱신 =============
+function updateUI() {
+  $('floor-text').textContent = `제 ${floor} 층`;
+  $('player-name').textContent = `${player.emoji} ${player.name}`;
+  const hpPct = (player.hp / player.maxHp) * 100;
+  $('player-hp-fill').style.width = hpPct + '%';
+  $('player-hp-text').textContent = `${player.hp}/${player.maxHp}`;
+  $('player-stats').textContent = `ATK ${player.atk} · SPD ${player.spd}`;
+
+  if (enemy) {
+    $('enemy-card').classList.remove('hidden');
+    $('enemy-name').textContent = `${enemy.emoji} ${enemy.name}`;
+    const ePct = (enemy.hp / enemy.maxHp) * 100;
+    $('enemy-hp-fill').style.width = ePct + '%';
+    $('enemy-hp-text').textContent = `${enemy.hp}/${enemy.maxHp}`;
+    $('enemy-stats').textContent = `ATK ${enemy.atk} · SPD ${enemy.spd}`;
+  } else {
+    $('enemy-card').classList.add('hidden');
+  }
+
+  // 인벤토리
+  const pList = $('potion-list');
+  pList.innerHTML = '';
+  if (potions.length === 0) pList.innerHTML = '<span style="color:#5a4a4a;font-size:0.85rem;">(비어있음)</span>';
+  potions.forEach((p, i) => {
+    const el = document.createElement('div');
+    el.className = 'inv-item';
+    el.textContent = `🧪 ${p.name} (+${p.heal})`;
+    el.onclick = () => usePotion(i);
+    pList.appendChild(el);
+  });
+
+  const eList = $('equip-list');
+  eList.innerHTML = '';
+  if (equipments.length === 0) eList.innerHTML = '<span style="color:#5a4a4a;font-size:0.85rem;">(없음)</span>';
+  equipments.forEach((e, i) => {
+    const el = document.createElement('div');
+    el.className = 'inv-item' + (e.equipped ? ' equipped' : '');
+    el.textContent = `${e.equipped?'★ ':''}${e.name} (ATK+${e.atk}, HP+${e.hp})`;
+    el.onclick = () => toggleEquip(i);
+    eList.appendChild(el);
+  });
+}
+
+// ============= 인벤토리 =============
+function usePotion(i) {
+  const p = potions[i];
+  if (!p) return;
+  player.hp = Math.min(player.maxHp, player.hp + p.heal);
+  log(`🧪 ${p.name}을(를) 마셨다. HP +${p.heal}`, 'gain');
+  potions.splice(i, 1);
+  updateUI();
+}
+
+function toggleEquip(i) {
+  if (inBattle) {
+    log('전투 중에는 장비를 바꿀 수 없다!', 'danger');
+    return;
+  }
+  const e = equipments[i];
+  if (e.equipped) {
+    e.equipped = false;
+    player.atk -= e.atk;
+    player.maxHp -= e.hp;
+    player.hp = Math.min(player.hp, player.maxHp);
+    log(`${e.name} 해제`, 'system');
+  } else {
+    // 같은 카테고리(atk vs hp 위주) 자동 해제는 단순화 — 사용자가 알아서 관리
+    e.equipped = true;
+    player.atk += e.atk;
+    player.maxHp += e.hp;
+    player.hp += e.hp;
+    log(`${e.name} 장착! ATK+${e.atk}, HP+${e.hp}`, 'gain');
+  }
+  updateUI();
+}
+
+function openInventory() {
+  log('소지품에서 직접 물약을 클릭해 사용하라.', 'system');
+}
+
+// ============= 문 선택 / 진행 =============
+function chooseDoor(side) {
+  $('door-actions').classList.add('hidden');
+  log(`${side === 'left' ? '왼쪽' : '오른쪽'} 문을 열었다...`, 'important');
+
+  // 5층마다 특수 이벤트
+  if (floor % 5 === 0) {
+    triggerMiniGame();
+    return;
+  }
+
+  // 60% 전투, 40% 아이템
+  const r = Math.random();
+  if (r < 0.6) {
+    spawnEnemy();
+  } else {
+    rewardItem();
+    showContinue();
+  }
+}
+
+function spawnEnemy() {
+  let pool = [];
+  if (floor < 4) pool = ['bat','bat','skeleton'];
+  else if (floor < 8) pool = ['bat','skeleton','skeleton','skeletonW','vampireB'];
+  else if (floor < 13) pool = ['skeleton','skeletonW','vampireB','vampireB','vampireC'];
+  else if (floor < 18) pool = ['skeletonW','vampireB','vampireC','vampireC'];
+  else pool = ['vampireC','vampireC','vampireD'];
+
+  const key = pool[rand(0, pool.length - 1)];
+  const m = MONSTERS[key];
+  // 층마다 약간의 스케일링
+  const scale = 1 + (floor - 1) * 0.05;
+  enemy = {
+    name: m.name,
+    emoji: m.emoji,
+    maxHp: Math.floor(m.hp * scale),
+    hp: Math.floor(m.hp * scale),
+    atk: Math.floor(m.atk * scale),
+    spd: m.spd,
+    gold: m.gold
+  };
+  inBattle = true;
+  log(`${enemy.emoji} ${enemy.name}이(가) 어둠 속에서 나타났다!`, 'danger');
+  $('battle-actions').classList.remove('hidden');
+  updateUI();
+
+  // 선공 판정 - 적이 빠르면 적 선공
+  if (enemy.spd > player.spd) {
+    log('적이 더 빠르다! 선공을 빼앗겼다!', 'danger');
+    setTimeout(enemyAttack, 700);
+  }
+}
+
+function playerAttack() {
+  if (!inBattle) return;
+  const dmg = rand(Math.floor(player.atk * 0.85), Math.floor(player.atk * 1.15));
+  enemy.hp -= dmg;
+  log(`⚔ ${player.name}의 공격! ${enemy.name}에게 ${dmg}의 피해.`, 'important');
+  $('enemy-card').classList.add('shake');
+  setTimeout(() => $('enemy-card').classList.remove('shake'), 300);
+  updateUI();
+
+  if (enemy.hp <= 0) {
+    victory();
+    return;
+  }
+  // 행동 잠금 후 적 차례
+  setBattleButtons(false);
+  setTimeout(enemyAttack, 600);
+}
+
+function enemyAttack() {
+  if (!inBattle || !enemy) return;
+  const dmg = rand(Math.floor(enemy.atk * 0.85), Math.floor(enemy.atk * 1.15));
+  player.hp -= dmg;
+  log(`🩸 ${enemy.name}의 반격! ${player.name}에게 ${dmg}의 피해.`, 'danger');
+  $('player-card').classList.add('flash');
+  setTimeout(() => $('player-card').classList.remove('flash'), 400);
+  updateUI();
+
+  if (player.hp <= 0) {
+    gameOver();
+    return;
+  }
+  setBattleButtons(true);
+}
+
+function setBattleButtons(enabled) {
+  document.querySelectorAll('#battle-actions .btn').forEach(b => b.disabled = !enabled);
+}
+
+function tryFlee() {
+  if (!inBattle) return;
+  // 플레이어 SPD가 높을수록 도망 성공률 ↑
+  const chance = 0.3 + (player.spd - enemy.spd) * 0.05;
+  if (Math.random() < chance) {
+    log('💨 도망에 성공했다... 한 층을 헤매다 다시 문 앞에 섰다.', 'system');
+    inBattle = false;
+    enemy = null;
+    $('battle-actions').classList.add('hidden');
+    showContinue();
+    updateUI();
+  } else {
+    log('도망에 실패했다!', 'danger');
+    setBattleButtons(false);
+    setTimeout(enemyAttack, 600);
+  }
+}
+
+function victory() {
+  log(`☠ ${enemy.name}을(를) 쓰러뜨렸다! (+${enemy.gold} 보상)`, 'gain');
+  inBattle = false;
+  $('battle-actions').classList.add('hidden');
+
+  // 보상
+  const r = Math.random();
+  if (r < 0.4) {
+    const heal = 20 + rand(0, 15);
+    potions.push({ name:'붉은 물약', heal });
+    log(`🧪 붉은 물약 (+${heal})을 획득!`, 'gain');
+  } else if (r < 0.7) {
+    const eq = EQUIPMENTS[rand(0, Math.min(EQUIPMENTS.length - 1, Math.floor(floor / 3)))];
+    equipments.push({ ...eq, equipped:false });
+    log(`🗡 ${eq.name}을(를) 획득! (장비 목록에서 클릭하여 장착)`, 'gain');
+  } else {
+    const heal = Math.floor(player.maxHp * 0.15);
+    player.hp = Math.min(player.maxHp, player.hp + heal);
+    log(`✨ 어둠 속에서 회복의 기운이... HP +${heal}`, 'gain');
+  }
+  enemy = null;
+  showContinue();
+  updateUI();
+}
+
+function rewardItem() {
+  const r = Math.random();
+  if (r < 0.5) {
+    const heal = 25 + rand(0, 20);
+    potions.push({ name:'붉은 물약', heal });
+    log(`🕯 빈 방에서 물약(+${heal})을 발견했다!`, 'gain');
+  } else if (r < 0.85) {
+    const eq = EQUIPMENTS[rand(0, Math.min(EQUIPMENTS.length - 1, Math.floor(floor / 3) + 1))];
+    equipments.push({ ...eq, equipped:false });
+    log(`🗡 보물상자에서 ${eq.name}을(를) 발견했다!`, 'gain');
+  } else {
+    log('💀 아무것도 없다... 그저 차가운 정적뿐.', 'system');
+  }
+}
+
+function showContinue() {
+  $('continue-actions').classList.remove('hidden');
+  updateUI();
+}
+
+function nextFloor() {
+  $('continue-actions').classList.add('hidden');
+  floor++;
+  if (floor > 20) {
+    triumph();
+    return;
+  }
+  log(`━━━ 제 ${floor} 층에 올랐다 ━━━`, 'system');
+  $('door-actions').classList.remove('hidden');
+  updateUI();
+}
+
+// ============= 미니게임 (특수 층) =============
+function triggerMiniGame() {
+  $('mini-game').classList.remove('hidden');
+  const games = [quizGame, mashGame, timingGame];
+  // 5층 = 퀴즈, 10층 = 연타, 15층 = 타이밍, 20층 = 보스(=공작)
+  if (floor === 20) {
+    finalBoss();
+    return;
+  }
+  const idx = (floor / 5 - 1) % games.length;
+  games[Math.floor(idx)]();
+}
+
+// 퀴즈
+function quizGame() {
+  const q = QUIZZES[rand(0, QUIZZES.length - 1)];
+  const mg = $('mini-game');
+  log('━━ 특수 층: 수수께끼의 방 ━━', 'system');
+  mg.innerHTML = `
+    <div class="mg-title">⚜ 수수께끼의 방 ⚜</div>
+    <div class="mg-desc">"답하라, 그렇지 않으면 영혼이 소멸하리라..."<br/><br/><strong>${q.q}</strong></div>
+    <div class="quiz-options">
+      ${q.opts.map((o, i) => `<button class="btn" onclick="answerQuiz(${i}, ${q.a})">${o}</button>`).join('')}
+    </div>
+  `;
+}
+
+function answerQuiz(picked, answer) {
+  if (picked === answer) {
+    log('✨ 정답! 어둠의 시험관이 미소짓는다.', 'gain');
+    const heal = 40;
+    player.hp = Math.min(player.maxHp, player.hp + heal);
+    const eq = EQUIPMENTS[Math.min(EQUIPMENTS.length - 1, Math.floor(floor / 2))];
+    equipments.push({ ...eq, equipped:false });
+    log(`HP +${heal}, ${eq.name} 획득!`, 'gain');
+  } else {
+    const dmg = 25;
+    player.hp -= dmg;
+    log(`💀 오답... 어둠이 너를 베었다. HP -${dmg}`, 'danger');
+    if (player.hp <= 0) { gameOver(); return; }
+  }
+  $('mini-game').classList.add('hidden');
+  $('mini-game').innerHTML = '';
+  showContinue();
+  updateUI();
+}
+
+// 연타 게임
+function mashGame() {
+  const mg = $('mini-game');
+  log('━━ 특수 층: 무너지는 다리 ━━', 'system');
+  let count = 0;
+  let timeLeft = 5;
+  const target = 30;
+  mg.innerHTML = `
+    <div class="mg-title">🌉 무너지는 다리 🌉</div>
+    <div class="mg-desc">5초 안에 ${target}회 이상 연타하라!<br/>다리가 무너지기 전에 건너야 한다.</div>
+    <div style="font-size:1.3rem;color:#d04a4a;margin:10px;">남은 시간: <span id="mash-time">5.0</span>초</div>
+    <div style="font-size:1.5rem;color:#fff;margin:10px;">연타: <span id="mash-count">0</span> / ${target}</div>
+    <button class="mash-btn" id="mash-btn">⚡ 연타!</button>
+  `;
+
+  const btn = $('mash-btn');
+  btn.addEventListener('click', () => {
+    count++;
+    $('mash-count').textContent = count;
+  });
+
+  const startT = Date.now();
+  const tick = setInterval(() => {
+    const elapsed = (Date.now() - startT) / 1000;
+    timeLeft = Math.max(0, 5 - elapsed);
+    $('mash-time').textContent = timeLeft.toFixed(1);
+    if (timeLeft <= 0) {
+      clearInterval(tick);
+      finishMash(count, target);
+    }
+  }, 50);
+}
+
+function finishMash(count, target) {
+  if (count >= target) {
+    log(`✨ ${count}회 연타로 다리를 건넜다!`, 'gain');
+    const eq = EQUIPMENTS[Math.min(EQUIPMENTS.length - 1, Math.floor(floor / 2) + 1)];
+    equipments.push({ ...eq, equipped:false });
+    log(`${eq.name} 획득!`, 'gain');
+  } else {
+    const dmg = 35;
+    player.hp -= dmg;
+    log(`💥 다리가 무너졌다... HP -${dmg}`, 'danger');
+    if (player.hp <= 0) { gameOver(); return; }
+  }
+  $('mini-game').classList.add('hidden');
+  $('mini-game').innerHTML = '';
+  showContinue();
+  updateUI();
+}
+
+// 타이밍 게임
+function timingGame() {
+  const mg = $('mini-game');
+  log('━━ 특수 층: 룬 봉인 ━━', 'system');
+  mg.innerHTML = `
+    <div class="mg-title">🔮 룬 봉인 🔮</div>
+    <div class="mg-desc">커서가 녹색 영역을 지날 때 정확히 클릭하라.<br/>3번 중 2번 이상 성공해야 한다.</div>
+    <div class="timing-bar" id="timing-bar">
+      <div class="timing-zone" id="timing-zone"></div>
+      <div class="timing-cursor" id="timing-cursor" style="left:0%"></div>
+    </div>
+    <div style="margin:10px;color:#c9b9b9;">시도: <span id="timing-tries">0</span> / 3 · 성공: <span id="timing-hits">0</span></div>
+    <button class="btn danger" id="timing-stop" style="max-width:200px;margin:0 auto;">⛧ 봉인하기</button>
+  `;
+
+  let tries = 0, hits = 0, pos = 0, dir = 1;
+  // 매 시도마다 랜덤 영역
+  function newZone() {
+    const zoneStart = rand(20, 65);
+    const zoneWidth = rand(12, 22);
+    const z = $('timing-zone');
+    z.style.left = zoneStart + '%';
+    z.style.width = zoneWidth + '%';
+    z.dataset.start = zoneStart;
+    z.dataset.end = zoneStart + zoneWidth;
+  }
+  newZone();
+
+  const cursor = $('timing-cursor');
+  const anim = setInterval(() => {
+    pos += dir * 1.8;
+    if (pos >= 100) { pos = 100; dir = -1; }
+    if (pos <= 0) { pos = 0; dir = 1; }
+    cursor.style.left = pos + '%';
+  }, 16);
+
+  $('timing-stop').addEventListener('click', () => {
+    const z = $('timing-zone');
+    const start = parseFloat(z.dataset.start);
+    const end = parseFloat(z.dataset.end);
+    const ok = pos >= start && pos <= end;
+    tries++;
+    if (ok) hits++;
+    $('timing-tries').textContent = tries;
+    $('timing-hits').textContent = hits;
+    log(ok ? `✓ 성공!` : `✗ 빗나감!`, ok ? 'gain' : 'danger');
+    if (tries >= 3) {
+      clearInterval(anim);
+      finishTiming(hits);
+    } else {
+      newZone();
+    }
+  });
+}
+
+function finishTiming(hits) {
+  if (hits >= 2) {
+    log(`✨ 룬을 ${hits}번 명중! 봉인이 풀렸다.`, 'gain');
+    const heal = 50;
+    player.hp = Math.min(player.maxHp, player.hp + heal);
+    const eq = EQUIPMENTS[Math.min(EQUIPMENTS.length - 1, Math.floor(floor / 2) + 1)];
+    equipments.push({ ...eq, equipped:false });
+    log(`HP +${heal}, ${eq.name} 획득!`, 'gain');
+  } else {
+    const dmg = 40;
+    player.hp -= dmg;
+    log(`💀 룬이 폭발했다... HP -${dmg}`, 'danger');
+    if (player.hp <= 0) { gameOver(); return; }
+  }
+  $('mini-game').classList.add('hidden');
+  $('mini-game').innerHTML = '';
+  showContinue();
+  updateUI();
+}
+
+// 최종 보스
+function finalBoss() {
+  log('━━━ 최종 층: 탑의 주인 ━━━', 'system');
+  const m = MONSTERS.vampireD;
+  enemy = {
+    name: '탑의 주인 - ' + m.name,
+    emoji: m.emoji,
+    maxHp: Math.floor(m.hp * 1.5),
+    hp: Math.floor(m.hp * 1.5),
+    atk: Math.floor(m.atk * 1.2),
+    spd: m.spd,
+    gold: 999
+  };
+  inBattle = true;
+  $('mini-game').classList.add('hidden');
+  $('battle-actions').classList.remove('hidden');
+  log(`👑 "감히 내 탑에 발을 들이다니..."`, 'danger');
+  log(`${enemy.emoji} ${enemy.name} 등장!`, 'danger');
+  updateUI();
+}
+
+// ============= 종료 =============
+function gameOver() {
+  inBattle = false;
+  document.querySelectorAll('#battle-actions .btn, #door-actions .btn').forEach(b => b.disabled = true);
+  $('battle-actions').classList.add('hidden');
+  $('door-actions').classList.add('hidden');
+  $('continue-actions').classList.add('hidden');
+  $('mini-game').classList.add('hidden');
+  $('end-actions').classList.remove('hidden');
+  log('━━━ 영혼이 탑에 잠식되었다... ━━━', 'danger');
+  log(`도달 층: ${floor}층`, 'system');
+}
+
+function triumph() {
+  $('battle-actions').classList.add('hidden');
+  $('door-actions').classList.add('hidden');
+  $('continue-actions').classList.add('hidden');
+  $('mini-game').classList.add('hidden');
+  $('end-actions').classList.remove('hidden');
+  log('━━━ 너는 탑의 정상에 섰다! ━━━', 'gain');
+  log('저주는 풀렸고, 새벽이 밝아온다.', 'gain');
+}
+
+function restart() {
+  enemy = null;
+  player = null;
+  potions = [];
+  equipments = [];
+  floor = 1;
+  inBattle = false;
+  $('log').innerHTML = '';
+  $('main-game').classList.add('hidden');
+  $('char-select').classList.remove('hidden');
+  $('end-actions').classList.add('hidden');
+  $('door-actions').classList.remove('hidden');
+  document.querySelectorAll('.btn').forEach(b => b.disabled = false);
+}
+</script>
+</body>
+</html>
