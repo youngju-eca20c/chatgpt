@@ -853,6 +853,59 @@
   .char-card .char-stats { font-size: 0.78rem; color: var(--text); line-height: 1.5; }
   .char-card .char-desc { font-size: 0.72rem; color: var(--text-dim); margin-top: 6px; font-style: italic; }
 
+  /* === 컷신 === */
+  .cutscene {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+  }
+  .cutscene-hag {
+    width: 90px;
+    height: 90px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6)) drop-shadow(0 0 16px rgba(160,200,80,0.3));
+    animation: hagFloat 3s ease-in-out infinite;
+  }
+  @keyframes hagFloat {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50% { transform: translateY(-4px) rotate(1deg); }
+  }
+  .cutscene-text {
+    background: rgba(0,0,0,0.65);
+    border: 1.5px solid #6040a0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    width: 100%;
+    max-width: 480px;
+    min-height: 80px;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: #f0e0ff;
+    text-align: left;
+  }
+  .cutscene-text p { margin-bottom: 5px; }
+  .cutscene-text p.speaker { color: #ffcc44; font-family: 'Black Han Sans', sans-serif; }
+  .cutscene-text p.typing::after {
+    content: '▌';
+    color: #ffcc44;
+    animation: cursorBlink 0.5s step-end infinite;
+  }
+  @keyframes cursorBlink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  .cutscene-choices {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 480px;
+  }
+  .cutscene-choices .btn { flex: 1; }
+
   /* === 미니게임 (씬 내부 오버레이) === */
   .mini-overlay {
     position: absolute;
@@ -1086,31 +1139,33 @@
       <line x1="12" y1="44" x2="9" y2="40" stroke="#ffe070" stroke-width="3" stroke-linecap="round"/>
     </symbol>
 
-    <!-- 돌고래 -->
+    <!-- 돌고래 (우측 향) -->
     <symbol id="char-dolphin" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="92" rx="26" ry="4" fill="#000" opacity="0.4"/>
-      <circle cx="50" cy="55" r="42" fill="rgba(150, 200, 255, 0.15)"/>
-      <path d="M22 60 Q14 38 36 30 Q60 24 80 38 Q92 48 88 58 Q88 70 75 74 Q58 78 40 75 Q24 72 22 60 Z"
-            fill="#5a85b8"/>
-      <path d="M24 60 Q18 42 38 34 Q58 28 76 40 Q86 49 82 58 Q82 68 73 72 Q58 75 40 72 Q26 69 24 60 Z"
-            fill="#7aa5d8"/>
-      <ellipse cx="56" cy="66" rx="22" ry="6" fill="#d0e8ff" opacity="0.7"/>
-      <path d="M52 30 L62 18 L64 32 Z" fill="#5a85b8"/>
-      <path d="M85 50 L100 38 L98 52 L100 64 Z" fill="#5a85b8"/>
-      <path d="M40 68 L30 80 L48 72 Z" fill="#5a85b8"/>
-      <ellipse cx="32" cy="48" rx="4" ry="5" fill="#fff"/>
-      <ellipse cx="32" cy="49" rx="2.5" ry="3.5" fill="#1a0a2a"/>
-      <circle cx="32.5" cy="48" r="1" fill="#fff"/>
-      <path d="M22 56 Q18 60 22 64" stroke="#1a3a5a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <circle cx="48" cy="38" r="1.5" fill="#fff" opacity="0.9">
-        <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
-      </circle>
-      <circle cx="68" cy="48" r="1.2" fill="#aaccff" opacity="0.9">
-        <animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/>
-      </circle>
-      <circle cx="55" cy="58" r="0.8" fill="#fff" opacity="0.9">
-        <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite"/>
-      </circle>
+      <g transform="translate(100 0) scale(-1 1)">
+        <ellipse cx="50" cy="92" rx="26" ry="4" fill="#000" opacity="0.4"/>
+        <circle cx="50" cy="55" r="42" fill="rgba(150, 200, 255, 0.15)"/>
+        <path d="M22 60 Q14 38 36 30 Q60 24 80 38 Q92 48 88 58 Q88 70 75 74 Q58 78 40 75 Q24 72 22 60 Z"
+              fill="#5a85b8"/>
+        <path d="M24 60 Q18 42 38 34 Q58 28 76 40 Q86 49 82 58 Q82 68 73 72 Q58 75 40 72 Q26 69 24 60 Z"
+              fill="#7aa5d8"/>
+        <ellipse cx="56" cy="66" rx="22" ry="6" fill="#d0e8ff" opacity="0.7"/>
+        <path d="M52 30 L62 18 L64 32 Z" fill="#5a85b8"/>
+        <path d="M85 50 L100 38 L98 52 L100 64 Z" fill="#5a85b8"/>
+        <path d="M40 68 L30 80 L48 72 Z" fill="#5a85b8"/>
+        <ellipse cx="32" cy="48" rx="4" ry="5" fill="#fff"/>
+        <ellipse cx="32" cy="49" rx="2.5" ry="3.5" fill="#1a0a2a"/>
+        <circle cx="32.5" cy="48" r="1" fill="#fff"/>
+        <path d="M22 56 Q18 60 22 64" stroke="#1a3a5a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <circle cx="48" cy="38" r="1.5" fill="#fff" opacity="0.9">
+          <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="68" cy="48" r="1.2" fill="#aaccff" opacity="0.9">
+          <animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="55" cy="58" r="0.8" fill="#fff" opacity="0.9">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite"/>
+        </circle>
+      </g>
     </symbol>
 
     <!-- 박쥐 -->
@@ -1412,6 +1467,51 @@
       <line x1="20" y1="50" x2="80" y2="50" stroke="#0a2858" stroke-width="1"/>
       <line x1="50" y1="20" x2="50" y2="190" stroke="#0a2858" stroke-width="1.5" opacity="0.5"/>
       <text x="50" y="60" text-anchor="middle" fill="#ffcc44" font-size="20" font-family="serif">✦</text>
+    </symbol>
+
+    <!-- 수상한 노파 -->
+    <symbol id="char-hag" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="94" rx="30" ry="3" fill="#000" opacity="0.5"/>
+      <!-- 망토 -->
+      <path d="M22 50 L10 92 L90 92 L78 50 Q60 60 50 60 Q40 60 22 50 Z" fill="#3a2050" stroke="#1a0830" stroke-width="1.5"/>
+      <path d="M50 60 L46 92 L54 92 Z" fill="#1a0830"/>
+      <!-- 후드 -->
+      <path d="M28 38 Q28 12 50 8 Q72 12 72 38 L72 50 L28 50 Z" fill="#1a0e2a" stroke="#0a0218" stroke-width="1.5"/>
+      <path d="M30 44 Q30 20 50 18 Q70 20 70 44" fill="#0a0218"/>
+      <!-- 후드 안 어두운 영역 -->
+      <ellipse cx="50" cy="38" rx="14" ry="14" fill="#1a0e2a"/>
+      <!-- 늙은 얼굴 -->
+      <ellipse cx="50" cy="40" rx="12" ry="11" fill="#8a9070"/>
+      <!-- 주름 -->
+      <path d="M40 38 Q42 39 44 38" stroke="#3a3a30" stroke-width="0.7" fill="none"/>
+      <path d="M56 38 Q58 39 60 38" stroke="#3a3a30" stroke-width="0.7" fill="none"/>
+      <path d="M40 44 Q42 45 44 44" stroke="#3a3a30" stroke-width="0.5" fill="none"/>
+      <path d="M56 44 Q58 45 60 44" stroke="#3a3a30" stroke-width="0.5" fill="none"/>
+      <!-- 눈 (사악한 노란빛) -->
+      <ellipse cx="44" cy="38" rx="2" ry="1.5" fill="#1a0a0a"/>
+      <ellipse cx="56" cy="38" rx="2" ry="1.5" fill="#1a0a0a"/>
+      <circle cx="44" cy="38" r="0.9" fill="#ffcc00"/>
+      <circle cx="56" cy="38" r="0.9" fill="#ffcc00"/>
+      <circle cx="44" cy="38" r="2" fill="#ffcc00" opacity="0.25"/>
+      <circle cx="56" cy="38" r="2" fill="#ffcc00" opacity="0.25"/>
+      <!-- 큰 매부리코 -->
+      <path d="M50 39 Q47 44 50 47 Q53 46 52 43" fill="#7a8060" stroke="#3a3a30" stroke-width="0.5"/>
+      <!-- 입 (히죽) -->
+      <path d="M44 50 Q50 53 56 50 Q53 52 50 52 Q47 52 44 50 Z" fill="#1a0a0a"/>
+      <path d="M48 50 L48 52" stroke="#fff" stroke-width="0.6"/>
+      <!-- 손 (오른팔) -->
+      <ellipse cx="32" cy="68" rx="5" ry="4" fill="#7a8060"/>
+      <!-- 손에 든 작은 병 -->
+      <ellipse cx="32" cy="62" rx="3" ry="2" fill="#3a4050"/>
+      <rect x="29" y="60" width="6" height="9" rx="1.5" fill="#3a5060"/>
+      <rect x="30" y="63" width="4" height="5" fill="#80c0ff" opacity="0.7"/>
+      <circle cx="32" cy="64" r="0.6" fill="#fff" opacity="0.8">
+        <animate attributeName="opacity" values="0.4;1;0.4" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <!-- 지팡이 (왼팔쪽) -->
+      <line x1="68" y1="92" x2="74" y2="56" stroke="#5a3a20" stroke-width="2.5"/>
+      <circle cx="74" cy="54" r="3" fill="#7a4a30" stroke="#3a2010" stroke-width="0.8"/>
+      <circle cx="74" cy="54" r="1.5" fill="#ffcc44"/>
     </symbol>
 
     <!-- 초록 문 -->
@@ -2018,16 +2118,82 @@ function chooseDoor(idx, color, total) {
   else { rewardItem(); showRewardScene(); }
 }
 
-function fountain() {
+async function fountain() {
   showFountainScene();
+  setSceneActions('');
+  log('━━ 치유의 샘 — 수상한 만남 ━━', 'system');
+
+  $('mini-game').classList.remove('hidden');
+  $('mini-game').innerHTML = `
+    <div class="cutscene">
+      <div class="cutscene-hag"><svg viewBox="0 0 100 100"><use href="#char-hag"/></svg></div>
+      <div class="cutscene-text" id="cs-text"></div>
+      <div class="cutscene-choices hidden" id="cs-choices">
+        <button class="btn attack" onclick="fountainDrink()">🍷 내가 마신다</button>
+        <button class="btn gold" onclick="fountainGive()">💰 노파에게 양도</button>
+      </div>
+    </div>
+  `;
+
+  const lines = [
+    { speaker: true, text: '수상한 노파' },
+    { text: '"어여 와보게나… 이 샘물은 영험하다네."' },
+    { text: '"한 모금이면 그대의 상처도, 마법의 기운도 전부 채워주지…"' },
+    { text: '"…헌데 말일세. 이 늙은 몸뚱이에 한 잔 양보해줄 순 없겠나?"' },
+    { text: '"셈은 섭섭치 않게 치르겠네… 흐, 흐, 흐."' }
+  ];
+
+  const el = $('cs-text');
+  for (const line of lines) {
+    await typeLine(el, line.text, line.speaker ? 'speaker' : '');
+    await wait(500);
+  }
+  $('cs-choices').classList.remove('hidden');
+}
+
+function typeLine(el, text, cls='') {
+  return new Promise(resolve => {
+    const p = document.createElement('p');
+    if (cls) p.classList.add(cls);
+    p.classList.add('typing');
+    el.appendChild(p);
+    let i = 0;
+    const tick = setInterval(() => {
+      i++;
+      p.textContent = text.slice(0, i);
+      if (i >= text.length) {
+        clearInterval(tick);
+        p.classList.remove('typing');
+        resolve();
+      }
+    }, 38);
+  });
+}
+
+function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function fountainDrink() {
+  $('mini-game').classList.add('hidden');
   const healHp = player.maxHp - player.hp;
   const healMp = player.maxMp - player.mp;
   player.hp = player.maxHp;
   player.mp = player.maxMp;
-  log('━━ 치유의 샘 ━━', 'system');
-  log(`💧 차가운 물에 손을 적시자, HP +${healHp} · MP +${healMp}!`, 'gain');
-  showDialog('치유의 샘!', 3000);
+  log(`💧 샘물을 마셨다. HP +${healHp} · MP +${healMp}`, 'gain');
+  showDialog('회복!');
   showRewardPopup('💧', `HP+${healHp} · MP+${healMp}`);
+  setSceneActions(`<button class="btn success" onclick="nextFloor()">▲ 다음 층으로</button>`);
+  updateUI();
+}
+
+function fountainGive() {
+  $('mini-game').classList.add('hidden');
+  const atkBonus = rand(1, 5);
+  const hpBonus = rand(10, 30);
+  player.atk += atkBonus;
+  player.maxHp += hpBonus;
+  log(`💰 노파가 흡족한 미소를 지었다. ATK +${atkBonus}, 최대 HP +${hpBonus} (영구)`, 'gain');
+  showDialog('영구 강화!', 3000);
+  showRewardPopup('💎', `ATK+${atkBonus} · HP+${hpBonus}`);
   setSceneActions(`<button class="btn success" onclick="nextFloor()">▲ 다음 층으로</button>`);
   updateUI();
 }
