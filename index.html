@@ -853,58 +853,85 @@
   .char-card .char-stats { font-size: 0.78rem; color: var(--text); line-height: 1.5; }
   .char-card .char-desc { font-size: 0.72rem; color: var(--text-dim); margin-top: 6px; font-style: italic; }
 
-  /* === 컷신 === */
-  .cutscene {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    text-align: center;
-  }
-  .cutscene-hag {
-    width: 90px;
-    height: 90px;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6)) drop-shadow(0 0 16px rgba(160,200,80,0.3));
-    animation: hagFloat 3s ease-in-out infinite;
-  }
-  @keyframes hagFloat {
-    0%, 100% { transform: translateY(0) rotate(-1deg); }
-    50% { transform: translateY(-4px) rotate(1deg); }
-  }
-  .cutscene-text {
-    background: rgba(0,0,0,0.65);
-    border: 1.5px solid #6040a0;
-    border-radius: 10px;
-    padding: 10px 14px;
-    width: 100%;
-    max-width: 480px;
-    min-height: 80px;
-    font-size: 0.85rem;
-    line-height: 1.55;
+  /* === 컷신 (씬 안에서 진행) === */
+  .cs-dialog {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.85);
+    border: 2px solid #6040a0;
+    border-radius: 12px;
+    padding: 8px 12px;
     color: #f0e0ff;
-    text-align: left;
+    font-size: 0.85rem;
+    z-index: 12;
+    min-height: 56px;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
   }
-  .cutscene-text p { margin-bottom: 5px; }
-  .cutscene-text p.speaker { color: #ffcc44; font-family: 'Black Han Sans', sans-serif; }
-  .cutscene-text p.typing::after {
+  .cs-dialog .speaker {
+    color: #ffcc44;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.78rem;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+  .cs-dialog .text { line-height: 1.5; }
+  .cs-dialog .text.typing::after {
     content: '▌';
     color: #ffcc44;
     animation: cursorBlink 0.5s step-end infinite;
+    margin-left: 2px;
   }
   @keyframes cursorBlink {
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
   }
-  .cutscene-choices {
+  .cs-dialog .cs-choices {
     display: flex;
     gap: 8px;
-    width: 100%;
-    max-width: 480px;
+    margin-top: 6px;
   }
-  .cutscene-choices .btn { flex: 1; }
+  .cs-dialog .cs-choices .btn {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  /* 노파 캐릭터 (씬 내) */
+  .scene-hag {
+    position: absolute;
+    width: 22%;
+    aspect-ratio: 1/1;
+    bottom: 18%;
+    right: 18%;
+    z-index: 5;
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.7)) drop-shadow(0 0 12px rgba(160,200,80,0.25));
+    animation: hagAppear 0.7s cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+  .scene-hag svg { width: 100%; height: 100%; }
+  @keyframes hagAppear {
+    0%   { opacity: 0; transform: translateY(30px) scale(0.3) rotate(20deg); }
+    60%  { opacity: 1; transform: translateY(-8px) scale(1.15) rotate(-3deg); }
+    100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+  }
+  /* 등장 연기 입자 */
+  .puff {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(180,140,220,0.85), rgba(80,40,120,0.4) 60%, transparent);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: puffOut 0.9s ease-out forwards;
+    z-index: 14;
+  }
+  @keyframes puffOut {
+    0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.3); }
+    100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(2.2); }
+  }
 
   /* === 미니게임 (씬 내부 오버레이) === */
   .mini-overlay {
@@ -2118,82 +2145,174 @@ function chooseDoor(idx, color, total) {
   else { rewardItem(); showRewardScene(); }
 }
 
-async function fountain() {
-  showFountainScene();
-  setSceneActions('');
-  log('━━ 치유의 샘 — 수상한 만남 ━━', 'system');
+function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-  $('mini-game').classList.remove('hidden');
-  $('mini-game').innerHTML = `
-    <div class="cutscene">
-      <div class="cutscene-hag"><svg viewBox="0 0 100 100"><use href="#char-hag"/></svg></div>
-      <div class="cutscene-text" id="cs-text"></div>
-      <div class="cutscene-choices hidden" id="cs-choices">
-        <button class="btn attack" onclick="fountainDrink()">🍷 내가 마신다</button>
-        <button class="btn gold" onclick="fountainGive()">💰 노파에게 양도</button>
-      </div>
-    </div>
-  `;
-
-  const lines = [
-    { speaker: true, text: '수상한 노파' },
-    { text: '"어여 와보게나… 이 샘물은 영험하다네."' },
-    { text: '"한 모금이면 그대의 상처도, 마법의 기운도 전부 채워주지…"' },
-    { text: '"…헌데 말일세. 이 늙은 몸뚱이에 한 잔 양보해줄 순 없겠나?"' },
-    { text: '"셈은 섭섭치 않게 치르겠네… 흐, 흐, 흐."' }
-  ];
-
-  const el = $('cs-text');
-  for (const line of lines) {
-    await typeLine(el, line.text, line.speaker ? 'speaker' : '');
-    await wait(500);
-  }
-  $('cs-choices').classList.remove('hidden');
-}
-
-function typeLine(el, text, cls='') {
+function typeLine(el, text) {
   return new Promise(resolve => {
-    const p = document.createElement('p');
-    if (cls) p.classList.add(cls);
-    p.classList.add('typing');
-    el.appendChild(p);
+    el.classList.add('typing');
+    el.textContent = '';
     let i = 0;
     const tick = setInterval(() => {
       i++;
-      p.textContent = text.slice(0, i);
+      el.textContent = text.slice(0, i);
       if (i >= text.length) {
         clearInterval(tick);
-        p.classList.remove('typing');
+        el.classList.remove('typing');
         resolve();
       }
     }, 38);
   });
 }
 
-function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+function showCSDialog(speaker, text) {
+  let dlg = document.getElementById('cs-dialog');
+  if (!dlg) {
+    dlg = document.createElement('div');
+    dlg.className = 'cs-dialog';
+    dlg.id = 'cs-dialog';
+    $('scene-box').appendChild(dlg);
+  }
+  dlg.innerHTML = `<div class="speaker">${speaker}</div><div class="text" id="cs-text"></div>`;
+  return typeLine($('cs-text'), text);
+}
 
-function fountainDrink() {
-  $('mini-game').classList.add('hidden');
+function spawnPuff(box, leftPct, bottomPct) {
+  for (let i = 0; i < 14; i++) {
+    const p = document.createElement('div');
+    p.className = 'puff';
+    p.style.left = leftPct;
+    p.style.bottom = bottomPct;
+    const angle = (Math.PI * 2 * i) / 14 + Math.random() * 0.4;
+    const dist = 40 + Math.random() * 40;
+    p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+    p.style.animationDelay = (i * 0.02) + 's';
+    box.appendChild(p);
+    setTimeout(() => p.remove(), 1000);
+  }
+}
+
+function cleanupFountain(delay = 0) {
+  setTimeout(() => {
+    ['cs-dialog', 'scene-hag'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    });
+    const sp = $('scene-player');
+    if (sp) {
+      sp.style.transition = '';
+      sp.style.left = '';
+    }
+  }, delay);
+}
+
+async function fountain() {
+  showFountainScene();
+  setSceneActions('');
+  log('━━ 치유의 샘 ━━', 'system');
+
+  // 잔여 컷신 요소 정리
+  ['cs-dialog', 'scene-hag'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  });
+
+  // 플레이어 초기 위치
+  const sp = $('scene-player');
+  sp.style.transition = 'none';
+  sp.style.left = '8%';
+  void sp.offsetWidth;
+
+  // ── 1막: 발견 ──
+  await wait(600);
+  await showCSDialog(player.name, `"이런 곳에... 샘물이?"`);
+  await wait(700);
+  await showCSDialog(player.name, `"신비한 기운이 흐른다... 한 번 가까이 가볼까."`);
+  await wait(400);
+
+  // ── 2막: 샘물로 천천히 다가감 ──
+  sp.style.transition = 'left 2.4s ease-in-out';
+  sp.style.left = '30%';
+  await wait(2400);
+  sp.style.transition = '';
+
+  // ── 3막: 노파 갑자기 등장 ──
+  const box = $('scene-box');
+  spawnPuff(box, '70%', '32%');
+  await wait(150);
+  const hag = document.createElement('div');
+  hag.className = 'scene-hag';
+  hag.id = 'scene-hag';
+  hag.innerHTML = '<svg viewBox="0 0 100 100"><use href="#char-hag"/></svg>';
+  box.appendChild(hag);
+
+  await wait(500);
+  await showCSDialog(player.name, `"...!?"`);
+  await wait(700);
+
+  // ── 4막: 노파의 제안 ──
+  await showCSDialog('수상한 노파', `"호, 호... 어여 오시게나, 길 잃은 영혼이여."`);
+  await wait(450);
+  await showCSDialog('수상한 노파', `"이 샘물은 영험하다네. 한 모금이면 그대의 상처도, 마법의 기운도 모두 채워주지..."`);
+  await wait(450);
+  await showCSDialog('수상한 노파', `"...헌데 말일세. 이 늙은 몸뚱이에게 한 잔 양보해줄 순 없겠나?"`);
+  await wait(450);
+  await showCSDialog('수상한 노파', `"셈은 섭섭치 않게 치르지... 흐, 흐, 흐."`);
+  await wait(400);
+
+  // 선택지
+  showFountainChoices();
+}
+
+function showFountainChoices() {
+  const dlg = document.getElementById('cs-dialog');
+  if (!dlg) return;
+  dlg.innerHTML = `
+    <div class="speaker">▼ 선택</div>
+    <div class="cs-choices">
+      <button class="btn attack" onclick="fountainDrink()">🍷 샘물을 마신다</button>
+      <button class="btn gold" onclick="fountainGive()">💰 노파에게 양도한다</button>
+    </div>
+  `;
+}
+
+async function fountainDrink() {
+  await showCSDialog('수상한 노파', `"흐, 흐... 그렇단 말이지... 후회는 없으렷다, 길손이여."`);
+  await wait(1400);
+
   const healHp = player.maxHp - player.hp;
   const healMp = player.maxMp - player.mp;
   player.hp = player.maxHp;
   player.mp = player.maxMp;
   log(`💧 샘물을 마셨다. HP +${healHp} · MP +${healMp}`, 'gain');
-  showDialog('회복!');
   showRewardPopup('💧', `HP+${healHp} · MP+${healMp}`);
+
+  cleanupFountain(0);
   setSceneActions(`<button class="btn success" onclick="nextFloor()">▲ 다음 층으로</button>`);
   updateUI();
 }
 
-function fountainGive() {
-  $('mini-game').classList.add('hidden');
+async function fountainGive() {
+  await showCSDialog('수상한 노파', `"오호... 고맙네, 친구. 자네는 현명한 자야. 자, 이 늙은이의 작은 답례라네..."`);
+  await wait(1600);
+
   const atkBonus = rand(1, 5);
   const hpBonus = rand(10, 30);
   player.atk += atkBonus;
   player.maxHp += hpBonus;
-  log(`💰 노파가 흡족한 미소를 지었다. ATK +${atkBonus}, 최대 HP +${hpBonus} (영구)`, 'gain');
-  showDialog('영구 강화!', 3000);
+  log(`💎 노파의 검은 빛이 흐른다... ATK +${atkBonus}, 최대 HP +${hpBonus} (영구)`, 'gain');
   showRewardPopup('💎', `ATK+${atkBonus} · HP+${hpBonus}`);
+
+  // 노파가 흩어지듯 사라짐
+  const hag = $('scene-hag');
+  if (hag) {
+    hag.style.transition = 'all 0.8s ease-in';
+    hag.style.opacity = '0';
+    hag.style.transform = 'translateY(-30px) scale(0.4) rotate(-15deg)';
+    spawnPuff($('scene-box'), '70%', '32%');
+  }
+
+  cleanupFountain(800);
   setSceneActions(`<button class="btn success" onclick="nextFloor()">▲ 다음 층으로</button>`);
   updateUI();
 }
