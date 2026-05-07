@@ -3216,7 +3216,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-12</div>
+    <div class="version-tag" style="color:#a06030;">260507-13</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -3240,7 +3240,7 @@
         <div class="bldg-label">🐾 내 농장</div>
       </button>
       <!-- 백화점 (우상단) -->
-      <button class="map-building locked" style="top:30%;left:78%;width:16%" onclick="lockedLoc('백화점')" aria-label="백화점">
+      <button class="map-building available" style="top:30%;left:78%;width:16%" onclick="enterDept()" aria-label="백화점">
         <svg viewBox="0 0 110 130"><use href="#bldg-dept"/></svg>
         <div class="bldg-label">🛍 백화점</div>
       </button>
@@ -3259,6 +3259,18 @@
         <svg viewBox="0 0 140 120"><use href="#bldg-orchard"/></svg>
         <div class="bldg-label">🧺 과수원</div>
       </button>
+    </div>
+  </div>
+
+  <!-- 백화점 -->
+  <div id="dept-shop" class="farm-panel hidden">
+    <div class="farm-title">🏬 백화점</div>
+    <div class="farm-sub">동물에게 줄 물건을 사 보세요</div>
+    <div class="gold-bar" id="dept-gold">200</div>
+    <div class="items-grid" id="dept-grid"></div>
+    <div class="farm-actions">
+      <button class="btn" onclick="enterMyAnimals()">🐾 내 농장</button>
+      <button class="btn" onclick="showWorldMap()">← 월드맵</button>
     </div>
   </div>
 
@@ -3455,7 +3467,8 @@ function defaultSave() {
     nextAnimalId: 1,
     gold: 200,
     humans: [],
-    shelterStock: null  // 진열대 캐시 (보호소 진입 시마다 갱신)
+    shelterStock: null,
+    inventory: { food: 0, book: 0, mirror: 0, toy: 0 }
   };
 }
 
@@ -3466,6 +3479,7 @@ function migrateSave(data) {
   if (typeof data.gold !== 'number') data.gold = 200;
   if (!Array.isArray(data.humans)) data.humans = [];
   if (typeof data.nextAnimalId !== 'number') data.nextAnimalId = 1;
+  if (!data.inventory) data.inventory = { food: 0, book: 0, mirror: 0, toy: 0 };
   return data;
 }
 
@@ -3611,7 +3625,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function hideAllPanels() {
-  ['world-map','char-select','main-game','shelter','my-animals'].forEach(id => {
+  ['world-map','char-select','main-game','shelter','my-animals','dept-shop'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add('hidden');
   });
@@ -3853,14 +3867,53 @@ function isToday(timestamp) {
 function canPlay(a) { return !isToday(a.lastPlayedAt); }
 function canBathe(a) { return !isToday(a.lastBathedAt); }
 
-// 농장 아이템 (구매·사용 모두 통합)
-const FARM_ITEMS = [
+// 백화점 아이템 (구매 → 인벤토리 → 농장에서 사용)
+const SHOP_ITEMS = [
   { id:'food',  name:'사료',     icon:'🍎', stat:'fit',   amount:2, price:10 },
   { id:'book',  name:'그림책',   icon:'📚', stat:'intel', amount:2, price:10 },
   { id:'mirror',name:'거울',     icon:'🪞', stat:'charm', amount:2, price:10 },
   { id:'toy',   name:'장난감',   icon:'🧸', stat:'skill', amount:2, price:10 }
 ];
 const STAT_KO = { fit:'체력', intel:'지능', charm:'매력', skill:'기술' };
+
+// ============= 백화점 =============
+function enterDept() {
+  if (!save) save = loadSave();
+  hideAllPanels();
+  renderDept();
+  $('dept-shop').classList.remove('hidden');
+}
+
+function renderDept() {
+  $('dept-gold').textContent = save.gold;
+  const grid = $('dept-grid');
+  grid.innerHTML = '';
+  SHOP_ITEMS.forEach(it => {
+    const can = save.gold >= it.price;
+    const owned = (save.inventory && save.inventory[it.id]) || 0;
+    const card = document.createElement('div');
+    card.className = 'item-card' + (can ? '' : ' disabled');
+    card.innerHTML = `
+      <span class="it-icon">${it.icon}</span>
+      <div class="it-name">${it.name}</div>
+      <div class="it-effect">${STAT_KO[it.stat]} +${it.amount}</div>
+      <div class="it-price">💰 ${it.price}</div>
+      <div style="font-size:0.7rem;color:#7a4020;margin-top:2px;">보유: <b>${owned}</b></div>
+    `;
+    if (can) card.onclick = () => buyDeptItem(it.id);
+    grid.appendChild(card);
+  });
+}
+
+function buyDeptItem(itemId) {
+  const it = SHOP_ITEMS.find(x => x.id === itemId);
+  if (!it || save.gold < it.price) return;
+  if (!save.inventory) save.inventory = {};
+  save.gold -= it.price;
+  save.inventory[itemId] = (save.inventory[itemId] || 0) + 1;
+  saveSave();
+  renderDept();
+}
 
 function renderAnimalDetail(a) {
   const detail = $('animal-detail');
@@ -3934,18 +3987,32 @@ function openItemShop(id) {
   const a = save.animals.find(x => x.id === id);
   if (!a) return;
   const area = $('item-shop-area');
+  if (!area) return;
+  const inv = save.inventory || {};
+  const hasAny = SHOP_ITEMS.some(it => (inv[it.id] || 0) > 0);
+  if (!hasAny) {
+    area.innerHTML = `
+      <div style="margin-top:10px;border-top:1px dashed #a06030;padding-top:10px;text-align:center;color:#a08868;font-size:0.88rem;line-height:1.5">
+        🛍 가진 물건이 없어요.<br/>
+        <b>백화점</b>에 가서 물건을 사 와요!
+        <div style="margin-top:8px"><button class="btn" onclick="enterDept()" style="max-width:200px;margin:0 auto">🏬 백화점 가기</button></div>
+      </div>
+    `;
+    return;
+  }
   area.innerHTML = `
     <div style="margin-top:10px;border-top:1px dashed #a06030;padding-top:10px;">
-      <div style="font-family:'Black Han Sans',sans-serif;font-size:0.9rem;color:#7a4020;margin-bottom:6px;">🎁 ${a.name}에게 줄 물건 (무제한)</div>
+      <div style="font-family:'Black Han Sans',sans-serif;font-size:0.9rem;color:#7a4020;margin-bottom:6px;">🎁 ${a.name}에게 줄 물건</div>
       <div class="items-grid">
-        ${FARM_ITEMS.map(it => {
-          const can = save.gold >= it.price;
+        ${SHOP_ITEMS.map(it => {
+          const owned = inv[it.id] || 0;
+          const can = owned > 0;
           return `<div class="item-card ${can ? '' : 'disabled'}"
                        ${can ? `onclick="giveItem(${id}, '${it.id}')"` : ''}>
             <span class="it-icon">${it.icon}</span>
             <div class="it-name">${it.name}</div>
             <div class="it-effect">${STAT_KO[it.stat]} +${it.amount}</div>
-            <div class="it-price">💰 ${it.price}</div>
+            <div class="it-price" style="color:${can?'#5aa030':'#a08868'}">보유: <b>${owned}</b></div>
           </div>`;
         }).join('')}
       </div>
@@ -3961,14 +4028,14 @@ function closeItemShop() {
 
 function giveItem(animalId, itemId) {
   const a = save.animals.find(x => x.id === animalId);
-  const it = FARM_ITEMS.find(x => x.id === itemId);
+  const it = SHOP_ITEMS.find(x => x.id === itemId);
   if (!a || !it) return;
-  if (save.gold < it.price) return;
-  save.gold -= it.price;
+  const owned = (save.inventory && save.inventory[itemId]) || 0;
+  if (owned <= 0) return;
+  save.inventory[itemId] = owned - 1;
   bumpStat(a, it.stat, it.amount);
   saveSave();
   renderMyAnimals();
-  // 상점 다시 열어서 갱신
   openItemShop(animalId);
 }
 
