@@ -1069,6 +1069,30 @@
     font-family: 'Black Han Sans', sans-serif;
     letter-spacing: 0.5px;
   }
+  .release-btn {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    background: rgba(255, 245, 220, 0.95);
+    border: 1.5px solid #a06030;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    z-index: 3;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: all 0.15s;
+  }
+  .release-btn:hover {
+    background: #d8e8a0;
+    transform: scale(1.15);
+    border-color: #5a8030;
+  }
   .animal-card svg.animal-svg {
     width: 70px;
     height: 70px;
@@ -2937,7 +2961,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-10</div>
+    <div class="version-tag" style="color:#a06030;">260507-11</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -3476,6 +3500,8 @@ function renderMyAnimals() {
     const isActive = a.id === save.activeAnimalId;
     html += `
       <div class="animal-card ${isActive ? 'active' : ''}" onclick="setActiveAnimal(${a.id})">
+        <button class="release-btn" title="보호소에 맡기기"
+                onclick="event.stopPropagation(); confirmRelease(${a.id})">🏠</button>
         <svg viewBox="0 0 100 100" class="animal-svg"><use href="#${a.svg}"/></svg>
         <div class="ac-name">${a.name}</div>
         ${renderStatBars(a.stats)}
@@ -3484,6 +3510,45 @@ function renderMyAnimals() {
   });
   html += '</div>';
   c.innerHTML = html;
+}
+
+function confirmRelease(id) {
+  const a = save.animals.find(x => x.id === id);
+  if (!a) return;
+  const overlay = $('confirm-overlay');
+  overlay.classList.remove('hidden');
+  overlay.innerHTML = `
+    <div class="confirm-box">
+      <div class="cb-title">${a.name}을(를) 보호소에 맡기시겠어요?</div>
+      <svg viewBox="0 0 100 100"><use href="#${a.svg}"/></svg>
+      <div class="cb-msg">
+        ${a.name}이(가) 다른 가족을 만나러 갑니다.<br/>
+        <span style="color:#c04040;font-size:0.82rem">⚠ 키운 4스탯은 사라지며, 다시 데려올 수 없어요.</span>
+      </div>
+      <div class="cb-actions">
+        <button class="btn" onclick="closeConfirm()">취소</button>
+        <button class="btn attack" onclick="releaseAnimal(${id})">🏠 맡기기</button>
+      </div>
+    </div>
+  `;
+}
+
+function releaseAnimal(id) {
+  const idx = save.animals.findIndex(a => a.id === id);
+  if (idx < 0) { closeConfirm(); return; }
+  const a = save.animals[idx];
+  save.animals.splice(idx, 1);
+  // active 동물이 사라졌다면 다른 동물로 자동 변경
+  if (save.activeAnimalId === id) {
+    save.activeAnimalId = save.animals.length > 0 ? save.animals[0].id : null;
+  }
+  saveSave();
+  closeConfirm();
+  // 작별 메시지
+  setTimeout(() => {
+    alert(`💝 ${a.name}이(가) 보호소로 돌아갔어요.\n좋은 가족을 만나길 바랄게요...`);
+  }, 100);
+  renderMyAnimals();
 }
 
 function renderStatBars(s) {
