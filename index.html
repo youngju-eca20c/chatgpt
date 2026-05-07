@@ -967,6 +967,19 @@
     border: 1px solid #a06030;
   }
   .gold-bar::before { content: '💰 '; }
+  .rank-bar {
+    text-align: left;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.88rem;
+    color: #5a3010;
+    margin-bottom: 6px;
+    background: rgba(160, 96, 48, 0.12);
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid #a06030;
+    letter-spacing: 0.5px;
+  }
+  .rank-bar b { color: #c04040; font-size: 0.95rem; }
 
   /* 보호소 진열대 */
   .shelter-grid {
@@ -2924,7 +2937,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-09</div>
+    <div class="version-tag" style="color:#a06030;">260507-10</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -2969,6 +2982,7 @@
   <div id="shelter" class="farm-panel hidden">
     <div class="farm-title">🏠 동물보호소</div>
     <div class="farm-sub">새 친구를 만나 함께 모험을 떠나요</div>
+    <div class="rank-bar" id="shelter-rank-bar">🪶 평민 · 동물 0 / 3</div>
     <div class="gold-bar" id="shelter-gold">200</div>
     <div class="shelter-grid" id="shelter-grid"></div>
     <div class="farm-actions">
@@ -2981,6 +2995,7 @@
   <div id="my-animals" class="farm-panel hidden">
     <div class="farm-title">🐾 내 농장</div>
     <div class="farm-sub">동물을 클릭해 활동중인 친구를 바꿔보세요</div>
+    <div class="rank-bar" id="farm-rank-bar">🪶 평민 · 동물 0 / 3</div>
     <div class="gold-bar" id="farm-gold">200</div>
     <div id="farm-content"></div>
     <div class="farm-actions">
@@ -3118,6 +3133,12 @@ const RARITY_COLOR = {
   legendary:'#c060c0'
 };
 
+// 유저 등급 (추후 확장 가능)
+const RANK_INFO = {
+  평민: { maxAnimals: 3, color: '#888888', icon: '🪶' }
+  // 향후: 평민 → 시민 → 귀족 → 영주 → 왕족 등 확장
+};
+
 // ===== localStorage 저장 시스템 =====
 const SAVE_KEY = 'animalfarm_save_v1';
 let save = null;
@@ -3136,6 +3157,7 @@ function loadSave() {
 function defaultSave() {
   return {
     version: 1,
+    userRank: '평민',
     animals: [],
     activeAnimalId: null,
     nextAnimalId: 1,
@@ -3147,11 +3169,21 @@ function defaultSave() {
 
 function migrateSave(data) {
   if (!data.version) data.version = 1;
+  if (!data.userRank) data.userRank = '평민';
   if (!Array.isArray(data.animals)) data.animals = [];
   if (typeof data.gold !== 'number') data.gold = 200;
   if (!Array.isArray(data.humans)) data.humans = [];
   if (typeof data.nextAnimalId !== 'number') data.nextAnimalId = 1;
   return data;
+}
+
+function getMaxAnimals() {
+  const info = RANK_INFO[save?.userRank] || RANK_INFO['평민'];
+  return info.maxAnimals;
+}
+
+function isAnimalSlotFull() {
+  return save && save.animals.length >= getMaxAnimals();
 }
 
 function saveSave() {
@@ -3334,25 +3366,43 @@ function refreshShelterStock() {
 
 function renderShelter() {
   $('shelter-gold').textContent = save.gold;
+  updateRankBadges();
   const grid = $('shelter-grid');
   grid.innerHTML = '';
+  const slotFull = isAnimalSlotFull();
   (save.shelterStock || []).forEach(key => {
     const sp = ANIMAL_SPECIES[key];
     if (!sp) return;
-    const can = save.gold >= sp.price;
+    const canPay = save.gold >= sp.price;
+    const can = canPay && !slotFull;
     const card = document.createElement('div');
     card.className = 'shelter-card' + (can ? '' : ' expensive');
     const priceHtml = sp.price === 0
       ? `<div class="sc-price sc-free">무료 스타터</div>`
       : `<div class="sc-price">💰 ${sp.price}</div>`;
+    const lockBadge = slotFull ? `<div style="font-size:0.65rem;color:#c04040;margin-top:2px;">🔒 자리 가득</div>` : '';
     card.innerHTML = `
       <svg viewBox="0 0 100 100" class="animal-svg"><use href="#${sp.svg}"/></svg>
       <div class="sc-name">${sp.name}</div>
       <div class="sc-rarity" style="background:${RARITY_COLOR[sp.rarity] || '#888'}">${sp.rarity}</div>
       ${priceHtml}
+      ${lockBadge}
     `;
     if (can) card.onclick = () => confirmAdopt(key);
     grid.appendChild(card);
+  });
+}
+
+function updateRankBadges() {
+  const max = getMaxAnimals();
+  const cur = save.animals.length;
+  const rank = save.userRank;
+  const info = RANK_INFO[rank] || RANK_INFO['평민'];
+  ['shelter-rank-bar', 'farm-rank-bar'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.innerHTML = `<span style="color:${info.color}">${info.icon} ${rank}</span> · 동물 <b>${cur} / ${max}</b>`;
+    }
   });
 }
 
@@ -3384,6 +3434,11 @@ function closeConfirm() {
 function adoptAnimal(speciesKey) {
   const sp = ANIMAL_SPECIES[speciesKey];
   if (save.gold < sp.price) { closeConfirm(); return; }
+  if (isAnimalSlotFull()) {
+    closeConfirm();
+    alert(`🔒 ${save.userRank} 등급은 ${getMaxAnimals()}마리까지만 키울 수 있어요!\n동물을 인간으로 졸업시키거나 등급을 올려야 더 입양할 수 있습니다.`);
+    return;
+  }
   save.gold -= sp.price;
   const animal = {
     id: save.nextAnimalId++,
@@ -3410,6 +3465,7 @@ function enterMyAnimals() {
 
 function renderMyAnimals() {
   $('farm-gold').textContent = save.gold;
+  updateRankBadges();
   const c = $('farm-content');
   if (save.animals.length === 0) {
     c.innerHTML = '<div class="farm-empty">아직 입양한 동물이 없어요.<br/>보호소에 가서 첫 친구를 만나보세요!</div>';
