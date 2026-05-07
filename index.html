@@ -1158,6 +1158,178 @@
   }
   .farm-actions .btn { flex: 1; }
 
+  /* === 내 농장 마당 (자유롭게 돌아다니는 동물) === */
+  .farm-yard {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/2;
+    background: #cae8a0;
+    border: 3px solid #a06030;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 0 30px rgba(160, 96, 48, 0.2);
+    margin-bottom: 12px;
+  }
+  .yard-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .yard-animal {
+    position: absolute;
+    width: 18%;
+    aspect-ratio: 1/1;
+    cursor: pointer;
+    z-index: 5;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.4));
+    transition: filter 0.2s;
+  }
+  .yard-animal:hover { filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)) brightness(1.1); }
+  .yard-animal svg { width: 100%; height: 100%; }
+  .yard-animal.is-active::after {
+    content: '★';
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ffcc44;
+    color: #5a3010;
+    font-size: 0.85rem;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  /* 모션 4종 */
+  .motion-hop  { animation: m-hop 1.4s ease-in-out infinite; }
+  .motion-pace { animation: m-pace 5s ease-in-out infinite; }
+  .motion-float{ animation: m-float 3s ease-in-out infinite; }
+  .motion-wiggle{ animation: m-wiggle 2s ease-in-out infinite; }
+
+  @keyframes m-hop {
+    0%, 100% { transform: translateY(0); }
+    45% { transform: translateY(-12px); }
+    50% { transform: translateY(-12px) rotate(-2deg); }
+    55% { transform: translateY(-12px); }
+  }
+  @keyframes m-pace {
+    0%, 100% { transform: translateX(0) scaleX(1); }
+    24% { transform: translateX(40px) scaleX(1); }
+    25% { transform: translateX(40px) scaleX(-1); }
+    74% { transform: translateX(-30px) scaleX(-1); }
+    75% { transform: translateX(-30px) scaleX(1); }
+  }
+  @keyframes m-float {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
+  }
+  @keyframes m-wiggle {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+
+  /* 동물 상세 패널 */
+  .animal-detail {
+    background: linear-gradient(180deg, #fff 0%, #fff5dc 100%);
+    border: 2.5px solid #a06030;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 12px rgba(80, 40, 10, 0.3);
+    position: relative;
+  }
+  .ad-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: rgba(0,0,0,0.1);
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #5a3010;
+  }
+  .ad-close:hover { background: rgba(0,0,0,0.2); }
+  .ad-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .ad-portrait {
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle, #ffe8a0, transparent 70%);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .ad-portrait svg { width: 100%; height: 100%; }
+  .ad-info { flex: 1; min-width: 0; }
+  .ad-name {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.2rem;
+    color: #5a3010;
+  }
+  .ad-active-tag {
+    display: inline-block;
+    margin-left: 6px;
+    background: #ffcc44;
+    color: #5a3010;
+    font-size: 0.65rem;
+    padding: 1px 7px;
+    border-radius: 999px;
+  }
+  .ad-combat {
+    font-size: 0.75rem;
+    color: #7a4020;
+    margin-top: 3px;
+    font-family: 'Courier New', monospace;
+  }
+  .ad-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .ad-actions .btn {
+    padding: 9px 8px;
+    font-size: 0.85rem;
+    min-width: 0;
+  }
+  .ad-actions .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* 아이템 주기 */
+  .items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .item-card {
+    background: #fff;
+    border: 1.5px solid #a06030;
+    border-radius: 8px;
+    padding: 8px 6px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.78rem;
+    color: #5a3010;
+    transition: all 0.15s;
+  }
+  .item-card:hover { background: #fff5dc; transform: translateY(-2px); }
+  .item-card.disabled { opacity: 0.45; cursor: not-allowed; }
+  .item-card .it-icon { font-size: 1.4rem; display: block; line-height: 1; margin-bottom: 3px; }
+  .item-card .it-name { font-family: 'Black Han Sans', sans-serif; font-size: 0.78rem; }
+  .item-card .it-effect { color: #5aa030; font-size: 0.7rem; margin-top: 2px; }
+  .item-card .it-price { color: #c08020; font-size: 0.72rem; margin-top: 2px; }
+
   /* 입양 확인 다이얼로그 */
   .confirm-overlay {
     position: fixed;
@@ -2537,6 +2709,89 @@
       <rect x="36" y="122" width="28" height="3" fill="#a08068" stroke="#3a1808" stroke-width="0.5"/>
     </symbol>
 
+    <!-- 내 농장 마당 배경 -->
+    <symbol id="bg-yard" viewBox="0 0 600 400">
+      <defs>
+        <linearGradient id="yardSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#a8d8f0"/>
+          <stop offset="100%" stop-color="#d8e8f8"/>
+        </linearGradient>
+        <linearGradient id="yardGrass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#a8d860"/>
+          <stop offset="100%" stop-color="#7ab048"/>
+        </linearGradient>
+      </defs>
+      <!-- 하늘 -->
+      <rect width="600" height="130" fill="url(#yardSky)"/>
+      <!-- 태양 -->
+      <circle cx="510" cy="60" r="34" fill="#fff5b0" opacity="0.5"/>
+      <circle cx="510" cy="60" r="24" fill="#ffd070"/>
+      <circle cx="503" cy="56" r="2" fill="#5a3010"/>
+      <circle cx="517" cy="56" r="2" fill="#5a3010"/>
+      <path d="M504 64 Q510 70 516 64" stroke="#5a3010" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- 구름 -->
+      <g fill="#fff" opacity="0.92">
+        <ellipse cx="100" cy="50" rx="32" ry="11"/>
+        <ellipse cx="130" cy="55" rx="22" ry="10"/>
+        <ellipse cx="280" cy="40" rx="28" ry="10"/>
+      </g>
+      <!-- 멀리 산 -->
+      <ellipse cx="100" cy="155" rx="120" ry="35" fill="#8ab848" opacity="0.6"/>
+      <ellipse cx="500" cy="150" rx="140" ry="30" fill="#8ab848" opacity="0.6"/>
+      <!-- 풀밭 -->
+      <rect y="130" width="600" height="270" fill="url(#yardGrass)"/>
+      <!-- 울타리 -->
+      <g stroke="#a06030" stroke-width="3.5" fill="none" stroke-linecap="round">
+        <line x1="0" y1="135" x2="600" y2="135"/>
+        <line x1="0" y1="148" x2="600" y2="148"/>
+      </g>
+      <g fill="#c08050" stroke="#7a4020" stroke-width="1">
+        <rect x="40" y="128" width="6" height="28"/>
+        <rect x="170" y="128" width="6" height="28"/>
+        <rect x="300" y="128" width="6" height="28"/>
+        <rect x="430" y="128" width="6" height="28"/>
+        <rect x="560" y="128" width="6" height="28"/>
+      </g>
+      <!-- 풀잎 -->
+      <g stroke="#5a8030" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.7">
+        <path d="M50 200 q1 -8 2 0 M55 205 q1 -7 2 0"/>
+        <path d="M180 250 q1 -8 2 0"/>
+        <path d="M340 230 q1 -8 2 0 M346 235 q1 -7 2 0"/>
+        <path d="M460 270 q1 -8 2 0"/>
+        <path d="M120 330 q1 -8 2 0"/>
+        <path d="M280 360 q1 -7 2 0"/>
+      </g>
+      <!-- 꽃 -->
+      <g>
+        <circle cx="60" cy="220" r="3" fill="#ff80a0"/><circle cx="60" cy="220" r="1" fill="#ffe070"/>
+        <circle cx="220" cy="280" r="3" fill="#ffe070"/><circle cx="220" cy="280" r="1" fill="#fff"/>
+        <circle cx="380" cy="240" r="3" fill="#a0a0ff"/><circle cx="380" cy="240" r="1" fill="#fff"/>
+        <circle cx="500" cy="320" r="3" fill="#ff80a0"/><circle cx="500" cy="320" r="1" fill="#ffe070"/>
+      </g>
+      <!-- 작은 나무 -->
+      <g transform="translate(40 180)">
+        <rect x="-3" y="20" width="8" height="40" fill="#5a3018"/>
+        <ellipse cx="1" cy="14" rx="22" ry="20" fill="#5a8030"/>
+        <ellipse cx="1" cy="10" rx="18" ry="16" fill="#7aa840"/>
+      </g>
+      <!-- 물그릇 -->
+      <ellipse cx="80" cy="370" rx="26" ry="6" fill="#7a4020"/>
+      <ellipse cx="80" cy="368" rx="22" ry="4" fill="#80c0e0"/>
+      <ellipse cx="76" cy="367" rx="6" ry="1.5" fill="#fff" opacity="0.7"/>
+      <!-- 사료그릇 -->
+      <ellipse cx="540" cy="370" rx="28" ry="7" fill="#7a4020"/>
+      <ellipse cx="540" cy="368" rx="24" ry="5" fill="#7ad068"/>
+      <circle cx="535" cy="368" r="2" fill="#5a8030"/>
+      <circle cx="545" cy="367" r="2" fill="#5a8030"/>
+      <!-- 발자국 -->
+      <g fill="#a06030" opacity="0.4">
+        <ellipse cx="200" cy="370" rx="3" ry="2"/>
+        <ellipse cx="220" cy="365" rx="3" ry="2"/>
+        <ellipse cx="240" cy="370" rx="3" ry="2"/>
+        <ellipse cx="260" cy="365" rx="3" ry="2"/>
+      </g>
+    </symbol>
+
     <!-- 월드맵 배경 (따뜻한 농장 - 참고 이미지 스타일) -->
     <symbol id="bg-worldmap" viewBox="0 0 800 500">
       <defs>
@@ -2961,7 +3216,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-11</div>
+    <div class="version-tag" style="color:#a06030;">260507-12</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -2970,32 +3225,37 @@
         <use href="#bg-worldmap"/>
       </svg>
       <!-- 동물보호소 (좌상단) -->
-      <button class="map-building available" style="top:18%;left:18%;width:18%" onclick="enterShelter()" aria-label="동물보호소">
+      <button class="map-building available" style="top:14%;left:18%;width:16%" onclick="enterShelter()" aria-label="동물보호소">
         <svg viewBox="0 0 110 130"><use href="#bldg-shelter"/></svg>
         <div class="bldg-label">🏠 보호소</div>
       </button>
       <!-- 탑 (상단 중앙, 강조) -->
-      <button class="map-building available" style="top:22%;left:50%;width:18%" onclick="goCharSelect()" aria-label="저주받은 탑">
+      <button class="map-building available" style="top:18%;left:50%;width:18%" onclick="goCharSelect()" aria-label="저주받은 탑">
         <svg viewBox="0 0 100 150"><use href="#bldg-tower"/></svg>
         <div class="bldg-label">탑 ▶</div>
       </button>
+      <!-- 내 농장 (좌중간) -->
+      <button class="map-building available" style="top:42%;left:22%;width:18%" onclick="enterMyAnimals()" aria-label="내 농장">
+        <svg viewBox="0 0 110 120"><use href="#bldg-minifarm"/></svg>
+        <div class="bldg-label">🐾 내 농장</div>
+      </button>
       <!-- 백화점 (우상단) -->
-      <button class="map-building locked" style="top:32%;left:78%;width:18%" onclick="lockedLoc('백화점')" aria-label="백화점">
+      <button class="map-building locked" style="top:30%;left:78%;width:16%" onclick="lockedLoc('백화점')" aria-label="백화점">
         <svg viewBox="0 0 110 130"><use href="#bldg-dept"/></svg>
         <div class="bldg-label">🛍 백화점</div>
       </button>
       <!-- 놀이공원 (가운데 중간) -->
-      <button class="map-building locked" style="top:46%;left:42%;width:22%" onclick="lockedLoc('놀이공원')" aria-label="놀이공원">
+      <button class="map-building locked" style="top:48%;left:62%;width:20%" onclick="lockedLoc('놀이공원')" aria-label="놀이공원">
         <svg viewBox="0 0 140 130"><use href="#bldg-amusement"/></svg>
         <div class="bldg-label">🎈 놀이공원</div>
       </button>
-      <!-- 미용실 (좌측 중하) -->
-      <button class="map-building locked" style="top:64%;left:22%;width:16%" onclick="lockedLoc('미용실')" aria-label="미용실">
+      <!-- 미용실 (좌측 하단) -->
+      <button class="map-building locked" style="top:72%;left:25%;width:14%" onclick="lockedLoc('미용실')" aria-label="미용실">
         <svg viewBox="0 0 100 130"><use href="#bldg-salon"/></svg>
         <div class="bldg-label">미용실</div>
       </button>
       <!-- 과수원 (우하단) -->
-      <button class="map-building locked" style="top:84%;left:68%;width:22%" onclick="lockedLoc('과수원')" aria-label="과수원">
+      <button class="map-building locked" style="top:80%;left:70%;width:22%" onclick="lockedLoc('과수원')" aria-label="과수원">
         <svg viewBox="0 0 140 120"><use href="#bldg-orchard"/></svg>
         <div class="bldg-label">🧺 과수원</div>
       </button>
@@ -3018,10 +3278,18 @@
   <!-- 내 농장 -->
   <div id="my-animals" class="farm-panel hidden">
     <div class="farm-title">🐾 내 농장</div>
-    <div class="farm-sub">동물을 클릭해 활동중인 친구를 바꿔보세요</div>
+    <div class="farm-sub">동물을 클릭해서 놀아주거나 보살펴 보세요</div>
     <div class="rank-bar" id="farm-rank-bar">🪶 평민 · 동물 0 / 3</div>
     <div class="gold-bar" id="farm-gold">200</div>
-    <div id="farm-content"></div>
+    <!-- 마당 (동물 자유롭게 돌아다님) -->
+    <div class="farm-yard" id="farm-yard">
+      <svg class="yard-bg" preserveAspectRatio="xMidYMid slice" viewBox="0 0 600 400">
+        <use href="#bg-yard"/>
+      </svg>
+      <!-- 동물들 동적 배치 -->
+    </div>
+    <!-- 선택 동물 상세 (선택 시 노출) -->
+    <div class="animal-detail hidden" id="animal-detail"></div>
     <div class="farm-actions">
       <button class="btn" onclick="enterShelter()">🏠 보호소 가기</button>
       <button class="btn" onclick="showWorldMap()">← 월드맵</button>
@@ -3487,29 +3755,221 @@ function enterMyAnimals() {
   $('my-animals').classList.remove('hidden');
 }
 
+// 종별 모션 매핑
+const MOTION_MAP = {
+  'char-rabbit':  'motion-hop',
+  'char-hamster': 'motion-hop',
+  'char-dog':     'motion-pace',
+  'char-cat':     'motion-pace',
+  'char-fox':     'motion-pace',
+  'char-dugong':  'motion-float',
+  'char-dolphin': 'motion-float'
+};
+
+// 동물 ID 기반 의사 랜덤 위치 (안정적)
+function animalYardPos(animal, idx, total) {
+  // 가용 영역: top 35~75%, left 8~75% (마당의 풀밭 영역)
+  const seedX = (animal.id * 73 + idx * 137) % 100;
+  const seedY = (animal.id * 41 + idx * 97) % 100;
+  const left = 10 + (seedX * 0.65);  // 10~75%
+  const top  = 38 + (seedY * 0.38);  // 38~76%
+  const delay = (animal.id * 0.31) % 1.5;
+  return { left, top, delay };
+}
+
+let selectedYardAnimalId = null;
+
 function renderMyAnimals() {
   $('farm-gold').textContent = save.gold;
   updateRankBadges();
-  const c = $('farm-content');
-  if (save.animals.length === 0) {
-    c.innerHTML = '<div class="farm-empty">아직 입양한 동물이 없어요.<br/>보호소에 가서 첫 친구를 만나보세요!</div>';
-    return;
+  renderYard();
+  // 선택된 동물 상세 패널 갱신
+  if (selectedYardAnimalId) {
+    const a = save.animals.find(x => x.id === selectedYardAnimalId);
+    if (a) renderAnimalDetail(a);
+    else { selectedYardAnimalId = null; $('animal-detail').classList.add('hidden'); }
   }
-  let html = '<div class="animal-grid">';
-  save.animals.forEach(a => {
-    const isActive = a.id === save.activeAnimalId;
-    html += `
-      <div class="animal-card ${isActive ? 'active' : ''}" onclick="setActiveAnimal(${a.id})">
-        <button class="release-btn" title="보호소에 맡기기"
-                onclick="event.stopPropagation(); confirmRelease(${a.id})">🏠</button>
-        <svg viewBox="0 0 100 100" class="animal-svg"><use href="#${a.svg}"/></svg>
-        <div class="ac-name">${a.name}</div>
-        ${renderStatBars(a.stats)}
-      </div>
-    `;
+}
+
+function renderYard() {
+  const yard = $('farm-yard');
+  // svg.yard-bg 외 동물들은 모두 제거 후 재생성
+  yard.querySelectorAll('.yard-animal').forEach(el => el.remove());
+
+  if (save.animals.length === 0) {
+    // 빈 농장 안내
+    let empty = yard.querySelector('.yard-empty');
+    if (!empty) {
+      empty = document.createElement('div');
+      empty.className = 'yard-empty';
+      empty.style.cssText = 'position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#5a3010;font-family:Black Han Sans,sans-serif;font-size:1rem;text-align:center;text-shadow:1px 1px 0 #fff5dc;';
+      empty.innerHTML = '🐾 아직 동물이 없어요...<br/>보호소에 가서 친구를 만나보세요!';
+      yard.appendChild(empty);
+    }
+    return;
+  } else {
+    const empty = yard.querySelector('.yard-empty');
+    if (empty) empty.remove();
+  }
+
+  save.animals.forEach((a, idx) => {
+    const pos = animalYardPos(a, idx, save.animals.length);
+    const motion = MOTION_MAP[a.svg] || 'motion-wiggle';
+    const div = document.createElement('div');
+    div.className = `yard-animal ${motion}` + (a.id === save.activeAnimalId ? ' is-active' : '');
+    div.style.left = pos.left + '%';
+    div.style.top = pos.top + '%';
+    div.style.animationDelay = pos.delay + 's';
+    div.innerHTML = `<svg viewBox="0 0 100 100"><use href="#${a.svg}"/></svg>`;
+    div.onclick = () => selectYardAnimal(a.id);
+    yard.appendChild(div);
   });
-  html += '</div>';
-  c.innerHTML = html;
+}
+
+function selectYardAnimal(id) {
+  selectedYardAnimalId = id;
+  const a = save.animals.find(x => x.id === id);
+  if (!a) return;
+  renderAnimalDetail(a);
+  // 마당에서 active 표시 갱신 (★)
+  document.querySelectorAll('.yard-animal').forEach(el => el.classList.remove('selected'));
+}
+
+function closeAnimalDetail() {
+  selectedYardAnimalId = null;
+  $('animal-detail').classList.add('hidden');
+}
+
+// 일일 제한 체크
+function isToday(timestamp) {
+  if (!timestamp) return false;
+  const t = new Date(timestamp);
+  const now = new Date();
+  return t.getFullYear() === now.getFullYear() &&
+         t.getMonth() === now.getMonth() &&
+         t.getDate() === now.getDate();
+}
+
+function canPlay(a) { return !isToday(a.lastPlayedAt); }
+function canBathe(a) { return !isToday(a.lastBathedAt); }
+
+// 농장 아이템 (구매·사용 모두 통합)
+const FARM_ITEMS = [
+  { id:'food',  name:'사료',     icon:'🍎', stat:'fit',   amount:2, price:10 },
+  { id:'book',  name:'그림책',   icon:'📚', stat:'intel', amount:2, price:10 },
+  { id:'mirror',name:'거울',     icon:'🪞', stat:'charm', amount:2, price:10 },
+  { id:'toy',   name:'장난감',   icon:'🧸', stat:'skill', amount:2, price:10 }
+];
+const STAT_KO = { fit:'체력', intel:'지능', charm:'매력', skill:'기술' };
+
+function renderAnimalDetail(a) {
+  const detail = $('animal-detail');
+  detail.classList.remove('hidden');
+  const t = animalToTowerStats(a);
+  const isActive = a.id === save.activeAnimalId;
+  const playOk = canPlay(a);
+  const batheOk = canBathe(a);
+  detail.innerHTML = `
+    <button class="ad-close" onclick="closeAnimalDetail()">×</button>
+    <div class="ad-header">
+      <div class="ad-portrait"><svg viewBox="0 0 100 100"><use href="#${a.svg}"/></svg></div>
+      <div class="ad-info">
+        <div class="ad-name">${a.name}${isActive ? '<span class="ad-active-tag">★ 활동중</span>' : ''}</div>
+        <div class="ad-combat">⚔ ${t.atk}  🛡 ${t.defense}  ❤ ${t.maxHp}  💧 ${t.maxMp}  ⚡ ${t.spd}</div>
+      </div>
+    </div>
+    ${renderStatBars(a.stats)}
+    <div class="ad-actions">
+      ${isActive ? '' : `<button class="btn success" onclick="setActiveAnimalAndStay(${a.id})">⭐ 활동중 설정</button>`}
+      <button class="btn" onclick="playWithAnimal(${a.id})" ${playOk ? '' : 'disabled'}>🎾 놀아주기${playOk ? '' : ' (오늘 완료)'}</button>
+      <button class="btn" onclick="batheAnimal(${a.id})" ${batheOk ? '' : 'disabled'}>🛁 씻기기${batheOk ? '' : ' (오늘 완료)'}</button>
+      <button class="btn" onclick="openItemShop(${a.id})">🎁 물건 주기</button>
+      <button class="btn attack" onclick="confirmRelease(${a.id})">🏠 보호소에 맡기기</button>
+    </div>
+    <div id="item-shop-area"></div>
+  `;
+}
+
+function setActiveAnimalAndStay(id) {
+  save.activeAnimalId = id;
+  saveSave();
+  renderMyAnimals();
+}
+
+function setActiveAnimal(id) {
+  save.activeAnimalId = id;
+  saveSave();
+  renderMyAnimals();
+}
+
+function bumpStat(animal, stat, amount) {
+  animal.stats[stat] = Math.min(400, (animal.stats[stat] || 0) + amount);
+}
+
+function playWithAnimal(id) {
+  const a = save.animals.find(x => x.id === id);
+  if (!a || !canPlay(a)) return;
+  bumpStat(a, 'fit', 3);
+  bumpStat(a, 'intel', 3);
+  bumpStat(a, 'charm', 5);
+  bumpStat(a, 'skill', 3);
+  a.lastPlayedAt = Date.now();
+  saveSave();
+  renderMyAnimals();
+  alert(`🎾 ${a.name}와(과) 즐겁게 놀았어요!\n체력+3 · 지능+3 · 매력+5 · 기술+3`);
+}
+
+function batheAnimal(id) {
+  const a = save.animals.find(x => x.id === id);
+  if (!a || !canBathe(a)) return;
+  bumpStat(a, 'charm', 8);
+  bumpStat(a, 'intel', 2);
+  a.lastBathedAt = Date.now();
+  saveSave();
+  renderMyAnimals();
+  alert(`🛁 ${a.name}이(가) 깨끗해졌어요!\n매력+8 · 지능+2`);
+}
+
+function openItemShop(id) {
+  const a = save.animals.find(x => x.id === id);
+  if (!a) return;
+  const area = $('item-shop-area');
+  area.innerHTML = `
+    <div style="margin-top:10px;border-top:1px dashed #a06030;padding-top:10px;">
+      <div style="font-family:'Black Han Sans',sans-serif;font-size:0.9rem;color:#7a4020;margin-bottom:6px;">🎁 ${a.name}에게 줄 물건 (무제한)</div>
+      <div class="items-grid">
+        ${FARM_ITEMS.map(it => {
+          const can = save.gold >= it.price;
+          return `<div class="item-card ${can ? '' : 'disabled'}"
+                       ${can ? `onclick="giveItem(${id}, '${it.id}')"` : ''}>
+            <span class="it-icon">${it.icon}</span>
+            <div class="it-name">${it.name}</div>
+            <div class="it-effect">${STAT_KO[it.stat]} +${it.amount}</div>
+            <div class="it-price">💰 ${it.price}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <button class="btn" style="margin-top:6px;width:100%" onclick="closeItemShop()">닫기</button>
+    </div>
+  `;
+}
+
+function closeItemShop() {
+  const area = $('item-shop-area');
+  if (area) area.innerHTML = '';
+}
+
+function giveItem(animalId, itemId) {
+  const a = save.animals.find(x => x.id === animalId);
+  const it = FARM_ITEMS.find(x => x.id === itemId);
+  if (!a || !it) return;
+  if (save.gold < it.price) return;
+  save.gold -= it.price;
+  bumpStat(a, it.stat, it.amount);
+  saveSave();
+  renderMyAnimals();
+  // 상점 다시 열어서 갱신
+  openItemShop(animalId);
 }
 
 function confirmRelease(id) {
@@ -3564,12 +4024,6 @@ function renderStatBars(s) {
     ${row('sp-cha','매력',s.charm)}
     ${row('sp-skl','기술',s.skill)}
   </div>`;
-}
-
-function setActiveAnimal(id) {
-  save.activeAnimalId = id;
-  saveSave();
-  renderMyAnimals();
 }
 
 // ============= 탑 캐릭터 선택 (보유 동물 기반) =============
