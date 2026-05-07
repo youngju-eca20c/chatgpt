@@ -899,6 +899,70 @@
     font-size: 0.85rem;
   }
 
+  /* 두꺼비 상인 (씬 내) */
+  .scene-toad {
+    position: absolute;
+    width: 26%;
+    aspect-ratio: 1/1;
+    bottom: 18%;
+    right: 16%;
+    z-index: 5;
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,0.7)) drop-shadow(0 0 12px rgba(160,255,80,0.2));
+    animation: toadAppear 0.7s cubic-bezier(0.3, 1.4, 0.5, 1), toadHop 1.6s 0.7s ease-in-out infinite;
+  }
+  .scene-toad svg { width: 100%; height: 100%; }
+  @keyframes toadAppear {
+    0%   { opacity: 0; transform: translateY(80px) scale(0.3) rotate(-15deg); }
+    50%  { opacity: 1; transform: translateY(-25px) scale(1.2) rotate(5deg); }
+    100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+  }
+  @keyframes toadHop {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-10px); }
+  }
+
+  /* 상점 리스트 */
+  .shop-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 6px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-right: 4px;
+  }
+  .shop-item {
+    background: rgba(74, 48, 128, 0.55);
+    border: 1.5px solid #6040a0;
+    border-radius: 8px;
+    padding: 6px 9px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .shop-item:hover { background: rgba(96, 64, 160, 0.85); border-color: #ff80c0; transform: translateX(2px); }
+  .shop-item.expensive { opacity: 0.4; cursor: not-allowed; }
+  .shop-item.expensive:hover { background: rgba(74, 48, 128, 0.55); transform: none; }
+  .si-row1 { display: flex; align-items: center; gap: 6px; }
+  .si-icon { font-size: 1.15rem; }
+  .si-name { flex: 1; color: #fff; font-size: 0.85rem; }
+  .si-price { color: #ffcc44; font-size: 0.78rem; }
+  .si-stats { color: #80ffaa; font-size: 0.7rem; margin-top: 2px; }
+  .si-desc { color: #b0a0d0; font-size: 0.7rem; margin-top: 2px; line-height: 1.35; }
+  .shop-empty { text-align: center; color: #8a7a9a; font-style: italic; padding: 12px; font-size: 0.85rem; }
+  .shop-back {
+    width: 100%;
+    margin-top: 4px;
+    padding: 6px;
+    background: rgba(60, 40, 80, 0.7);
+    border: 1px solid #6040a0;
+    border-radius: 8px;
+    color: #d0c0e8;
+    cursor: pointer;
+    font-family: 'Gowun Dodum', sans-serif;
+    font-size: 0.82rem;
+  }
+  .shop-back:hover { background: rgba(96, 64, 160, 0.8); }
+
   /* 노파 캐릭터 (씬 내) */
   .scene-hag {
     position: absolute;
@@ -1496,6 +1560,56 @@
       <text x="50" y="60" text-anchor="middle" fill="#ffcc44" font-size="20" font-family="serif">✦</text>
     </symbol>
 
+    <!-- 두꺼비 상인 -->
+    <symbol id="char-toad" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="93" rx="36" ry="4" fill="#000" opacity="0.4"/>
+      <!-- 다리 (양옆 살짝 튀어나옴) -->
+      <ellipse cx="20" cy="78" rx="11" ry="6" fill="#4a7028" transform="rotate(-15 20 78)"/>
+      <ellipse cx="80" cy="78" rx="11" ry="6" fill="#4a7028" transform="rotate(15 80 78)"/>
+      <!-- 몸통 (납작하고 둥근) -->
+      <ellipse cx="50" cy="62" rx="38" ry="28" fill="#5a8030"/>
+      <ellipse cx="50" cy="60" rx="34" ry="24" fill="#7aa040"/>
+      <ellipse cx="50" cy="72" rx="28" ry="14" fill="#a0c068" opacity="0.7"/>
+      <!-- 점 무늬 -->
+      <circle cx="32" cy="54" r="2.2" fill="#3a5018"/>
+      <circle cx="42" cy="66" r="1.8" fill="#3a5018"/>
+      <circle cx="58" cy="58" r="2" fill="#3a5018"/>
+      <circle cx="68" cy="68" r="1.6" fill="#3a5018"/>
+      <!-- 등에 멘 보따리 (오른쪽 어깨) -->
+      <line x1="72" y1="48" x2="62" y2="36" stroke="#4a2810" stroke-width="2"/>
+      <ellipse cx="72" cy="42" rx="13" ry="11" fill="#a06030" stroke="#5a3010" stroke-width="1"/>
+      <ellipse cx="72" cy="36" rx="6" ry="3" fill="#7a4020" opacity="0.7"/>
+      <!-- 보따리 매듭 -->
+      <ellipse cx="72" cy="33" rx="3" ry="2" fill="#4a2810"/>
+      <line x1="70" y1="31" x2="68" y2="27" stroke="#4a2810" stroke-width="1.5"/>
+      <line x1="74" y1="31" x2="76" y2="27" stroke="#4a2810" stroke-width="1.5"/>
+      <!-- 모자 (행상인 모자) -->
+      <ellipse cx="50" cy="22" rx="22" ry="4" fill="#5a3010"/>
+      <path d="M36 22 L40 8 L60 8 L64 22 Z" fill="#7a4020" stroke="#3a1808" stroke-width="1"/>
+      <ellipse cx="50" cy="10" rx="3" ry="2" fill="#ffcc44" stroke="#7a4010" stroke-width="0.5"/>
+      <!-- 눈 (대형, 위로 솟음) -->
+      <circle cx="34" cy="32" r="11" fill="#7aa040"/>
+      <circle cx="66" cy="32" r="11" fill="#7aa040"/>
+      <circle cx="34" cy="32" r="9" fill="#fff"/>
+      <circle cx="66" cy="32" r="9" fill="#fff"/>
+      <ellipse cx="34" cy="34" rx="4" ry="5.5" fill="#1a0a0a"/>
+      <ellipse cx="66" cy="34" rx="4" ry="5.5" fill="#1a0a0a"/>
+      <circle cx="35" cy="32" r="1.4" fill="#fff"/>
+      <circle cx="67" cy="32" r="1.4" fill="#fff"/>
+      <!-- 큰 입 (히죽 웃음) -->
+      <path d="M28 50 Q50 70 72 50 Q50 64 28 50 Z" fill="#3a4a18" stroke="#1a2008" stroke-width="1.5"/>
+      <path d="M30 50 Q50 67 70 50" stroke="#1a2008" stroke-width="1" fill="none"/>
+      <!-- 혀 (살짝 보임) -->
+      <ellipse cx="50" cy="56" rx="6" ry="3" fill="#d04060"/>
+      <!-- 볼터치 -->
+      <ellipse cx="22" cy="48" rx="5" ry="3" fill="#ff80a0" opacity="0.4"/>
+      <ellipse cx="78" cy="48" rx="5" ry="3" fill="#ff80a0" opacity="0.4"/>
+      <!-- 발 옆에 떨어진 동전 -->
+      <ellipse cx="14" cy="88" rx="3.5" ry="2" fill="#ffcc44" stroke="#7a4010" stroke-width="0.5"/>
+      <ellipse cx="22" cy="90" rx="2.8" ry="1.6" fill="#ffcc44" stroke="#7a4010" stroke-width="0.5"/>
+      <ellipse cx="86" cy="89" rx="3" ry="1.8" fill="#ffcc44" stroke="#7a4010" stroke-width="0.5"/>
+    </symbol>
+
     <!-- 수상한 노파 -->
     <symbol id="char-hag" viewBox="0 0 100 100">
       <ellipse cx="50" cy="94" rx="30" ry="3" fill="#000" opacity="0.5"/>
@@ -1684,6 +1798,7 @@
           </div>
           <div class="stat-row"><span class="label">⚔ 공격</span><span class="val" id="stat-atk">10</span></div>
           <div class="stat-row"><span class="label">⚡ 속도</span><span class="val" id="stat-spd">5</span></div>
+          <div class="stat-row"><span class="label">💰 골드</span><span class="val" id="stat-gold" style="color:#ffcc44">0</span></div>
         </div>
       </aside>
 
@@ -1777,15 +1892,59 @@ const MONSTERS = {
 };
 
 const EQUIPMENTS = [
-  { name:'녹슨 검',     icon:'🗡', kind:'weapon', atk:3,  hp:0  },
-  { name:'은빛 단검',    icon:'🔪', kind:'weapon', atk:6,  hp:0  },
-  { name:'흑요석 검',   icon:'⚔️', kind:'weapon', atk:10, hp:0  },
-  { name:'가죽 갑옷',    icon:'🥋', kind:'armor',  atk:0,  hp:15 },
-  { name:'사슬 갑옷',    icon:'👘', kind:'armor',  atk:0,  hp:30 },
-  { name:'저주받은 갑주', icon:'🗿', kind:'armor',  atk:5,  hp:50 },
-  { name:'늑대 송곳니',  icon:'🦷', kind:'acc',    atk:2,  hp:5  },
-  { name:'마녀의 부적',  icon:'📿', kind:'acc',    atk:0,  hp:20 },
-  { name:'어둠의 반지',  icon:'💍', kind:'acc',    atk:4,  hp:10 }
+  { name:'녹슨 검',     icon:'🗡', kind:'weapon', atk:3,  hp:0,  desc:'녹이 슨 낡은 검.' },
+  { name:'은빛 단검',    icon:'🔪', kind:'weapon', atk:6,  hp:0,  desc:'은빛으로 빛나는 단검.' },
+  { name:'흑요석 검',   icon:'⚔️', kind:'weapon', atk:10, hp:0,  desc:'어둠을 가르는 명검.' },
+  { name:'가죽 갑옷',    icon:'🥋', kind:'armor',  atk:0,  hp:15, desc:'가벼운 가죽 갑옷.' },
+  { name:'사슬 갑옷',    icon:'👘', kind:'armor',  atk:0,  hp:30, desc:'촘촘한 사슬 갑옷.' },
+  { name:'저주받은 갑주', icon:'🗿', kind:'armor',  atk:5,  hp:50, desc:'어두운 힘이 깃든 갑주.' },
+  { name:'늑대 송곳니',  icon:'🦷', kind:'acc',    atk:2,  hp:5,  desc:'야성을 일깨우는 송곳니.' },
+  { name:'마녀의 부적',  icon:'📿', kind:'acc',    atk:0,  hp:20, desc:'마녀가 만든 보호 부적.' },
+  { name:'어둠의 반지',  icon:'💍', kind:'acc',    atk:4,  hp:10, desc:'어둠을 머금은 반지.' }
+];
+
+// 두꺼비 상점 전용 상품
+const SHOP_GOODS = [
+  {
+    type:'equip', kind:'weapon',
+    name:'폭풍검', icon:'🌩',
+    atk:16, hp:0, effect:'double',
+    desc:'평타 시 2회 연속 공격! 폭풍의 힘이 깃든 명검.',
+    price:280
+  },
+  {
+    type:'equip', kind:'acc',
+    name:'재생의 부적', icon:'🌿',
+    atk:0, hp:10, effect:'regen', regenAmt:5,
+    desc:'전투 중 매 턴마다 HP +5 자동 회복.',
+    price:200
+  },
+  {
+    type:'potion',
+    name:'거대 물약', icon:'🍶', heal:80,
+    desc:'가득 찬 큰 병 — 한 모금에 HP +80.',
+    price:80
+  },
+  {
+    type:'potion',
+    name:'중급 물약', icon:'⚗️', heal:50,
+    desc:'안정적인 50 HP 회복.',
+    price:45
+  },
+  {
+    type:'equip', kind:'armor',
+    name:'강철 판금', icon:'⛓️',
+    atk:2, hp:60,
+    desc:'두꺼운 강철 판금. 최대 HP +60, ATK +2.',
+    price:240
+  },
+  {
+    type:'equip', kind:'acc',
+    name:'행운의 동전', icon:'🪙',
+    atk:3, hp:15,
+    desc:'두꺼비가 좋아하는 동전. ATK+3, HP+15.',
+    price:150
+  }
 ];
 
 const QUIZZES = [
@@ -1827,7 +1986,8 @@ document.querySelectorAll('.char-card').forEach(card => {
       name: c.name, svg: c.svg,
       maxHp: c.hp, hp: c.hp,
       maxMp: c.mp, mp: c.mp,
-      baseAtk: c.atk, atk: c.atk, spd: c.spd
+      baseAtk: c.atk, atk: c.atk, spd: c.spd,
+      gold: 0
     };
     potions = [
       { name:'붉은 물약', heal:30 },
@@ -1857,6 +2017,7 @@ function updateUI() {
   $('player-mp-text').textContent = `${player.mp}/${player.maxMp}`;
   $('stat-atk').textContent = player.atk;
   $('stat-spd').textContent = player.spd;
+  $('stat-gold').textContent = player.gold;
 
   renderEquipSlots();
   renderBackpack();
@@ -1989,6 +2150,8 @@ function applyEquip(e, on) {
   }
 }
 
+const KIND_LIMIT = { weapon: 1, armor: 1, acc: 2 };
+
 function toggleEquip(i) {
   if (inBattle) {
     showDialog('전투 중에는 불가!');
@@ -2000,16 +2163,14 @@ function toggleEquip(i) {
     applyEquip(e, false);
     log(`${e.name} 해제`, 'system');
   } else {
-    // 같은 종류 자동 교체
-    if (e.kind === 'weapon' || e.kind === 'armor') {
-      const cur = equipments.find(x => x.equipped && x.kind === e.kind);
-      if (cur) { applyEquip(cur, false); log(`${cur.name} 해제`, 'system'); }
-    } else if (e.kind === 'acc') {
-      const accCount = equipments.filter(x => x.equipped && x.kind === 'acc').length;
-      if (accCount >= 2) {
-        const cur = equipments.find(x => x.equipped && x.kind === 'acc');
-        if (cur) { applyEquip(cur, false); log(`${cur.name} 해제`, 'system'); }
-      }
+    const limit = KIND_LIMIT[e.kind] || 1;
+    // 한도 초과 시 가장 오래된 장비부터 모두 해제
+    while (true) {
+      const sameKind = equipments.filter(x => x.equipped && x.kind === e.kind);
+      if (sameKind.length < limit) break;
+      const cur = sameKind[0];
+      applyEquip(cur, false);
+      log(`${cur.name} 해제됨 (자리 부족)`, 'system');
     }
     applyEquip(e, true);
     log(`${e.name} 장착! ATK+${e.atk}, HP+${e.hp}`, 'gain');
@@ -2194,7 +2355,7 @@ function spawnPuff(box, leftPct, bottomPct) {
 
 function cleanupFountain(delay = 0) {
   setTimeout(() => {
-    ['cs-dialog', 'scene-hag'].forEach(id => {
+    ['cs-dialog', 'scene-hag', 'scene-toad'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.remove();
     });
@@ -2317,13 +2478,216 @@ async function fountainGive() {
   updateUI();
 }
 
+// ============= 두꺼비 상인 =============
+async function shop() {
+  $('scene-bg-use').setAttribute('href', '#bg-room');
+  $('door-overlay').classList.add('hidden');
+  $('scene-player').classList.remove('hidden');
+  $('scene-enemy').classList.add('hidden');
+  $('mini-game').classList.add('hidden');
+  setSceneActions('');
+  log('━━ 두꺼비 상인의 가게 ━━', 'system');
+
+  // 잔여 컷신 정리
+  ['cs-dialog', 'scene-hag', 'scene-toad'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  });
+
+  const sp = $('scene-player');
+  sp.style.transition = 'none';
+  sp.style.left = '8%';
+  void sp.offsetWidth;
+
+  const box = $('scene-box');
+  const dlg = document.createElement('div');
+  dlg.className = 'cs-dialog';
+  dlg.id = 'cs-dialog';
+  box.appendChild(dlg);
+
+  // 1) 발견
+  await wait(500);
+  await showCSDialog(player.name, `"...? 누가 있다."`);
+  await wait(600);
+
+  // 2) 두꺼비 등장 (점프하며)
+  spawnPuff(box, '68%', '20%');
+  await wait(80);
+  const toad = document.createElement('div');
+  toad.className = 'scene-toad';
+  toad.id = 'scene-toad';
+  toad.innerHTML = '<svg viewBox="0 0 100 100"><use href="#char-toad"/></svg>';
+  box.appendChild(toad);
+
+  await wait(700);
+  // 3) 인사
+  await showCSDialog('두꺼비 상인', `"호이호이~! 폴짝 폴짝~ 손님이 오셨네요!"`);
+  await wait(450);
+  await showCSDialog('두꺼비 상인', `"이 깊은 탑에서 살아있는 손님을 만나다니, 영광이지 말고 영광이라구욧!"`);
+  await wait(450);
+  await showCSDialog('두꺼비 상인', `"제가 좋은 물건을 잔뜩 가져왔답니다~ 골드만 있다면야! 헷헷!"`);
+  await wait(400);
+
+  showShopMenu();
+}
+
+function showShopMenu() {
+  const dlg = document.getElementById('cs-dialog');
+  if (!dlg) return;
+  dlg.innerHTML = `
+    <div class="speaker">▼ 무엇을 하시겠어요? <span style="color:#ffcc44">(보유 ${player.gold}골드)</span></div>
+    <div class="cs-choices">
+      <button class="btn success" onclick="openShopBuy()">🛒 구매</button>
+      <button class="btn gold" onclick="openShopSell()">💰 판매</button>
+      <button class="btn attack" onclick="leaveShop()">🚪 떠나기</button>
+    </div>
+  `;
+}
+
+function openShopBuy() {
+  const dlg = document.getElementById('cs-dialog');
+  let html = `<div class="speaker">🛒 구매 — 보유 <span style="color:#ffcc44">${player.gold}골드</span></div><div class="shop-list">`;
+  SHOP_GOODS.forEach((g, i) => {
+    const can = player.gold >= g.price;
+    let stats = '';
+    if (g.type === 'equip') {
+      const parts = [];
+      if (g.atk) parts.push(`ATK+${g.atk}`);
+      if (g.hp)  parts.push(`HP+${g.hp}`);
+      if (g.effect === 'double') parts.push('🌩 2연타');
+      if (g.effect === 'regen')  parts.push(`🌿 턴마다 +${g.regenAmt}`);
+      stats = `<div class="si-stats">${parts.join(' · ')}</div>`;
+    } else {
+      stats = `<div class="si-stats">HP +${g.heal} 회복</div>`;
+    }
+    html += `
+      <div class="shop-item${can ? '' : ' expensive'}" ${can ? `onclick="buyItem(${i})"` : ''}>
+        <div class="si-row1">
+          <span class="si-icon">${g.icon}</span>
+          <span class="si-name">${g.name}</span>
+          <span class="si-price">${g.price}골드</span>
+        </div>
+        ${stats}
+        <div class="si-desc">${g.desc}</div>
+      </div>
+    `;
+  });
+  html += `</div><button class="shop-back" onclick="showShopMenu()">← 뒤로</button>`;
+  dlg.innerHTML = html;
+}
+
+function buyItem(idx) {
+  const g = SHOP_GOODS[idx];
+  if (player.gold < g.price) { showDialog('골드 부족!'); return; }
+  player.gold -= g.price;
+  if (g.type === 'potion') {
+    potions.push({ name: g.name, heal: g.heal });
+  } else {
+    equipments.push({
+      name: g.name, icon: g.icon, kind: g.kind,
+      atk: g.atk, hp: g.hp,
+      effect: g.effect, regenAmt: g.regenAmt,
+      equipped: false
+    });
+  }
+  log(`💰 ${g.name} 구매! (-${g.price} 골드)`, 'gain');
+  showRewardPopup(g.icon, `${g.name}!`);
+  updateUI();
+  openShopBuy();
+}
+
+function equipSellPrice(e) {
+  const base = (e.atk || 0) * 12 + (e.hp || 0) * 3 + (e.effect ? 80 : 0) + (e.regenAmt || 0) * 12;
+  return Math.max(8, Math.floor(base * 0.55));
+}
+
+function openShopSell() {
+  const dlg = document.getElementById('cs-dialog');
+  let html = `<div class="speaker">💰 판매 — 보유 <span style="color:#ffcc44">${player.gold}골드</span></div><div class="shop-list">`;
+  let any = false;
+  potions.forEach((p, i) => {
+    any = true;
+    const price = Math.max(5, Math.floor((p.heal || 30) * 0.6));
+    html += `
+      <div class="shop-item" onclick="sellPotion(${i}, ${price})">
+        <div class="si-row1">
+          <span class="si-icon">🧪</span>
+          <span class="si-name">${p.name} (HP+${p.heal})</span>
+          <span class="si-price">+${price}골드</span>
+        </div>
+      </div>
+    `;
+  });
+  equipments.forEach((e, i) => {
+    if (e.equipped) return;
+    any = true;
+    const price = equipSellPrice(e);
+    const parts = [];
+    if (e.atk) parts.push(`A+${e.atk}`);
+    if (e.hp)  parts.push(`H+${e.hp}`);
+    if (e.effect === 'double') parts.push('🌩');
+    if (e.effect === 'regen')  parts.push(`🌿+${e.regenAmt}`);
+    html += `
+      <div class="shop-item" onclick="sellEquip(${i}, ${price})">
+        <div class="si-row1">
+          <span class="si-icon">${e.icon}</span>
+          <span class="si-name">${e.name} <span style="color:#80ffaa;font-size:0.72rem">(${parts.join(' ')})</span></span>
+          <span class="si-price">+${price}골드</span>
+        </div>
+      </div>
+    `;
+  });
+  if (!any) html += `<div class="shop-empty">팔 수 있는 잡템이 없어요...</div>`;
+  html += `</div><button class="shop-back" onclick="showShopMenu()">← 뒤로</button>`;
+  dlg.innerHTML = html;
+}
+
+function sellPotion(i, price) {
+  if (i < 0 || i >= potions.length) return;
+  player.gold += price;
+  const p = potions[i];
+  potions.splice(i, 1);
+  log(`💰 ${p.name} 판매 +${price}골드`, 'gain');
+  updateUI();
+  openShopSell();
+}
+
+function sellEquip(i, price) {
+  if (i < 0 || i >= equipments.length) return;
+  if (equipments[i].equipped) return;
+  player.gold += price;
+  const e = equipments[i];
+  equipments.splice(i, 1);
+  log(`💰 ${e.name} 판매 +${price}골드`, 'gain');
+  updateUI();
+  openShopSell();
+}
+
+async function leaveShop() {
+  await showCSDialog('두꺼비 상인', `"호이~! 또 들러주세요! 폴짝!"`);
+  await wait(1100);
+
+  const toad = $('scene-toad');
+  if (toad) {
+    spawnPuff($('scene-box'), '68%', '32%');
+    toad.style.transition = 'all 0.7s ease-in';
+    toad.style.transform = 'translateY(-50px) scale(0.4) rotate(20deg)';
+    toad.style.opacity = '0';
+  }
+
+  cleanupFountain(700);
+  setSceneActions(`<button class="btn success" onclick="nextFloor()">▲ 다음 층으로</button>`);
+  updateUI();
+}
+
 function spawnEnemy() {
   let pool = [];
   if (floor < 4) pool = ['bat','bat','skeleton'];
   else if (floor < 8) pool = ['bat','skeleton','skeleton','skeletonW','vampireB'];
   else if (floor < 13) pool = ['skeleton','skeletonW','vampireB','vampireB','vampireC'];
   else if (floor < 18) pool = ['skeletonW','vampireB','vampireC','vampireC'];
-  else pool = ['vampireC','vampireC','vampireD'];
+  else if (floor < 24) pool = ['vampireB','vampireC','vampireC','vampireD'];
+  else pool = ['vampireC','vampireD','vampireD'];
 
   const key = pool[rand(0, pool.length - 1)];
   const m = MONSTERS[key];
@@ -2346,14 +2710,36 @@ function spawnEnemy() {
   }
 }
 
+function applyTurnRegen() {
+  let regen = 0;
+  equipments.forEach(e => {
+    if (e.equipped && e.effect === 'regen') regen += e.regenAmt || 0;
+  });
+  if (regen > 0 && player.hp < player.maxHp) {
+    const heal = Math.min(regen, player.maxHp - player.hp);
+    player.hp += heal;
+    log(`🌿 자연의 가호 — HP +${heal}`, 'gain');
+  }
+}
+
 function playerAttack() {
   if (!inBattle) return;
-  const dmg = rand(Math.floor(player.atk * 0.85), Math.floor(player.atk * 1.15));
-  enemy.hp -= dmg;
-  log(`⚔ 공격! ${enemy.name}에게 ${dmg}의 피해`, 'important');
-  showDialog(`${dmg} 피해!`);
+  const weapon = equipments.find(e => e.equipped && e.kind === 'weapon');
+  const isDouble = weapon && weapon.effect === 'double';
+  const hits = isDouble ? 2 : 1;
+  let totalDmg = 0;
+  for (let i = 0; i < hits; i++) {
+    const dmg = rand(Math.floor(player.atk * 0.85), Math.floor(player.atk * 1.15));
+    enemy.hp -= dmg;
+    totalDmg += dmg;
+    if (enemy.hp <= 0) break;
+  }
+  const label = isDouble ? `🌩 폭풍 2연타!` : `⚔ 공격!`;
+  log(`${label} ${enemy.name}에게 ${totalDmg} 피해`, 'important');
+  showDialog(isDouble ? `🌩 ${totalDmg} 피해!` : `${totalDmg} 피해!`);
   $('scene-enemy').classList.add('hit-flash');
   setTimeout(() => $('scene-enemy').classList.remove('hit-flash'), 400);
+  applyTurnRegen();
   updateUI();
   if (enemy.hp <= 0) { victory(); return; }
   setBattleButtons(false);
@@ -2385,6 +2771,7 @@ function magicAttack() {
     showDialog(`마법 ${dmg} 피해!`);
     $('scene-enemy').classList.add('hit-flash');
     setTimeout(() => $('scene-enemy').classList.remove('hit-flash'), 400);
+    applyTurnRegen();
     updateUI();
     if (enemy.hp <= 0) { victory(); return; }
     setTimeout(enemyAttack, 500);
@@ -2516,8 +2903,10 @@ function rollEquipment() {
 }
 
 function victory() {
-  log(`☠ ${enemy.name} 처치! +${enemy.gold} 보상`, 'gain');
-  showDialog('승리!');
+  const goldGain = enemy.gold + Math.floor(floor * 1.5);
+  player.gold += goldGain;
+  log(`☠ ${enemy.name} 처치! 💰 +${goldGain} 골드`, 'gain');
+  showDialog(`+${goldGain} 골드!`);
   inBattle = false;
   $('scene-enemy').classList.add('hidden');
   const r = Math.random();
@@ -2564,17 +2953,17 @@ function rewardItem() {
 
 function nextFloor() {
   floor++;
-  if (floor > 20) { triumph(); return; }
+  if (floor > 30) { triumph(); return; }
   log(`━ 제 ${floor} 층 ━`, 'system');
-  if (floor === 20) { finalBoss(); return; }
-  if (floor % 10 === 0) { fountain(); return; }
+  if (floor === 30) { finalBoss(); return; }
+  if (floor === 10 || floor === 20) { fountain(); return; }
+  if (floor === 15 || floor === 25) { shop(); return; }
   showDoorScene();
   updateUI();
 }
 
 // ============= 미니게임 =============
 function triggerMiniGame() {
-  if (floor === 20) { finalBoss(); return; }
   $('scene-bg-use').setAttribute('href', '#bg-room');
   $('door-overlay').classList.add('hidden');
   $('scene-player').classList.remove('hidden');
