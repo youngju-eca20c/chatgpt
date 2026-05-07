@@ -791,6 +791,18 @@
     text-shadow: none;
   }
 
+  /* 패치 버전 */
+  .version-tag {
+    text-align: center;
+    font-size: 0.72rem;
+    color: #7a6a9a;
+    margin-bottom: 10px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    opacity: 0.75;
+  }
+  .version-tag::before { content: '◆ v'; margin-right: 3px; color: #5a4a7a; }
+
   /* === 캐릭터 선택 화면 === */
   .char-select-panel {
     background: linear-gradient(180deg, #3a2070 0%, #2a1855 100%);
@@ -1744,6 +1756,7 @@
 <div class="container">
   <!-- 캐릭터 선택 -->
   <div id="char-select" class="char-select-panel">
+    <div class="version-tag">260507-23_45</div>
     <div class="select-title">영혼을 빌릴 그릇을 선택하라</div>
     <div class="select-sub">~ choose your vessel ~</div>
     <div class="char-grid">
