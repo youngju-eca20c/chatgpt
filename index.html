@@ -931,6 +931,231 @@
     .map-subtitle { font-size: 0.75rem; }
   }
 
+  /* === 보호소 / 내 농장 (따뜻한 톤) === */
+  .farm-panel {
+    background: linear-gradient(180deg, #fff5dc 0%, #f5e0b8 100%);
+    border: 3px solid #a06030;
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    color: #5a3010;
+  }
+  .farm-title {
+    text-align: center;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.5rem;
+    color: #7a4020;
+    text-shadow: 2px 2px 0 #fff5dc;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .farm-sub {
+    text-align: center;
+    color: #a06030;
+    font-size: 0.82rem;
+    margin-bottom: 12px;
+  }
+  .gold-bar {
+    text-align: right;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    color: #c08020;
+    margin-bottom: 10px;
+    background: rgba(0,0,0,0.06);
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #a06030;
+  }
+  .gold-bar::before { content: '💰 '; }
+
+  /* 보호소 진열대 */
+  .shelter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .shelter-card {
+    background: #fff;
+    border: 2px solid #a06030;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 3px 6px rgba(80, 40, 10, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  .shelter-card:hover { transform: translateY(-3px); box-shadow: 0 6px 14px rgba(80, 40, 10, 0.4); border-color: #ff8050; }
+  .shelter-card.expensive { opacity: 0.55; cursor: not-allowed; filter: saturate(0.6); }
+  .shelter-card.expensive:hover { transform: none; }
+  .shelter-card svg.animal-svg {
+    width: 80px;
+    height: 80px;
+    display: block;
+    margin: 0 auto 4px;
+  }
+  .shelter-card .sc-name {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    color: #5a3010;
+    margin-bottom: 4px;
+  }
+  .shelter-card .sc-rarity {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 1px 7px;
+    border-radius: 999px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .shelter-card .sc-price {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.95rem;
+    color: #c08020;
+  }
+  .shelter-card .sc-free {
+    color: #50a040;
+  }
+
+  /* 내 농장 */
+  .farm-empty {
+    text-align: center;
+    color: #a08868;
+    padding: 24px;
+    font-style: italic;
+  }
+  .animal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  .animal-card {
+    background: #fff;
+    border: 2px solid #a06030;
+    border-radius: 12px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 3px 6px rgba(80, 40, 10, 0.3);
+    position: relative;
+  }
+  .animal-card:hover { transform: translateY(-2px); border-color: #ff8050; }
+  .animal-card.active { border-color: #ffcc44; background: linear-gradient(180deg, #fff8e0, #fff5dc); box-shadow: 0 0 12px rgba(255, 204, 68, 0.5); }
+  .animal-card.active::before {
+    content: '★ 활동중';
+    position: absolute;
+    top: -8px;
+    right: 8px;
+    background: #ffcc44;
+    color: #5a3010;
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-family: 'Black Han Sans', sans-serif;
+    letter-spacing: 0.5px;
+  }
+  .animal-card svg.animal-svg {
+    width: 70px;
+    height: 70px;
+    display: block;
+    margin: 0 auto 4px;
+  }
+  .animal-card .ac-name {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    color: #5a3010;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  /* 4스탯 진행 바 */
+  .stat-progress {
+    margin-top: 4px;
+  }
+  .stat-progress .sp-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    color: #5a3010;
+    margin-bottom: 2px;
+  }
+  .stat-progress .sp-label { width: 40px; flex-shrink: 0; }
+  .stat-progress .sp-bar {
+    flex: 1;
+    height: 8px;
+    background: #f0d8b0;
+    border: 1px solid #a06030;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .stat-progress .sp-fill {
+    height: 100%;
+    transition: width 0.3s;
+  }
+  .sp-fit  .sp-fill { background: linear-gradient(90deg, #ff9080, #d04040); }
+  .sp-int  .sp-fill { background: linear-gradient(90deg, #80b0ff, #3060c0); }
+  .sp-cha  .sp-fill { background: linear-gradient(90deg, #ff90c8, #c040a0); }
+  .sp-skl  .sp-fill { background: linear-gradient(90deg, #80e068, #208030); }
+  .stat-progress .sp-val { width: 40px; text-align: right; font-size: 0.65rem; color: #7a4020; }
+
+  /* 전투 스탯 표시 (탑 입장 카드) */
+  .combat-stats {
+    margin-top: 6px;
+    padding: 4px 8px;
+    background: rgba(160, 96, 48, 0.1);
+    border-radius: 6px;
+    font-size: 0.7rem;
+    color: #7a4020;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* 보호소/농장 액션 버튼 */
+  .farm-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .farm-actions .btn { flex: 1; }
+
+  /* 입양 확인 다이얼로그 */
+  .confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .confirm-box {
+    background: linear-gradient(180deg, #fff5dc, #f5e0b8);
+    border: 3px solid #a06030;
+    border-radius: 16px;
+    padding: 20px;
+    max-width: 320px;
+    text-align: center;
+    color: #5a3010;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .confirm-box svg { width: 80px; height: 80px; margin: 8px auto; display: block; }
+  .confirm-box .cb-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.2rem;
+    color: #7a4020;
+    margin-bottom: 6px;
+  }
+  .confirm-box .cb-msg {
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .confirm-box .cb-actions { display: flex; gap: 8px; }
+  .confirm-box .cb-actions .btn { flex: 1; }
+
   /* === 캐릭터 선택 화면 === */
   .char-select-panel {
     background: linear-gradient(180deg, #3a2070 0%, #2a1855 100%);
@@ -1422,6 +1647,166 @@
       <!-- 작은 파편 옆 -->
       <circle cx="22" cy="86" r="3" fill="#3aa030" stroke="#1a6010" stroke-width="1"/>
       <circle cx="78" cy="86" r="2.5" fill="#3aa030" stroke="#1a6010" stroke-width="1"/>
+    </symbol>
+
+    <!-- 토끼 -->
+    <symbol id="char-rabbit" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="92" rx="22" ry="3.5" fill="#000" opacity="0.4"/>
+      <!-- 몸통 -->
+      <ellipse cx="50" cy="68" rx="20" ry="18" fill="#fff5e8"/>
+      <ellipse cx="50" cy="64" rx="17" ry="15" fill="#ffffff"/>
+      <!-- 다리 -->
+      <ellipse cx="38" cy="84" rx="6" ry="4" fill="#fff5e8"/>
+      <ellipse cx="62" cy="84" rx="6" ry="4" fill="#fff5e8"/>
+      <!-- 머리 -->
+      <circle cx="50" cy="42" r="16" fill="#fff5e8"/>
+      <circle cx="50" cy="40" r="14" fill="#ffffff"/>
+      <!-- 귀 (긴) -->
+      <ellipse cx="42" cy="20" rx="4" ry="13" fill="#fff5e8"/>
+      <ellipse cx="58" cy="20" rx="4" ry="13" fill="#fff5e8"/>
+      <ellipse cx="42" cy="22" rx="2" ry="9" fill="#ff80a0"/>
+      <ellipse cx="58" cy="22" rx="2" ry="9" fill="#ff80a0"/>
+      <!-- 눈 -->
+      <ellipse cx="42" cy="40" rx="3" ry="4" fill="#fff"/>
+      <ellipse cx="58" cy="40" rx="3" ry="4" fill="#fff"/>
+      <ellipse cx="42" cy="42" rx="2.2" ry="3" fill="#1a0a0a"/>
+      <ellipse cx="58" cy="42" rx="2.2" ry="3" fill="#1a0a0a"/>
+      <circle cx="43" cy="40" r="0.9" fill="#fff"/>
+      <circle cx="59" cy="40" r="0.9" fill="#fff"/>
+      <!-- 코 -->
+      <ellipse cx="50" cy="48" rx="2" ry="1.4" fill="#ff80a0"/>
+      <!-- 입 -->
+      <path d="M50 50 Q47 54 44 53" stroke="#1a0a0a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M50 50 Q53 54 56 53" stroke="#1a0a0a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- 볼터치 -->
+      <ellipse cx="36" cy="48" rx="3" ry="2" fill="#ff80a0" opacity="0.5"/>
+      <ellipse cx="64" cy="48" rx="3" ry="2" fill="#ff80a0" opacity="0.5"/>
+      <!-- 앞발 -->
+      <ellipse cx="42" cy="76" rx="3" ry="4" fill="#fff5e8"/>
+      <ellipse cx="58" cy="76" rx="3" ry="4" fill="#fff5e8"/>
+    </symbol>
+
+    <!-- 고양이 -->
+    <symbol id="char-cat" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="92" rx="22" ry="3.5" fill="#000" opacity="0.4"/>
+      <!-- 몸통 -->
+      <ellipse cx="50" cy="65" rx="22" ry="20" fill="#a08068"/>
+      <ellipse cx="50" cy="63" rx="19" ry="17" fill="#c0a088"/>
+      <!-- 줄무늬 -->
+      <path d="M40 55 q3 -2 6 0" stroke="#5a3010" stroke-width="1.2" fill="none"/>
+      <path d="M58 60 q3 -2 6 0" stroke="#5a3010" stroke-width="1.2" fill="none"/>
+      <path d="M48 70 q3 -2 6 0" stroke="#5a3010" stroke-width="1.2" fill="none"/>
+      <!-- 다리 -->
+      <ellipse cx="38" cy="82" rx="5" ry="4" fill="#a08068"/>
+      <ellipse cx="62" cy="82" rx="5" ry="4" fill="#a08068"/>
+      <!-- 꼬리 -->
+      <path d="M70 70 Q88 65 86 50 Q82 56 80 64" fill="#a08068" stroke="#5a3010" stroke-width="0.8"/>
+      <!-- 머리 -->
+      <ellipse cx="50" cy="38" rx="18" ry="16" fill="#a08068"/>
+      <ellipse cx="50" cy="38" rx="15" ry="13" fill="#c0a088"/>
+      <!-- 귀 (삼각) -->
+      <path d="M34 28 L30 14 L42 24 Z" fill="#a08068"/>
+      <path d="M66 28 L70 14 L58 24 Z" fill="#a08068"/>
+      <path d="M35 26 L33 18 L40 24 Z" fill="#ff80a0"/>
+      <path d="M65 26 L67 18 L60 24 Z" fill="#ff80a0"/>
+      <!-- 눈 (째진) -->
+      <ellipse cx="42" cy="36" rx="3.5" ry="4.5" fill="#fff"/>
+      <ellipse cx="58" cy="36" rx="3.5" ry="4.5" fill="#fff"/>
+      <ellipse cx="42" cy="36" rx="1.5" ry="3.5" fill="#5aa030"/>
+      <ellipse cx="58" cy="36" rx="1.5" ry="3.5" fill="#5aa030"/>
+      <ellipse cx="42" cy="36" rx="0.6" ry="2.5" fill="#1a0a0a"/>
+      <ellipse cx="58" cy="36" rx="0.6" ry="2.5" fill="#1a0a0a"/>
+      <!-- 코 -->
+      <path d="M48 44 L52 44 L50 47 Z" fill="#ff80a0"/>
+      <!-- 입 -->
+      <path d="M50 47 L50 49" stroke="#1a0a0a" stroke-width="0.8"/>
+      <path d="M50 49 Q47 52 45 51" stroke="#1a0a0a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M50 49 Q53 52 55 51" stroke="#1a0a0a" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- 수염 -->
+      <line x1="35" y1="44" x2="26" y2="42" stroke="#3a2010" stroke-width="0.5"/>
+      <line x1="35" y1="46" x2="26" y2="46" stroke="#3a2010" stroke-width="0.5"/>
+      <line x1="65" y1="44" x2="74" y2="42" stroke="#3a2010" stroke-width="0.5"/>
+      <line x1="65" y1="46" x2="74" y2="46" stroke="#3a2010" stroke-width="0.5"/>
+    </symbol>
+
+    <!-- 여우 -->
+    <symbol id="char-fox" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="92" rx="22" ry="3.5" fill="#000" opacity="0.4"/>
+      <!-- 몸통 -->
+      <ellipse cx="50" cy="65" rx="22" ry="20" fill="#e08040"/>
+      <ellipse cx="50" cy="63" rx="19" ry="17" fill="#ffa060"/>
+      <!-- 흰 배 -->
+      <ellipse cx="50" cy="74" rx="13" ry="9" fill="#fff5e8"/>
+      <!-- 다리 -->
+      <ellipse cx="38" cy="82" rx="5" ry="4" fill="#7a3010"/>
+      <ellipse cx="62" cy="82" rx="5" ry="4" fill="#7a3010"/>
+      <!-- 꼬리 (큰 솜털) -->
+      <path d="M68 72 Q86 64 88 48 Q90 60 82 72 Q78 76 72 75" fill="#e08040" stroke="#7a3010" stroke-width="0.8"/>
+      <ellipse cx="86" cy="50" rx="6" ry="5" fill="#fff5e8"/>
+      <!-- 머리 -->
+      <path d="M30 38 Q30 22 50 18 Q70 22 70 38 Q70 50 50 52 Q30 50 30 38 Z" fill="#e08040"/>
+      <ellipse cx="50" cy="34" rx="14" ry="12" fill="#ffa060"/>
+      <!-- 흰 주둥이 -->
+      <path d="M40 42 Q50 50 60 42 Q55 52 50 52 Q45 52 40 42 Z" fill="#fff5e8"/>
+      <!-- 귀 (큰 삼각) -->
+      <path d="M30 28 L24 10 L40 22 Z" fill="#e08040" stroke="#7a3010" stroke-width="0.6"/>
+      <path d="M70 28 L76 10 L60 22 Z" fill="#e08040" stroke="#7a3010" stroke-width="0.6"/>
+      <path d="M32 26 L29 16 L36 22 Z" fill="#1a0a0a"/>
+      <path d="M68 26 L71 16 L64 22 Z" fill="#1a0a0a"/>
+      <!-- 눈 (영리한) -->
+      <ellipse cx="43" cy="34" rx="3" ry="4" fill="#fff"/>
+      <ellipse cx="57" cy="34" rx="3" ry="4" fill="#fff"/>
+      <ellipse cx="43" cy="35" rx="2" ry="3.2" fill="#1a0a0a"/>
+      <ellipse cx="57" cy="35" rx="2" ry="3.2" fill="#1a0a0a"/>
+      <circle cx="43.7" cy="34" r="0.7" fill="#fff"/>
+      <circle cx="57.7" cy="34" r="0.7" fill="#fff"/>
+      <!-- 코 -->
+      <ellipse cx="50" cy="44" rx="2.5" ry="2" fill="#1a0a0a"/>
+      <!-- 입 -->
+      <path d="M50 46 Q50 50 47 50" stroke="#1a0a0a" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <path d="M50 46 Q50 50 53 50" stroke="#1a0a0a" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <!-- 송곳니 작은 -->
+      <path d="M48 50 L47.5 52 L48.5 50.5 Z" fill="#fff"/>
+      <path d="M52 50 L52.5 52 L51.5 50.5 Z" fill="#fff"/>
+    </symbol>
+
+    <!-- 햄스터 -->
+    <symbol id="char-hamster" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="92" rx="22" ry="3" fill="#000" opacity="0.4"/>
+      <!-- 통통한 둥근 몸통 -->
+      <ellipse cx="50" cy="60" rx="28" ry="26" fill="#d8a868"/>
+      <ellipse cx="50" cy="58" rx="25" ry="23" fill="#f0c890"/>
+      <!-- 흰 배 -->
+      <ellipse cx="50" cy="68" rx="18" ry="13" fill="#fff5e8"/>
+      <!-- 다리 (작게) -->
+      <ellipse cx="38" cy="84" rx="4" ry="3" fill="#a07840"/>
+      <ellipse cx="62" cy="84" rx="4" ry="3" fill="#a07840"/>
+      <!-- 둥근 귀 (작음) -->
+      <circle cx="34" cy="34" r="6" fill="#a07840"/>
+      <circle cx="66" cy="34" r="6" fill="#a07840"/>
+      <circle cx="34" cy="34" r="3" fill="#ff80a0"/>
+      <circle cx="66" cy="34" r="3" fill="#ff80a0"/>
+      <!-- 큰 눈 -->
+      <ellipse cx="42" cy="50" rx="5" ry="6" fill="#fff"/>
+      <ellipse cx="58" cy="50" rx="5" ry="6" fill="#fff"/>
+      <ellipse cx="42" cy="52" rx="3.5" ry="4.5" fill="#1a0a0a"/>
+      <ellipse cx="58" cy="52" rx="3.5" ry="4.5" fill="#1a0a0a"/>
+      <circle cx="43" cy="50" r="1.4" fill="#fff"/>
+      <circle cx="59" cy="50" r="1.4" fill="#fff"/>
+      <!-- 코 -->
+      <ellipse cx="50" cy="62" rx="1.6" ry="1.2" fill="#1a0a0a"/>
+      <!-- 입 -->
+      <path d="M50 63 L50 65" stroke="#1a0a0a" stroke-width="0.8"/>
+      <path d="M50 65 Q47 67 46 66" stroke="#1a0a0a" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <path d="M50 65 Q53 67 54 66" stroke="#1a0a0a" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <!-- 앞 이빨 -->
+      <rect x="48" y="65" width="4" height="3" fill="#fff" stroke="#5a3010" stroke-width="0.3"/>
+      <line x1="50" y1="65" x2="50" y2="68" stroke="#5a3010" stroke-width="0.3"/>
+      <!-- 볼터치 -->
+      <ellipse cx="32" cy="58" rx="4" ry="3" fill="#ff80a0" opacity="0.6"/>
+      <ellipse cx="68" cy="58" rx="4" ry="3" fill="#ff80a0" opacity="0.6"/>
+      <!-- 해바라기씨 (옆에) -->
+      <ellipse cx="78" cy="80" rx="3" ry="2" fill="#5a3010" transform="rotate(20 78 80)"/>
     </symbol>
 
     <!-- 박쥐 -->
@@ -2010,6 +2395,56 @@
       </g>
     </symbol>
 
+    <!-- 동물보호소 (주황 지붕 + PAWS 간판 + 동물 실루엣) -->
+    <symbol id="bldg-shelter" viewBox="0 0 110 130">
+      <ellipse cx="55" cy="125" rx="44" ry="4" fill="#000" opacity="0.35"/>
+      <!-- 본체 (아이보리) -->
+      <rect x="14" y="50" width="82" height="70" fill="#fff5dc" stroke="#a06030" stroke-width="2"/>
+      <!-- 주황 지붕 -->
+      <path d="M8 50 L55 18 L102 50 Z" fill="#ff9050" stroke="#a04020" stroke-width="2"/>
+      <!-- 지붕 디테일 (기와) -->
+      <line x1="20" y1="46" x2="22" y2="50" stroke="#a04020" stroke-width="0.8"/>
+      <line x1="35" y1="38" x2="37" y2="44" stroke="#a04020" stroke-width="0.8"/>
+      <line x1="55" y1="22" x2="55" y2="40" stroke="#a04020" stroke-width="0.8"/>
+      <line x1="75" y1="38" x2="73" y2="44" stroke="#a04020" stroke-width="0.8"/>
+      <line x1="90" y1="46" x2="88" y2="50" stroke="#a04020" stroke-width="0.8"/>
+      <!-- 굴뚝 -->
+      <rect x="74" y="28" width="8" height="14" fill="#c87850" stroke="#5a2818" stroke-width="0.8"/>
+      <!-- PAWS 간판 -->
+      <rect x="32" y="30" width="46" height="14" fill="#fff" stroke="#a04020" stroke-width="1.5" rx="3"/>
+      <text x="55" y="40" text-anchor="middle" font-size="9" fill="#a04020" font-weight="bold">🐾 PAWS</text>
+      <!-- 큰 입구 (아치형) -->
+      <path d="M44 120 L44 86 Q44 78 55 78 Q66 78 66 86 L66 120 Z" fill="#7a4828" stroke="#3a1808" stroke-width="1.5"/>
+      <line x1="55" y1="80" x2="55" y2="120" stroke="#3a1808" stroke-width="0.8"/>
+      <circle cx="62" cy="100" r="0.9" fill="#ffcc44"/>
+      <!-- 좌측 창 (강아지 실루엣) -->
+      <rect x="22" y="60" width="14" height="14" fill="#a8e0f0" stroke="#7a4020" stroke-width="1.2"/>
+      <line x1="29" y1="60" x2="29" y2="74" stroke="#7a4020" stroke-width="0.5"/>
+      <line x1="22" y1="67" x2="36" y2="67" stroke="#7a4020" stroke-width="0.5"/>
+      <!-- 강아지 실루엣 -->
+      <ellipse cx="29" cy="70" rx="4" ry="3" fill="#5a3010" opacity="0.7"/>
+      <circle cx="32" cy="68" r="2" fill="#5a3010" opacity="0.7"/>
+      <!-- 우측 창 (고양이 실루엣) -->
+      <rect x="74" y="60" width="14" height="14" fill="#a8e0f0" stroke="#7a4020" stroke-width="1.2"/>
+      <line x1="81" y1="60" x2="81" y2="74" stroke="#7a4020" stroke-width="0.5"/>
+      <line x1="74" y1="67" x2="88" y2="67" stroke="#7a4020" stroke-width="0.5"/>
+      <!-- 고양이 실루엣 -->
+      <ellipse cx="81" cy="70" rx="3" ry="2.5" fill="#3a2010" opacity="0.7"/>
+      <path d="M79 68 L78 65 L80 67 Z" fill="#3a2010" opacity="0.7"/>
+      <path d="M83 68 L84 65 L82 67 Z" fill="#3a2010" opacity="0.7"/>
+      <!-- 작은 울타리 옆 -->
+      <g stroke="#a06030" stroke-width="1.2" stroke-linecap="round" fill="none">
+        <line x1="2" y1="115" x2="2" y2="124"/>
+        <line x1="6" y1="115" x2="6" y2="124"/>
+        <line x1="2" y1="118" x2="6" y2="118"/>
+      </g>
+      <!-- 작은 발자국 (입구 앞) -->
+      <g fill="#a06030" opacity="0.5">
+        <ellipse cx="38" cy="124" rx="1.5" ry="1"/>
+        <ellipse cx="42" cy="121" rx="1.5" ry="1"/>
+      </g>
+    </symbol>
+
     <!-- 탑 (귀여운 보라회색 돌탑 + 빨강 깃발) -->
     <symbol id="bldg-tower" viewBox="0 0 100 150">
       <ellipse cx="50" cy="145" rx="42" ry="4" fill="#000" opacity="0.4"/>
@@ -2475,35 +2910,12 @@
 
 <!-- ===== 본체 ===== -->
 <div class="container">
-  <!-- 캐릭터 선택 (탑 입장 시) -->
+  <!-- 캐릭터 선택 (탑 입장 시 — 동적 렌더링) -->
   <div id="char-select" class="char-select-panel hidden">
     <div class="select-title">탑에 데려갈 동물을 선택하세요</div>
-    <div class="select-sub">~ 키운 동물 중 하나만 데려갈 수 있습니다 ~</div>
+    <div class="select-sub">~ 4스탯이 자동으로 전투 능력치로 변환됩니다 ~</div>
     <div class="char-grid">
-      <div class="char-card" data-char="dugong">
-        <div class="char-bigportrait"><svg><use href="#char-dugong"/></svg></div>
-        <div>
-          <div class="char-name">듀공</div>
-          <div class="char-stats">HP 120 · MP 50<br/>ATK 10 · SPD 4</div>
-          <div class="char-desc">"두꺼운 살가죽의 수호자"</div>
-        </div>
-      </div>
-      <div class="char-card" data-char="dog">
-        <div class="char-bigportrait"><svg><use href="#char-dog"/></svg></div>
-        <div>
-          <div class="char-name">강아지</div>
-          <div class="char-stats">HP 90 · MP 50<br/>ATK 14 · SPD 7</div>
-          <div class="char-desc">"날쌘 송곳니의 충견"</div>
-        </div>
-      </div>
-      <div class="char-card" data-char="dolphin">
-        <div class="char-bigportrait"><svg><use href="#char-dolphin"/></svg></div>
-        <div>
-          <div class="char-name">돌고래</div>
-          <div class="char-stats">HP 100 · MP 50<br/>ATK 12 · SPD 9</div>
-          <div class="char-desc">"바다에서 온 영민한 자"</div>
-        </div>
-      </div>
+      <!-- renderCharSelect()가 동적으로 채움 -->
     </div>
     <div class="map-actions" style="margin-top:14px;">
       <button class="btn" onclick="showWorldMap()">← 월드맵으로</button>
@@ -2512,7 +2924,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-08</div>
+    <div class="version-tag" style="color:#a06030;">260507-09</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -2520,8 +2932,13 @@
       <svg class="map-bg" preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 500">
         <use href="#bg-worldmap"/>
       </svg>
+      <!-- 동물보호소 (좌상단) -->
+      <button class="map-building available" style="top:18%;left:18%;width:18%" onclick="enterShelter()" aria-label="동물보호소">
+        <svg viewBox="0 0 110 130"><use href="#bldg-shelter"/></svg>
+        <div class="bldg-label">🏠 보호소</div>
+      </button>
       <!-- 탑 (상단 중앙, 강조) -->
-      <button class="map-building available" style="top:18%;left:50%;width:18%" onclick="goCharSelect()" aria-label="저주받은 탑">
+      <button class="map-building available" style="top:22%;left:50%;width:18%" onclick="goCharSelect()" aria-label="저주받은 탑">
         <svg viewBox="0 0 100 150"><use href="#bldg-tower"/></svg>
         <div class="bldg-label">탑 ▶</div>
       </button>
@@ -2547,6 +2964,33 @@
       </button>
     </div>
   </div>
+
+  <!-- 동물보호소 -->
+  <div id="shelter" class="farm-panel hidden">
+    <div class="farm-title">🏠 동물보호소</div>
+    <div class="farm-sub">새 친구를 만나 함께 모험을 떠나요</div>
+    <div class="gold-bar" id="shelter-gold">200</div>
+    <div class="shelter-grid" id="shelter-grid"></div>
+    <div class="farm-actions">
+      <button class="btn" onclick="enterMyAnimals()">🐾 내 농장</button>
+      <button class="btn" onclick="showWorldMap()">← 월드맵</button>
+    </div>
+  </div>
+
+  <!-- 내 농장 -->
+  <div id="my-animals" class="farm-panel hidden">
+    <div class="farm-title">🐾 내 농장</div>
+    <div class="farm-sub">동물을 클릭해 활동중인 친구를 바꿔보세요</div>
+    <div class="gold-bar" id="farm-gold">200</div>
+    <div id="farm-content"></div>
+    <div class="farm-actions">
+      <button class="btn" onclick="enterShelter()">🏠 보호소 가기</button>
+      <button class="btn" onclick="showWorldMap()">← 월드맵</button>
+    </div>
+  </div>
+
+  <!-- 입양 확인 다이얼로그 -->
+  <div id="confirm-overlay" class="confirm-overlay hidden"></div>
 
   <!-- 게임 화면 -->
   <div id="main-game" class="hidden">
@@ -2657,6 +3101,82 @@ const CHARACTERS = {
   dolphin: { name:'돌고래', svg:'char-dolphin', hp:100, mp:50, atk:12, spd:9 }
 };
 
+// 입양 가능 동물 종 (보호소 풀)
+const ANIMAL_SPECIES = {
+  dugong:  { name:'듀공',   svg:'char-dugong',  rarity:'common', price:0   },
+  dog:     { name:'강아지', svg:'char-dog',     rarity:'common', price:0   },
+  dolphin: { name:'돌고래', svg:'char-dolphin', rarity:'common', price:0   },
+  rabbit:  { name:'토끼',   svg:'char-rabbit',  rarity:'common', price:120 },
+  hamster: { name:'햄스터', svg:'char-hamster', rarity:'common', price:80  },
+  cat:     { name:'고양이', svg:'char-cat',     rarity:'rare',   price:280 },
+  fox:     { name:'여우',   svg:'char-fox',     rarity:'rare',   price:320 }
+};
+
+const RARITY_COLOR = {
+  common:   '#7ab040',
+  rare:     '#4080d0',
+  legendary:'#c060c0'
+};
+
+// ===== localStorage 저장 시스템 =====
+const SAVE_KEY = 'animalfarm_save_v1';
+let save = null;
+
+function loadSave() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') return migrateSave(parsed);
+    }
+  } catch (e) { console.warn('save load fail', e); }
+  return defaultSave();
+}
+
+function defaultSave() {
+  return {
+    version: 1,
+    animals: [],
+    activeAnimalId: null,
+    nextAnimalId: 1,
+    gold: 200,
+    humans: [],
+    shelterStock: null  // 진열대 캐시 (보호소 진입 시마다 갱신)
+  };
+}
+
+function migrateSave(data) {
+  if (!data.version) data.version = 1;
+  if (!Array.isArray(data.animals)) data.animals = [];
+  if (typeof data.gold !== 'number') data.gold = 200;
+  if (!Array.isArray(data.humans)) data.humans = [];
+  if (typeof data.nextAnimalId !== 'number') data.nextAnimalId = 1;
+  return data;
+}
+
+function saveSave() {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(save));
+  } catch (e) { console.warn('save fail', e); }
+}
+
+function getActiveAnimal() {
+  if (!save || !save.activeAnimalId) return null;
+  return save.animals.find(a => a.id === save.activeAnimalId) || null;
+}
+
+// 4스탯 → 전투 스탯 변환
+function animalToTowerStats(animal) {
+  const s = animal.stats;
+  return {
+    maxHp:  50 + Math.floor(s.fit / 2),
+    maxMp:  30 + Math.floor(s.intel / 5),
+    atk:    8  + Math.floor(s.skill / 25),
+    defense: Math.floor(s.charm / 100),
+    spd:    5  + Math.floor(s.charm / 100)
+  };
+}
+
 const MONSTERS = {
   bat:        { name:'박쥐',         svg:'mon-bat',   hp:25, atk:6,  spd:8, gold:5 },
   skeleton:   { name:'스켈레톤',     svg:'mon-skel',  hp:40, atk:9,  spd:5, gold:10 },
@@ -2755,44 +3275,222 @@ function showDialog(text, ms=2200) {
 }
 
 // ============= 진입 = 월드맵 =============
-// 페이지 로드 시 월드맵 표시
 window.addEventListener('DOMContentLoaded', () => {
-  $('char-select').classList.add('hidden');
-  $('main-game').classList.add('hidden');
+  save = loadSave();
+  hideAllPanels();
   $('world-map').classList.remove('hidden');
+  if (save.animals.length === 0) {
+    setTimeout(() => {
+      alert('🐾 「동물농장」에 오신 것을 환영합니다!\n먼저 보호소에서 첫 동물을 입양해주세요.');
+    }, 300);
+  }
 });
 
+function hideAllPanels() {
+  ['world-map','char-select','main-game','shelter','my-animals'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+}
+
 function showWorldMap() {
-  $('char-select').classList.add('hidden');
-  $('main-game').classList.add('hidden');
+  hideAllPanels();
   $('world-map').classList.remove('hidden');
 }
 
-// 탑 클릭 → 캐릭터 선택
+// 탑 클릭 → 동물 선택
 function goCharSelect() {
-  $('world-map').classList.add('hidden');
-  $('main-game').classList.add('hidden');
+  if (!save || save.animals.length === 0) {
+    alert('🔒 먼저 보호소에서 동물을 입양하세요!');
+    enterShelter();
+    return;
+  }
+  hideAllPanels();
+  renderCharSelect();
   $('char-select').classList.remove('hidden');
 }
 
-// 캐릭터 선택 → 탑 입장
-document.querySelectorAll('.char-card').forEach(card => {
-  card.addEventListener('click', () => {
-    selectedCharKey = card.dataset.char;
-    initPlayerFromChar();
-    enterTower();
-  });
-});
+// ============= 보호소 =============
+function enterShelter() {
+  if (!save) save = loadSave();
+  hideAllPanels();
+  refreshShelterStock();
+  renderShelter();
+  $('shelter').classList.remove('hidden');
+}
 
-function initPlayerFromChar() {
-  const c = CHARACTERS[selectedCharKey];
+function refreshShelterStock() {
+  const allKeys = Object.keys(ANIMAL_SPECIES);
+  if (save.animals.length === 0) {
+    const starters = allKeys.filter(k => ANIMAL_SPECIES[k].price === 0);
+    const others = allKeys.filter(k => ANIMAL_SPECIES[k].price > 0)
+                          .sort(() => Math.random() - 0.5).slice(0, 2);
+    save.shelterStock = [...starters, ...others];
+  } else {
+    save.shelterStock = [...allKeys].sort(() => Math.random() - 0.5).slice(0, 5);
+  }
+  saveSave();
+}
+
+function renderShelter() {
+  $('shelter-gold').textContent = save.gold;
+  const grid = $('shelter-grid');
+  grid.innerHTML = '';
+  (save.shelterStock || []).forEach(key => {
+    const sp = ANIMAL_SPECIES[key];
+    if (!sp) return;
+    const can = save.gold >= sp.price;
+    const card = document.createElement('div');
+    card.className = 'shelter-card' + (can ? '' : ' expensive');
+    const priceHtml = sp.price === 0
+      ? `<div class="sc-price sc-free">무료 스타터</div>`
+      : `<div class="sc-price">💰 ${sp.price}</div>`;
+    card.innerHTML = `
+      <svg viewBox="0 0 100 100" class="animal-svg"><use href="#${sp.svg}"/></svg>
+      <div class="sc-name">${sp.name}</div>
+      <div class="sc-rarity" style="background:${RARITY_COLOR[sp.rarity] || '#888'}">${sp.rarity}</div>
+      ${priceHtml}
+    `;
+    if (can) card.onclick = () => confirmAdopt(key);
+    grid.appendChild(card);
+  });
+}
+
+function confirmAdopt(speciesKey) {
+  const sp = ANIMAL_SPECIES[speciesKey];
+  const overlay = $('confirm-overlay');
+  overlay.classList.remove('hidden');
+  overlay.innerHTML = `
+    <div class="confirm-box">
+      <div class="cb-title">${sp.name} 입양</div>
+      <svg viewBox="0 0 100 100"><use href="#${sp.svg}"/></svg>
+      <div class="cb-msg">
+        ${sp.price === 0 ? '무료로 입양합니다.' : `💰 ${sp.price} 골드를 사용합니다.`}<br/>
+        함께 농장에서 키워볼까요?
+      </div>
+      <div class="cb-actions">
+        <button class="btn" onclick="closeConfirm()">취소</button>
+        <button class="btn success" onclick="adoptAnimal('${speciesKey}')">입양!</button>
+      </div>
+    </div>
+  `;
+}
+
+function closeConfirm() {
+  $('confirm-overlay').classList.add('hidden');
+  $('confirm-overlay').innerHTML = '';
+}
+
+function adoptAnimal(speciesKey) {
+  const sp = ANIMAL_SPECIES[speciesKey];
+  if (save.gold < sp.price) { closeConfirm(); return; }
+  save.gold -= sp.price;
+  const animal = {
+    id: save.nextAnimalId++,
+    species: speciesKey,
+    svg: sp.svg,
+    name: sp.name,
+    stats: { fit: 0, intel: 0, charm: 0, skill: 0 },
+    adoptedAt: Date.now()
+  };
+  save.animals.push(animal);
+  save.activeAnimalId = animal.id;
+  saveSave();
+  closeConfirm();
+  enterMyAnimals();
+}
+
+// ============= 내 농장 =============
+function enterMyAnimals() {
+  if (!save) save = loadSave();
+  hideAllPanels();
+  renderMyAnimals();
+  $('my-animals').classList.remove('hidden');
+}
+
+function renderMyAnimals() {
+  $('farm-gold').textContent = save.gold;
+  const c = $('farm-content');
+  if (save.animals.length === 0) {
+    c.innerHTML = '<div class="farm-empty">아직 입양한 동물이 없어요.<br/>보호소에 가서 첫 친구를 만나보세요!</div>';
+    return;
+  }
+  let html = '<div class="animal-grid">';
+  save.animals.forEach(a => {
+    const isActive = a.id === save.activeAnimalId;
+    html += `
+      <div class="animal-card ${isActive ? 'active' : ''}" onclick="setActiveAnimal(${a.id})">
+        <svg viewBox="0 0 100 100" class="animal-svg"><use href="#${a.svg}"/></svg>
+        <div class="ac-name">${a.name}</div>
+        ${renderStatBars(a.stats)}
+      </div>
+    `;
+  });
+  html += '</div>';
+  c.innerHTML = html;
+}
+
+function renderStatBars(s) {
+  const row = (cls, label, val) => `
+    <div class="sp-row ${cls}">
+      <span class="sp-label">${label}</span>
+      <span class="sp-bar"><span class="sp-fill" style="width:${(val/400*100).toFixed(0)}%"></span></span>
+      <span class="sp-val">${val}</span>
+    </div>`;
+  return `<div class="stat-progress">
+    ${row('sp-fit','체력',s.fit)}
+    ${row('sp-int','지능',s.intel)}
+    ${row('sp-cha','매력',s.charm)}
+    ${row('sp-skl','기술',s.skill)}
+  </div>`;
+}
+
+function setActiveAnimal(id) {
+  save.activeAnimalId = id;
+  saveSave();
+  renderMyAnimals();
+}
+
+// ============= 탑 캐릭터 선택 (보유 동물 기반) =============
+function renderCharSelect() {
+  const grid = document.querySelector('#char-select .char-grid');
+  if (!grid) return;
+  if (save.animals.length === 0) {
+    grid.innerHTML = '<div class="farm-empty" style="grid-column:1/-1;color:#b090d0">먼저 보호소에서 동물을 입양하세요</div>';
+    return;
+  }
+  grid.innerHTML = '';
+  save.animals.forEach(a => {
+    const t = animalToTowerStats(a);
+    const card = document.createElement('div');
+    card.className = 'char-card';
+    card.innerHTML = `
+      <div class="char-bigportrait"><svg viewBox="0 0 100 100"><use href="#${a.svg}"/></svg></div>
+      <div>
+        <div class="char-name">${a.name}</div>
+        <div class="char-stats">HP ${t.maxHp} · MP ${t.maxMp}<br/>ATK ${t.atk} · DEF ${t.defense} · SPD ${t.spd}</div>
+        <div class="char-desc">체${a.stats.fit} 지${a.stats.intel} 매${a.stats.charm} 기${a.stats.skill}</div>
+      </div>
+    `;
+    card.onclick = () => {
+      save.activeAnimalId = a.id;
+      saveSave();
+      initPlayerFromAnimal(a);
+      enterTower();
+    };
+    grid.appendChild(card);
+  });
+}
+
+function initPlayerFromAnimal(animal) {
+  const t = animalToTowerStats(animal);
   player = {
-    name: c.name, svg: c.svg,
-    maxHp: c.hp, hp: c.hp,
-    maxMp: c.mp, mp: c.mp,
-    baseAtk: c.atk, atk: c.atk, spd: c.spd,
-    defense: 0,
-    gold: 0
+    name: animal.name, svg: animal.svg,
+    maxHp: t.maxHp, hp: t.maxHp,
+    maxMp: t.maxMp, mp: t.maxMp,
+    baseAtk: t.atk, atk: t.atk, spd: t.spd,
+    defense: t.defense,
+    gold: save.gold
   };
   potions = [
     { name:'붉은 물약', heal:30 },
@@ -2803,11 +3501,9 @@ function initPlayerFromChar() {
 }
 
 function enterTower() {
-  const c = CHARACTERS[selectedCharKey];
-  $('player-portrait-use').setAttribute('href', '#' + c.svg);
-  $('scene-player-use').setAttribute('href', '#' + c.svg);
-  $('char-select').classList.add('hidden');
-  $('world-map').classList.add('hidden');
+  $('player-portrait-use').setAttribute('href', '#' + player.svg);
+  $('scene-player-use').setAttribute('href', '#' + player.svg);
+  hideAllPanels();
   $('main-game').classList.remove('hidden');
   $('log').innerHTML = '';
   log(`${player.name}을(를) 데리고 탑에 발을 들였다...`, 'system');
@@ -4011,12 +4707,16 @@ function triumph() {
 }
 
 function restart() {
+  // 탑에서 번 골드를 save에 동기화
+  if (player && typeof player.gold === 'number' && save) {
+    save.gold = player.gold;
+    saveSave();
+  }
   enemy = null;
   player = null;
   potions = []; equipments = [];
   floor = 1;
   inBattle = false;
-  selectedCharKey = null;
   $('log').innerHTML = '';
   setSceneActions('');
   // 컷신 잔여 정리
@@ -4025,7 +4725,7 @@ function restart() {
     if (el) el.remove();
   });
   document.querySelectorAll('.btn').forEach(b => b.disabled = false);
-  // 월드맵으로 복귀
+  // 월드맵으로 복귀 (동물·골드는 유지됨)
   showWorldMap();
 }
 </script>
