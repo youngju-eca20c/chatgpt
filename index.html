@@ -854,16 +854,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 24%;
+    width: 14%;
     z-index: 5;
     transition: transform 0.2s;
   }
   .map-building svg {
     width: 100%;
     height: auto;
-    max-height: 32vh;
+    max-height: 100%;
     transition: filter 0.2s, transform 0.2s;
-    filter: drop-shadow(0 4px 6px rgba(60, 30, 10, 0.45));
+    filter: drop-shadow(0 3px 5px rgba(60, 30, 10, 0.45));
   }
   .map-building:hover svg {
     transform: translateY(-3px) scale(1.06);
@@ -895,16 +895,16 @@
   }
   .bldg-label {
     font-family: 'Black Han Sans', sans-serif;
-    font-size: 0.72rem;
+    font-size: 0.62rem;
     color: #5a3010;
-    margin-top: 4px;
+    margin-top: 3px;
     white-space: nowrap;
-    background: rgba(255, 245, 220, 0.92);
-    border: 1.5px solid #a06030;
+    background: rgba(255, 245, 220, 0.95);
+    border: 1.2px solid #a06030;
     border-radius: 999px;
-    padding: 2px 10px;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(60, 30, 10, 0.3);
+    padding: 1px 7px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 3px rgba(60, 30, 10, 0.3);
   }
   .map-building.available .bldg-label {
     background: linear-gradient(180deg, #c0301a, #7a1a10);
@@ -926,9 +926,7 @@
 
   @media (max-width: 600px) {
     .map-area { aspect-ratio: 3/4; }
-    .map-building { width: 30%; }
-    .map-building svg { max-height: 22vh; }
-    .bldg-label { font-size: 0.7rem; padding: 1px 8px; }
+    .bldg-label { font-size: 0.6rem; padding: 1px 6px; }
     .map-title { font-size: 1.3rem; }
     .map-subtitle { font-size: 0.75rem; }
   }
@@ -2026,35 +2024,85 @@
       <path d="M40 480 Q150 440 250 410 Q400 380 550 360 Q680 340 760 290" stroke="#d4a878" stroke-width="22" fill="none" opacity="0.95" stroke-linecap="round"/>
       <path d="M40 480 Q150 440 250 410 Q400 380 550 360 Q680 340 760 290" stroke="#a0805a" stroke-width="24" fill="none" opacity="0.4" stroke-linecap="round"/>
 
-      <!-- 작은 꽃들 (배경 데코) -->
+      <!-- 꽃밭 (배경 곳곳) -->
       <g>
-        <circle cx="60" cy="430" r="3" fill="#ff80a0"/>
-        <circle cx="60" cy="430" r="1.2" fill="#ffe070"/>
-        <circle cx="100" cy="470" r="3" fill="#ffe070"/>
-        <circle cx="280" cy="475" r="3" fill="#a0a0ff"/>
-        <circle cx="380" cy="475" r="3" fill="#ff80a0"/>
-        <circle cx="500" cy="430" r="3" fill="#ffe070"/>
-        <circle cx="640" cy="475" r="3" fill="#a0a0ff"/>
-        <circle cx="720" cy="465" r="3" fill="#ff80a0"/>
+        <circle cx="50" cy="430" r="2.5" fill="#ff80a0"/><circle cx="50" cy="430" r="1" fill="#ffe070"/>
+        <circle cx="78" cy="455" r="2.5" fill="#ffe070"/><circle cx="78" cy="455" r="1" fill="#fff"/>
+        <circle cx="160" cy="475" r="2.5" fill="#a0a0ff"/><circle cx="160" cy="475" r="1" fill="#fff"/>
+        <circle cx="220" cy="445" r="2.5" fill="#ff80a0"/><circle cx="220" cy="445" r="1" fill="#ffe070"/>
+        <circle cx="300" cy="470" r="2.5" fill="#ffe070"/><circle cx="300" cy="470" r="1" fill="#ff8050"/>
+        <circle cx="370" cy="445" r="2.5" fill="#a0a0ff"/><circle cx="370" cy="445" r="1" fill="#fff"/>
+        <circle cx="440" cy="475" r="2.5" fill="#ff80a0"/><circle cx="440" cy="475" r="1" fill="#ffe070"/>
+        <circle cx="510" cy="445" r="2.5" fill="#ffe070"/><circle cx="510" cy="445" r="1" fill="#fff"/>
+        <circle cx="580" cy="470" r="2.5" fill="#ff80a0"/><circle cx="580" cy="470" r="1" fill="#ffe070"/>
+        <circle cx="660" cy="450" r="2.5" fill="#a0a0ff"/><circle cx="660" cy="450" r="1" fill="#fff"/>
+        <circle cx="740" cy="478" r="2.5" fill="#ffe070"/><circle cx="740" cy="478" r="1" fill="#ff8050"/>
       </g>
 
-      <!-- 풀 디테일 -->
-      <g stroke="#5aa040" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6">
-        <path d="M40 460 q1 -8 2 0"/>
-        <path d="M180 470 q1 -8 2 0"/>
-        <path d="M340 480 q1 -8 2 0"/>
-        <path d="M540 470 q1 -8 2 0"/>
-        <path d="M700 480 q1 -8 2 0"/>
+      <!-- 풀 디테일 (곳곳) -->
+      <g stroke="#5aa040" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.7">
+        <path d="M30 455 q1 -7 2 0 M34 458 q1 -6 2 0"/>
+        <path d="M120 470 q1 -7 2 0 M124 473 q1 -6 2 0"/>
+        <path d="M250 462 q1 -7 2 0"/>
+        <path d="M340 478 q1 -7 2 0 M344 481 q1 -6 2 0"/>
+        <path d="M460 460 q1 -7 2 0"/>
+        <path d="M610 478 q1 -7 2 0 M614 481 q1 -6 2 0"/>
+        <path d="M700 462 q1 -7 2 0"/>
       </g>
 
-      <!-- 양 한 마리 (장식) -->
+      <!-- 버섯들 (빨강/주황) -->
+      <g>
+        <ellipse cx="105" cy="455" rx="6" ry="4" fill="#d04030"/>
+        <circle cx="103" cy="453" r="0.8" fill="#fff"/>
+        <circle cx="108" cy="455" r="0.7" fill="#fff"/>
+        <rect x="103" y="455" width="4" height="6" fill="#fff5dc"/>
+
+        <ellipse cx="490" cy="460" rx="5" ry="3.5" fill="#ff8030"/>
+        <circle cx="488" cy="459" r="0.7" fill="#fff"/>
+        <rect x="488" y="460" width="4" height="5" fill="#fff5dc"/>
+      </g>
+
+      <!-- 양 한 마리 -->
       <g transform="translate(150 415)">
-        <ellipse cx="0" cy="0" rx="11" ry="8" fill="#fff8e8"/>
-        <circle cx="-9" cy="-2" r="5" fill="#fff8e8"/>
-        <circle cx="-11" cy="-3" r="3" fill="#3a3030"/>
-        <circle cx="-10" cy="-3.5" r="0.5" fill="#fff"/>
+        <ellipse cx="0" cy="0" rx="10" ry="7" fill="#fff8e8"/>
+        <circle cx="-8" cy="-2" r="4.5" fill="#fff8e8"/>
+        <circle cx="-10" cy="-3" r="2.8" fill="#3a3030"/>
+        <circle cx="-9" cy="-3.5" r="0.5" fill="#fff"/>
         <line x1="-4" y1="6" x2="-4" y2="10" stroke="#3a3030" stroke-width="1"/>
         <line x1="4" y1="6" x2="4" y2="10" stroke="#3a3030" stroke-width="1"/>
+      </g>
+
+      <!-- 토끼 한 마리 -->
+      <g transform="translate(560 420)">
+        <ellipse cx="0" cy="2" rx="8" ry="6" fill="#fff5dc"/>
+        <circle cx="0" cy="-3" r="5" fill="#fff5dc"/>
+        <ellipse cx="-3" cy="-9" rx="1.5" ry="4" fill="#fff5dc"/>
+        <ellipse cx="3" cy="-9" rx="1.5" ry="4" fill="#fff5dc"/>
+        <ellipse cx="-3" cy="-9" rx="0.7" ry="2.5" fill="#ff80a0"/>
+        <ellipse cx="3" cy="-9" rx="0.7" ry="2.5" fill="#ff80a0"/>
+        <circle cx="-2" cy="-3" r="0.7" fill="#1a0a0a"/>
+        <circle cx="2" cy="-3" r="0.7" fill="#1a0a0a"/>
+        <ellipse cx="0" cy="-1" rx="0.8" ry="0.5" fill="#ff80a0"/>
+        <ellipse cx="6" cy="2" rx="2" ry="1.5" fill="#fff5dc"/>
+      </g>
+
+      <!-- 표지판 -->
+      <g transform="translate(380 380)">
+        <rect x="-2" y="0" width="4" height="20" fill="#7a4828"/>
+        <path d="M-14 -2 L10 -2 L14 4 L10 10 L-14 10 Z" fill="#e8c068" stroke="#7a4828" stroke-width="1"/>
+        <text x="-2" y="6" font-size="6" fill="#5a3010" font-weight="bold">→</text>
+      </g>
+
+      <!-- 새 두마리 (날아감) -->
+      <g fill="none" stroke="#3a3030" stroke-width="1.5" stroke-linecap="round" opacity="0.7">
+        <path d="M280 130 q3 -4 6 0 q3 -4 6 0"/>
+        <path d="M380 100 q2 -3 4 0 q2 -3 4 0"/>
+      </g>
+
+      <!-- 작은 풀언덕 (포인트) -->
+      <g>
+        <ellipse cx="100" cy="395" rx="38" ry="10" fill="#7aa840" opacity="0.7"/>
+        <ellipse cx="640" cy="400" rx="42" ry="11" fill="#7aa840" opacity="0.7"/>
       </g>
 
       <!-- 제목 두루마리 -->
@@ -2294,7 +2342,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-05</div>
+    <div class="version-tag" style="color:#a06030;">260507-06</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -2302,33 +2350,33 @@
       <svg class="map-bg" preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 500">
         <use href="#bg-worldmap"/>
       </svg>
-      <!-- (0,0) 놀이공원 -->
-      <button class="map-building locked" style="top:24%;left:25%" onclick="lockedLoc('놀이공원')" aria-label="놀이공원">
+      <!-- 놀이공원 (좌상단) -->
+      <button class="map-building locked" style="top:14%;left:25%;width:13%" onclick="lockedLoc('놀이공원')" aria-label="놀이공원">
         <svg viewBox="0 0 100 130"><use href="#bldg-amusement"/></svg>
         <div class="bldg-label">놀이공원</div>
       </button>
-      <!-- (0,1) 저주받은 탑 -->
-      <button class="map-building available" style="top:24%;left:75%" onclick="goCharSelect()" aria-label="저주받은 탑">
-        <svg viewBox="0 0 80 140"><use href="#bldg-tower"/></svg>
-        <div class="bldg-label">탑 ▶</div>
-      </button>
-      <!-- (1,0) 미용실 -->
-      <button class="map-building locked" style="top:54%;left:25%" onclick="lockedLoc('미용실')" aria-label="미용실">
-        <svg viewBox="0 0 100 120"><use href="#bldg-salon"/></svg>
-        <div class="bldg-label">미용실</div>
-      </button>
-      <!-- (1,1) 백화점 -->
-      <button class="map-building locked" style="top:54%;left:75%" onclick="lockedLoc('백화점')" aria-label="백화점">
+      <!-- 백화점 (우상단) -->
+      <button class="map-building locked" style="top:13%;left:68%;width:13%" onclick="lockedLoc('백화점')" aria-label="백화점">
         <svg viewBox="0 0 100 130"><use href="#bldg-dept"/></svg>
         <div class="bldg-label">백화점</div>
       </button>
-      <!-- (2,0) 미니농장 -->
-      <button class="map-building locked" style="top:83%;left:25%" onclick="lockedLoc('미니농장')" aria-label="미니농장">
+      <!-- 미용실 (좌측 중간) -->
+      <button class="map-building locked" style="top:38%;left:20%;width:11%" onclick="lockedLoc('미용실')" aria-label="미용실">
+        <svg viewBox="0 0 100 120"><use href="#bldg-salon"/></svg>
+        <div class="bldg-label">미용실</div>
+      </button>
+      <!-- 탑 (우측 중간, 강조) -->
+      <button class="map-building available" style="top:43%;left:80%;width:14%" onclick="goCharSelect()" aria-label="저주받은 탑">
+        <svg viewBox="0 0 80 140"><use href="#bldg-tower"/></svg>
+        <div class="bldg-label">탑 ▶</div>
+      </button>
+      <!-- 미니농장 (좌하단) -->
+      <button class="map-building locked" style="top:70%;left:33%;width:14%" onclick="lockedLoc('미니농장')" aria-label="미니농장">
         <svg viewBox="0 0 110 120"><use href="#bldg-minifarm"/></svg>
         <div class="bldg-label">미니농장</div>
       </button>
-      <!-- (2,1) 과수원 -->
-      <button class="map-building locked" style="top:83%;left:75%" onclick="lockedLoc('과수원')" aria-label="과수원">
+      <!-- 과수원 (우하단, 약간 큼) -->
+      <button class="map-building locked" style="top:74%;left:68%;width:16%" onclick="lockedLoc('과수원')" aria-label="과수원">
         <svg viewBox="0 0 130 120"><use href="#bldg-orchard"/></svg>
         <div class="bldg-label">과수원</div>
       </button>
