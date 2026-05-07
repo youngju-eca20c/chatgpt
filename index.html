@@ -843,53 +843,79 @@
     width: 100%;
     height: 100%;
   }
-  .map-loc {
+  /* 건물 (클릭 타깃) */
+  .map-building {
     position: absolute;
     transform: translate(-50%, -50%);
-    background: linear-gradient(180deg, #fff5dc, #f5d8a0);
-    border: 2px solid #a06030;
-    border-radius: 10px;
-    padding: 6px 9px;
+    background: transparent;
+    border: none;
+    padding: 0;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1px;
-    transition: all 0.2s;
+    width: 24%;
     z-index: 5;
-    color: #5a3010;
-    box-shadow: 0 3px 6px rgba(80, 40, 10, 0.4);
+    transition: transform 0.2s;
   }
-  .map-loc.available {
-    border-color: #c0301a;
-    background: linear-gradient(180deg, #3a1010, #1a0808);
-    color: #fff5d8;
-    animation: locPulse 2.2s ease-in-out infinite;
+  .map-building svg {
+    width: 100%;
+    height: auto;
+    max-height: 32vh;
+    transition: filter 0.2s, transform 0.2s;
+    filter: drop-shadow(0 4px 6px rgba(60, 30, 10, 0.45));
   }
-  @keyframes locPulse {
-    0%, 100% { box-shadow: 0 0 16px rgba(192, 48, 26, 0.6), 0 4px 10px rgba(0,0,0,0.4); }
-    50%      { box-shadow: 0 0 28px rgba(255, 80, 60, 0.9), 0 6px 14px rgba(0,0,0,0.5); }
+  .map-building:hover svg {
+    transform: translateY(-3px) scale(1.06);
+    filter: drop-shadow(0 8px 14px rgba(60, 30, 10, 0.55)) brightness(1.08);
   }
-  .map-loc.available:hover { transform: translate(-50%, -50%) scale(1.08); }
-  .map-loc.disabled { opacity: 0.7; cursor: not-allowed; filter: saturate(0.7); }
-  .map-loc.disabled:hover { transform: translate(-50%, -50%); }
-  .loc-icon {
-    font-size: 1.4rem;
-    line-height: 1;
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+  .map-building.locked svg {
+    filter: drop-shadow(0 4px 6px rgba(60, 30, 10, 0.4)) saturate(0.75) brightness(0.95);
   }
-  .loc-name {
+  .map-building.locked:hover svg {
+    filter: drop-shadow(0 6px 10px rgba(60, 30, 10, 0.5)) saturate(0.9) brightness(1);
+  }
+  .map-building.available svg {
+    animation: bldgGlow 2.2s ease-in-out infinite;
+  }
+  @keyframes bldgGlow {
+    0%, 100% {
+      filter:
+        drop-shadow(0 4px 8px rgba(60, 30, 10, 0.5))
+        drop-shadow(0 0 12px rgba(255, 80, 60, 0.55));
+    }
+    50% {
+      filter:
+        drop-shadow(0 4px 12px rgba(60, 30, 10, 0.5))
+        drop-shadow(0 0 24px rgba(255, 100, 80, 0.95));
+    }
+  }
+  .map-building.available:hover svg {
+    transform: translateY(-3px) scale(1.06);
+  }
+  .bldg-label {
     font-family: 'Black Han Sans', sans-serif;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
+    color: #5a3010;
+    margin-top: 4px;
     white-space: nowrap;
+    background: rgba(255, 245, 220, 0.92);
+    border: 1.5px solid #a06030;
+    border-radius: 999px;
+    padding: 2px 10px;
     letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(60, 30, 10, 0.3);
   }
-  .loc-status {
-    font-size: 0.55rem;
-    letter-spacing: 0.5px;
+  .map-building.available .bldg-label {
+    background: linear-gradient(180deg, #c0301a, #7a1a10);
+    border-color: #ffcc44;
+    color: #fff5d8;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.5);
   }
-  .map-loc.available .loc-status { color: #ffe070; }
-  .map-loc.disabled .loc-status  { color: #8a7060; }
+  .map-building.locked .bldg-label::before {
+    content: '🔒 ';
+    margin-right: 2px;
+  }
 
   .map-actions {
     display: flex;
@@ -900,10 +926,9 @@
 
   @media (max-width: 600px) {
     .map-area { aspect-ratio: 3/4; }
-    .map-loc { padding: 5px 8px; min-width: 76px; }
-    .loc-icon { font-size: 1.5rem; }
-    .loc-name { font-size: 0.7rem; }
-    .loc-status { font-size: 0.55rem; }
+    .map-building { width: 30%; }
+    .map-building svg { max-height: 22vh; }
+    .bldg-label { font-size: 0.7rem; padding: 1px 8px; }
     .map-title { font-size: 1.3rem; }
     .map-subtitle { font-size: 0.75rem; }
   }
@@ -1677,6 +1702,258 @@
       <text x="50" y="60" text-anchor="middle" fill="#ffcc44" font-size="20" font-family="serif">✦</text>
     </symbol>
 
+    <!-- ═════════ 월드맵 건물 일러스트 ═════════ -->
+    <!-- 놀이공원 (관람차) -->
+    <symbol id="bldg-amusement" viewBox="0 0 100 130">
+      <ellipse cx="50" cy="125" rx="35" ry="3" fill="#000" opacity="0.35"/>
+      <!-- 지지대 -->
+      <line x1="50" y1="80" x2="32" y2="120" stroke="#5a4030" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="50" y1="80" x2="68" y2="120" stroke="#5a4030" stroke-width="3.5" stroke-linecap="round"/>
+      <rect x="28" y="118" width="44" height="6" fill="#5a3010" rx="1"/>
+      <!-- 큰 바퀴 -->
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#a0602a" stroke-width="3.5"/>
+      <circle cx="50" cy="50" r="33" fill="none" stroke="#a0602a" stroke-width="2"/>
+      <!-- 살 -->
+      <line x1="50" y1="10" x2="50" y2="90" stroke="#a0602a" stroke-width="2"/>
+      <line x1="10" y1="50" x2="90" y2="50" stroke="#a0602a" stroke-width="2"/>
+      <line x1="22" y1="22" x2="78" y2="78" stroke="#a0602a" stroke-width="2"/>
+      <line x1="78" y1="22" x2="22" y2="78" stroke="#a0602a" stroke-width="2"/>
+      <!-- 중앙 허브 -->
+      <circle cx="50" cy="50" r="6" fill="#7a4020" stroke="#3a1808" stroke-width="1.5"/>
+      <circle cx="50" cy="50" r="2" fill="#ffcc44"/>
+      <!-- 객실 8개 (총천연색) -->
+      <rect x="45" y="4" width="10" height="10" fill="#ff6080" stroke="#7a1030" stroke-width="1" rx="2"/>
+      <rect x="76" y="20" width="10" height="10" fill="#80c8ff" stroke="#1a4080" stroke-width="1" rx="2"/>
+      <rect x="86" y="45" width="10" height="10" fill="#80ff90" stroke="#106030" stroke-width="1" rx="2"/>
+      <rect x="76" y="70" width="10" height="10" fill="#ffcc44" stroke="#7a4010" stroke-width="1" rx="2"/>
+      <rect x="45" y="86" width="10" height="10" fill="#ff90d0" stroke="#7a3068" stroke-width="1" rx="2"/>
+      <rect x="14" y="70" width="10" height="10" fill="#80ffe0" stroke="#106870" stroke-width="1" rx="2"/>
+      <rect x="4" y="45" width="10" height="10" fill="#ffaa80" stroke="#7a4020" stroke-width="1" rx="2"/>
+      <rect x="14" y="20" width="10" height="10" fill="#c890ff" stroke="#5020a0" stroke-width="1" rx="2"/>
+      <!-- 깃발 -->
+      <line x1="50" y1="10" x2="50" y2="-2" stroke="#444" stroke-width="1"/>
+      <path d="M50 -2 L62 1 L50 4 Z" fill="#ff4040"/>
+    </symbol>
+
+    <!-- 미용실 -->
+    <symbol id="bldg-salon" viewBox="0 0 100 120">
+      <ellipse cx="50" cy="116" rx="38" ry="3" fill="#000" opacity="0.35"/>
+      <!-- 본체 (분홍) -->
+      <rect x="14" y="42" width="72" height="74" fill="#ffc8d8" stroke="#7a3a4a" stroke-width="2"/>
+      <!-- 줄무늬 차양 -->
+      <path d="M14 50 L20 58 L26 50 L32 58 L38 50 L44 58 L50 50 L56 58 L62 50 L68 58 L74 50 L80 58 L86 50" fill="none" stroke="#a04050" stroke-width="3" stroke-linecap="round"/>
+      <!-- 지붕 -->
+      <path d="M8 42 L50 14 L92 42 Z" fill="#a04050" stroke="#5a2030" stroke-width="2"/>
+      <path d="M50 14 L50 8" stroke="#5a2030" stroke-width="1.5"/>
+      <ellipse cx="50" cy="6" rx="2.5" ry="2" fill="#ffcc44"/>
+      <!-- 간판 (가위) -->
+      <rect x="28" y="26" width="44" height="14" fill="#fff5f8" stroke="#7a3a4a" stroke-width="1.5" rx="2"/>
+      <text x="50" y="36" text-anchor="middle" font-size="9" fill="#a04050" font-weight="bold">✂ Salon</text>
+      <!-- 창문 (왼) - 거울 비침 -->
+      <rect x="22" y="58" width="14" height="14" fill="#a8e8f0" stroke="#5a3a4a" stroke-width="1.2"/>
+      <rect x="24" y="60" width="10" height="10" fill="#fff" opacity="0.7"/>
+      <line x1="22" y1="65" x2="36" y2="65" stroke="#5a3a4a" stroke-width="0.8"/>
+      <line x1="29" y1="58" x2="29" y2="72" stroke="#5a3a4a" stroke-width="0.8"/>
+      <!-- 창문 (오) -->
+      <rect x="64" y="58" width="14" height="14" fill="#a8e8f0" stroke="#5a3a4a" stroke-width="1.2"/>
+      <line x1="64" y1="65" x2="78" y2="65" stroke="#5a3a4a" stroke-width="0.8"/>
+      <line x1="71" y1="58" x2="71" y2="72" stroke="#5a3a4a" stroke-width="0.8"/>
+      <!-- 문 -->
+      <rect x="42" y="80" width="16" height="36" fill="#5a3030" stroke="#3a1818"/>
+      <rect x="44" y="84" width="12" height="14" fill="#a8e8f0" stroke="#3a1818" stroke-width="0.5"/>
+      <circle cx="55" cy="100" r="1.5" fill="#ffcc44"/>
+      <!-- 미용실 폴 -->
+      <rect x="4" y="58" width="6" height="40" fill="#fff" stroke="#444" stroke-width="0.6"/>
+      <path d="M4 62 L10 62 L7 70 L4 70 Z" fill="#ff4040"/>
+      <path d="M4 70 L10 70 L7 78 L4 78 Z" fill="#4080ff"/>
+      <path d="M4 78 L10 78 L7 86 L4 86 Z" fill="#ff4040"/>
+      <path d="M4 86 L10 86 L7 94 L4 94 Z" fill="#4080ff"/>
+      <circle cx="7" cy="56" r="3.5" fill="#ffcc44" stroke="#7a4010"/>
+      <!-- 작은 장미 화분 -->
+      <rect x="86" y="98" width="10" height="14" fill="#7a4020" stroke="#3a1808" stroke-width="0.6"/>
+      <ellipse cx="91" cy="96" rx="5" ry="4" fill="#ff6090"/>
+      <ellipse cx="91" cy="94" rx="3" ry="2.5" fill="#ff80b0"/>
+    </symbol>
+
+    <!-- 백화점 -->
+    <symbol id="bldg-dept" viewBox="0 0 100 130">
+      <ellipse cx="50" cy="126" rx="40" ry="3" fill="#000" opacity="0.4"/>
+      <!-- 본체 -->
+      <rect x="8" y="22" width="84" height="103" fill="#e0c8a0" stroke="#7a5a30" stroke-width="2"/>
+      <!-- 옆 그림자 (입체감) -->
+      <rect x="84" y="22" width="8" height="103" fill="#a08868" opacity="0.6"/>
+      <!-- 상단 띠 + 간판 -->
+      <rect x="4" y="14" width="92" height="14" fill="#ff6080" stroke="#7a2040" stroke-width="1.5" rx="2"/>
+      <text x="50" y="24" text-anchor="middle" font-size="8" fill="#fff5dc" font-weight="bold">★ MART ★</text>
+      <!-- 창문 그리드 (4층 × 4열) -->
+      <g fill="#a8d8e8" stroke="#5a4020" stroke-width="0.8">
+        <rect x="14" y="32" width="14" height="14"/>
+        <rect x="32" y="32" width="14" height="14"/>
+        <rect x="54" y="32" width="14" height="14"/>
+        <rect x="72" y="32" width="14" height="14"/>
+        <rect x="14" y="50" width="14" height="14"/>
+        <rect x="32" y="50" width="14" height="14"/>
+        <rect x="54" y="50" width="14" height="14"/>
+        <rect x="72" y="50" width="14" height="14"/>
+        <rect x="14" y="68" width="14" height="14"/>
+        <rect x="32" y="68" width="14" height="14"/>
+        <rect x="54" y="68" width="14" height="14"/>
+        <rect x="72" y="68" width="14" height="14"/>
+        <rect x="14" y="86" width="14" height="14"/>
+        <rect x="32" y="86" width="14" height="14"/>
+        <rect x="54" y="86" width="14" height="14"/>
+        <rect x="72" y="86" width="14" height="14"/>
+      </g>
+      <!-- 창문 십자 -->
+      <g stroke="#5a4020" stroke-width="0.5" opacity="0.6">
+        <line x1="21" y1="32" x2="21" y2="46"/>
+        <line x1="14" y1="39" x2="28" y2="39"/>
+        <line x1="39" y1="32" x2="39" y2="46"/>
+        <line x1="32" y1="39" x2="46" y2="39"/>
+      </g>
+      <!-- 입구 (유리문) -->
+      <rect x="40" y="104" width="20" height="22" fill="#80c0d8" stroke="#5a4020"/>
+      <line x1="50" y1="104" x2="50" y2="125" stroke="#5a4020"/>
+      <!-- 차양 -->
+      <path d="M34 104 L66 104 L62 98 L38 98 Z" fill="#ff6080" stroke="#7a2040"/>
+      <!-- 깃발 -->
+      <line x1="50" y1="0" x2="50" y2="14" stroke="#5a3010" stroke-width="1"/>
+      <path d="M50 1 L62 4 L50 7 Z" fill="#ff4040"/>
+    </symbol>
+
+    <!-- 미니농장 (헛간) -->
+    <symbol id="bldg-minifarm" viewBox="0 0 110 120">
+      <ellipse cx="55" cy="116" rx="42" ry="3" fill="#000" opacity="0.35"/>
+      <!-- 헛간 -->
+      <rect x="20" y="50" width="60" height="64" fill="#c87850" stroke="#5a2818" stroke-width="2"/>
+      <!-- 지붕 -->
+      <path d="M14 50 L50 22 L86 50 Z" fill="#7a2828" stroke="#3a1010" stroke-width="2"/>
+      <!-- 십자 무늬 -->
+      <path d="M20 60 L80 60" stroke="#5a2818" stroke-width="1.2"/>
+      <path d="M50 50 L50 110" stroke="#5a2818" stroke-width="1"/>
+      <path d="M30 70 L50 110" stroke="#5a2818" stroke-width="0.8"/>
+      <path d="M70 70 L50 110" stroke="#5a2818" stroke-width="0.8"/>
+      <!-- 창문 -->
+      <rect x="26" y="56" width="10" height="10" fill="#a8e8f0" stroke="#5a2818" stroke-width="0.8"/>
+      <line x1="31" y1="56" x2="31" y2="66" stroke="#5a2818" stroke-width="0.5"/>
+      <line x1="26" y1="61" x2="36" y2="61" stroke="#5a2818" stroke-width="0.5"/>
+      <rect x="64" y="56" width="10" height="10" fill="#a8e8f0" stroke="#5a2818" stroke-width="0.8"/>
+      <line x1="69" y1="56" x2="69" y2="66" stroke="#5a2818" stroke-width="0.5"/>
+      <line x1="64" y1="61" x2="74" y2="61" stroke="#5a2818" stroke-width="0.5"/>
+      <!-- 큰 문 -->
+      <path d="M40 78 L60 78 L60 114 L40 114 Z" fill="#5a3010" stroke="#3a1808" stroke-width="1.2"/>
+      <line x1="50" y1="78" x2="50" y2="114" stroke="#3a1808" stroke-width="1"/>
+      <circle cx="44" cy="96" r="0.8" fill="#ffcc44"/>
+      <circle cx="56" cy="96" r="0.8" fill="#ffcc44"/>
+      <!-- 별 -->
+      <path d="M50 32 L52 38 L58 38 L53 42 L55 48 L50 44 L45 48 L47 42 L42 38 L48 38 Z" fill="#ffcc44" stroke="#7a4010" stroke-width="0.5"/>
+      <!-- 닭 -->
+      <ellipse cx="96" cy="105" rx="7" ry="5" fill="#fff"/>
+      <circle cx="100" cy="98" r="4" fill="#fff"/>
+      <path d="M100 95 L102 91 L98 91 Z" fill="#ff6030"/>
+      <circle cx="101" cy="97" r="0.6" fill="#000"/>
+      <line x1="96" y1="110" x2="96" y2="114" stroke="#ffaa30" stroke-width="0.8"/>
+      <line x1="100" y1="110" x2="100" y2="114" stroke="#ffaa30" stroke-width="0.8"/>
+      <ellipse cx="93" cy="103" rx="3" ry="2" fill="#fff" opacity="0.7"/>
+      <!-- 건초 -->
+      <rect x="2" y="100" width="14" height="10" fill="#e8c068" stroke="#7a5810" rx="1"/>
+      <line x1="2" y1="105" x2="16" y2="105" stroke="#a08840" stroke-width="0.5"/>
+      <line x1="6" y1="100" x2="6" y2="110" stroke="#a08840" stroke-width="0.5"/>
+      <line x1="10" y1="100" x2="10" y2="110" stroke="#a08840" stroke-width="0.5"/>
+    </symbol>
+
+    <!-- 과수원 (사과나무 군집) -->
+    <symbol id="bldg-orchard" viewBox="0 0 130 120">
+      <ellipse cx="65" cy="116" rx="55" ry="4" fill="#000" opacity="0.3"/>
+      <!-- 땅 -->
+      <ellipse cx="65" cy="108" rx="58" ry="8" fill="#9a6840" opacity="0.5"/>
+      <!-- 좌측 나무 (배경) -->
+      <rect x="32" y="65" width="6" height="32" fill="#5a3018"/>
+      <ellipse cx="35" cy="55" rx="20" ry="22" fill="#5a8030"/>
+      <ellipse cx="35" cy="50" rx="16" ry="18" fill="#7aa840"/>
+      <circle cx="28" cy="48" r="2.8" fill="#ff6060"/>
+      <circle cx="40" cy="50" r="2.8" fill="#ff6060"/>
+      <circle cx="34" cy="58" r="2.8" fill="#ff6060"/>
+      <circle cx="44" cy="44" r="2.8" fill="#ff6060"/>
+      <!-- 가운데 큰 나무 -->
+      <rect x="60" y="68" width="9" height="38" fill="#5a3018"/>
+      <rect x="60" y="68" width="9" height="38" fill="#7a4828" opacity="0.5"/>
+      <ellipse cx="65" cy="55" rx="28" ry="30" fill="#5a8030"/>
+      <ellipse cx="65" cy="50" rx="22" ry="24" fill="#7aa840"/>
+      <ellipse cx="65" cy="46" rx="14" ry="14" fill="#9ac860" opacity="0.6"/>
+      <circle cx="52" cy="48" r="3.2" fill="#ff6060" stroke="#7a1010" stroke-width="0.4"/>
+      <circle cx="72" cy="46" r="3.2" fill="#ff6060" stroke="#7a1010" stroke-width="0.4"/>
+      <circle cx="65" cy="60" r="3.2" fill="#ff6060" stroke="#7a1010" stroke-width="0.4"/>
+      <circle cx="78" cy="54" r="3.2" fill="#ff6060" stroke="#7a1010" stroke-width="0.4"/>
+      <circle cx="58" cy="64" r="3.2" fill="#ff6060" stroke="#7a1010" stroke-width="0.4"/>
+      <circle cx="50" cy="40" r="3.2" fill="#ff6060" stroke="#7a1010" stroke-width="0.4"/>
+      <circle cx="78" cy="38" r="3.2" fill="#ff6060" stroke="#7a1010" stroke-width="0.4"/>
+      <!-- 우측 나무 -->
+      <rect x="92" y="73" width="6" height="28" fill="#5a3018"/>
+      <ellipse cx="95" cy="60" rx="18" ry="20" fill="#5a8030"/>
+      <ellipse cx="95" cy="56" rx="14" ry="16" fill="#7aa840"/>
+      <circle cx="90" cy="54" r="2.8" fill="#ffcc44"/>
+      <circle cx="100" cy="56" r="2.8" fill="#ffcc44"/>
+      <circle cx="95" cy="62" r="2.8" fill="#ffcc44"/>
+      <!-- 바구니 -->
+      <path d="M12 100 L26 100 L24 112 L14 112 Z" fill="#a06030" stroke="#5a3010" stroke-width="1.5"/>
+      <ellipse cx="19" cy="100" rx="7" ry="2" fill="#7a4020"/>
+      <line x1="13" y1="100" x2="11" y2="92" stroke="#5a3010" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="25" y1="100" x2="27" y2="92" stroke="#5a3010" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M11 92 Q19 86 27 92" stroke="#5a3010" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <circle cx="16" cy="98" r="2" fill="#ff6060"/>
+      <circle cx="20" cy="98" r="2" fill="#ff6060"/>
+      <circle cx="23" cy="98" r="2" fill="#ff6060"/>
+      <!-- 떨어진 사과 -->
+      <circle cx="105" cy="105" r="2.5" fill="#ff6060" stroke="#7a1010" stroke-width="0.4"/>
+      <line x1="105" y1="103" x2="105" y2="101" stroke="#5a3010" stroke-width="0.6"/>
+    </symbol>
+
+    <!-- 저주받은 탑 -->
+    <symbol id="bldg-tower" viewBox="0 0 80 140">
+      <ellipse cx="40" cy="135" rx="30" ry="3.5" fill="#000" opacity="0.5"/>
+      <!-- 그림자 영역 (보랏빛 음울) -->
+      <ellipse cx="40" cy="130" rx="36" ry="6" fill="#3a1850" opacity="0.4"/>
+      <!-- 본체 -->
+      <path d="M14 130 L14 50 L10 44 L10 32 L20 22 L60 22 L70 32 L70 44 L66 50 L66 130 Z" fill="#3a2050" stroke="#1a0828" stroke-width="2"/>
+      <!-- 본체 텍스처 (어두운 띠) -->
+      <line x1="14" y1="80" x2="66" y2="80" stroke="#1a0828" stroke-width="1" opacity="0.6"/>
+      <line x1="14" y1="105" x2="66" y2="105" stroke="#1a0828" stroke-width="1" opacity="0.6"/>
+      <!-- 톱니 흉벽 -->
+      <rect x="14" y="50" width="6" height="6" fill="#1a0828"/>
+      <rect x="26" y="50" width="6" height="6" fill="#1a0828"/>
+      <rect x="38" y="50" width="6" height="6" fill="#1a0828"/>
+      <rect x="48" y="50" width="6" height="6" fill="#1a0828"/>
+      <rect x="60" y="50" width="6" height="6" fill="#1a0828"/>
+      <!-- 첨탑 -->
+      <path d="M10 32 L40 -2 L70 32 Z" fill="#5a2828" stroke="#1a0828" stroke-width="2"/>
+      <line x1="40" y1="-2" x2="40" y2="-12" stroke="#444" stroke-width="1"/>
+      <path d="M40 -12 L48 -9 L40 -6 Z" fill="#aa1010"/>
+      <!-- 빛나는 창문들 -->
+      <rect x="36" y="32" width="8" height="12" fill="#5a2010" rx="1"/>
+      <rect x="37" y="33" width="6" height="10" fill="#ff8030" opacity="0.95"/>
+      <rect x="22" y="62" width="6" height="10" fill="#5a2010" rx="1"/>
+      <rect x="22" y="62" width="6" height="10" fill="#ff8030" opacity="0.85"/>
+      <rect x="52" y="62" width="6" height="10" fill="#5a2010" rx="1"/>
+      <rect x="52" y="62" width="6" height="10" fill="#ff8030" opacity="0.85"/>
+      <rect x="36" y="86" width="8" height="12" fill="#5a2010" rx="1"/>
+      <rect x="37" y="87" width="6" height="10" fill="#ff8030" opacity="0.7"/>
+      <rect x="22" y="110" width="6" height="10" fill="#5a2010" rx="1"/>
+      <rect x="22" y="110" width="6" height="10" fill="#ff8030" opacity="0.6"/>
+      <rect x="52" y="110" width="6" height="10" fill="#5a2010" rx="1"/>
+      <rect x="52" y="110" width="6" height="10" fill="#ff8030" opacity="0.6"/>
+      <!-- 입구 아치 -->
+      <path d="M30 130 L30 116 Q30 108 40 108 Q50 108 50 116 L50 130 Z" fill="#0a0218" stroke="#5a1010" stroke-width="1"/>
+      <circle cx="46" cy="120" r="1" fill="#ffcc44"/>
+      <!-- 까마귀 (지붕) -->
+      <ellipse cx="56" cy="22" rx="4.5" ry="3" fill="#0a0010"/>
+      <circle cx="60" cy="20" r="2" fill="#0a0010"/>
+      <path d="M62 20 L65 19 L62 22 Z" fill="#ff8030"/>
+      <circle cx="60" cy="19.5" r="0.4" fill="#ff3030"/>
+      <!-- 박쥐 (작게 한 마리) -->
+      <path d="M14 8 q-3 -2 -6 0 q-1 -2 -3 -1 q2 1 3 1 q1 1 2 0 q1 0 2 -1 q3 1 5 -1 q-3 0 -5 0 q1 -1 2 1 z" fill="#1a0a1a"/>
+    </symbol>
+
     <!-- 월드맵 배경 (따뜻한 농장) -->
     <symbol id="bg-worldmap" viewBox="0 0 800 500">
       <defs>
@@ -1749,124 +2026,35 @@
       <path d="M40 480 Q150 440 250 410 Q400 380 550 360 Q680 340 760 290" stroke="#d4a878" stroke-width="22" fill="none" opacity="0.95" stroke-linecap="round"/>
       <path d="M40 480 Q150 440 250 410 Q400 380 550 360 Q680 340 760 290" stroke="#a0805a" stroke-width="24" fill="none" opacity="0.4" stroke-linecap="round"/>
 
-      <!-- 헛간 (북서쪽) -->
-      <g transform="translate(170 290)">
-        <rect x="-2" y="32" width="84" height="55" fill="#c87850"/>
-        <path d="M-12 32 L40 -12 L92 32 Z" fill="#8b3a30"/>
-        <path d="M-12 32 L92 32" stroke="#5a2818" stroke-width="2"/>
-        <rect x="32" y="55" width="18" height="32" fill="#5a3010"/>
-        <line x1="41" y1="56" x2="41" y2="86" stroke="#3a1a08" stroke-width="0.8"/>
-        <rect x="8" y="50" width="14" height="14" fill="#a8e0f0"/>
-        <line x1="15" y1="50" x2="15" y2="64" stroke="#5a3010" stroke-width="1"/>
-        <rect x="60" y="50" width="14" height="14" fill="#a8e0f0"/>
-        <line x1="67" y1="50" x2="67" y2="64" stroke="#5a3010" stroke-width="1"/>
-        <text x="40" y="22" text-anchor="middle" font-size="10" fill="#fff5e0" font-weight="bold">★</text>
-      </g>
-
-      <!-- 닭장 (남쪽 작은 집) -->
-      <g transform="translate(380 410)">
-        <rect x="0" y="14" width="50" height="36" fill="#d8a060"/>
-        <path d="M-6 14 L25 -8 L56 14 Z" fill="#8b5028"/>
-        <rect x="20" y="28" width="12" height="22" fill="#5a3010"/>
-        <circle cx="9" cy="26" r="4" fill="#5a3010"/>
-        <!-- 닭 -->
-        <ellipse cx="62" cy="48" rx="6" ry="5" fill="#fff"/>
-        <circle cx="65" cy="42" r="3" fill="#fff"/>
-        <path d="M65 39 L66 36 L64 36 Z" fill="#ff6030"/>
-        <circle cx="66" cy="41" r="0.6" fill="#000"/>
-        <line x1="62" y1="52" x2="62" y2="56" stroke="#ffaa30" stroke-width="0.8"/>
-      </g>
-
-      <!-- 밭 (왼쪽 아래) -->
-      <g transform="translate(60 380)">
-        <rect x="0" y="0" width="120" height="80" fill="#9a6840"/>
-        <line x1="0" y1="20" x2="120" y2="20" stroke="#6a4020" stroke-width="1.5"/>
-        <line x1="0" y1="40" x2="120" y2="40" stroke="#6a4020" stroke-width="1.5"/>
-        <line x1="0" y1="60" x2="120" y2="60" stroke="#6a4020" stroke-width="1.5"/>
-        <!-- 작물 -->
-        <g fill="#5aa030">
-          <circle cx="15" cy="20" r="3"/>
-          <circle cx="40" cy="20" r="3"/>
-          <circle cx="65" cy="20" r="3"/>
-          <circle cx="90" cy="20" r="3"/>
-          <circle cx="115" cy="20" r="3"/>
-          <circle cx="15" cy="40" r="3"/>
-          <circle cx="40" cy="40" r="3"/>
-          <circle cx="65" cy="40" r="3"/>
-          <circle cx="90" cy="40" r="3"/>
-          <circle cx="115" cy="40" r="3"/>
-          <circle cx="15" cy="60" r="3"/>
-          <circle cx="40" cy="60" r="3"/>
-          <circle cx="65" cy="60" r="3"/>
-        </g>
-      </g>
-
-      <!-- 과수원 (오른쪽 아래) -->
+      <!-- 작은 꽃들 (배경 데코) -->
       <g>
-        <ellipse cx="555" cy="430" rx="22" ry="26" fill="#5a8030"/>
-        <ellipse cx="555" cy="425" rx="18" ry="22" fill="#7aa840"/>
-        <rect x="551" y="445" width="8" height="18" fill="#5a3818"/>
-        <circle cx="548" cy="420" r="2" fill="#ff6060"/>
-        <circle cx="562" cy="425" r="2" fill="#ff6060"/>
-        <circle cx="555" cy="432" r="2" fill="#ff6060"/>
-
-        <ellipse cx="610" cy="450" rx="20" ry="24" fill="#5a8030"/>
-        <ellipse cx="610" cy="446" rx="16" ry="20" fill="#7aa840"/>
-        <rect x="606" y="464" width="8" height="18" fill="#5a3818"/>
-        <circle cx="604" cy="442" r="2" fill="#ffcc44"/>
-        <circle cx="616" cy="446" r="2" fill="#ffcc44"/>
-      </g>
-
-      <!-- 작은 꽃들 -->
-      <g>
-        <circle cx="100" cy="470" r="3" fill="#ff80a0"/>
-        <circle cx="98" cy="468" r="1.2" fill="#ffe070"/>
-        <circle cx="280" cy="475" r="3" fill="#ffe070"/>
-        <circle cx="320" cy="465" r="3" fill="#a0a0ff"/>
-        <circle cx="500" cy="470" r="3" fill="#ff80a0"/>
-        <circle cx="660" cy="470" r="3" fill="#ffe070"/>
+        <circle cx="60" cy="430" r="3" fill="#ff80a0"/>
+        <circle cx="60" cy="430" r="1.2" fill="#ffe070"/>
+        <circle cx="100" cy="470" r="3" fill="#ffe070"/>
+        <circle cx="280" cy="475" r="3" fill="#a0a0ff"/>
+        <circle cx="380" cy="475" r="3" fill="#ff80a0"/>
+        <circle cx="500" cy="430" r="3" fill="#ffe070"/>
+        <circle cx="640" cy="475" r="3" fill="#a0a0ff"/>
         <circle cx="720" cy="465" r="3" fill="#ff80a0"/>
       </g>
 
-      <!-- 멀리 보이는 어두운 탑 (대조) -->
-      <g transform="translate(620 240)">
-        <ellipse cx="22" cy="70" rx="32" ry="6" fill="#2a1830" opacity="0.4"/>
-        <path d="M5 68 L5 25 L0 20 L0 12 L8 4 L36 4 L44 12 L44 20 L39 25 L39 68 Z" fill="#3a2050"/>
-        <path d="M0 12 L22 -8 L44 12 Z" fill="#5a2828"/>
-        <line x1="22" y1="-8" x2="22" y2="-14" stroke="#2a1820" stroke-width="1.2"/>
-        <rect x="14" y="32" width="6" height="9" fill="#ff8030" opacity="0.85"/>
-        <rect x="24" y="48" width="6" height="9" fill="#ff8030" opacity="0.7"/>
-        <!-- 까마귀 한 마리 -->
-        <path d="M70 0 q-4 -2 -7 0 q-1 -2 -4 -1 q2 2 4 1 q1 2 3 1 q2 1 3 -1 q3 1 5 -1 q-3 -1 -5 1 z" fill="#1a0a1a" opacity="0.7"/>
+      <!-- 풀 디테일 -->
+      <g stroke="#5aa040" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6">
+        <path d="M40 460 q1 -8 2 0"/>
+        <path d="M180 470 q1 -8 2 0"/>
+        <path d="M340 480 q1 -8 2 0"/>
+        <path d="M540 470 q1 -8 2 0"/>
+        <path d="M700 480 q1 -8 2 0"/>
       </g>
 
-      <!-- 양 두 마리 (목초지 느낌) -->
-      <g transform="translate(280 350)">
-        <ellipse cx="0" cy="0" rx="14" ry="10" fill="#fff8e8"/>
-        <circle cx="-10" cy="-2" r="6" fill="#fff8e8"/>
-        <circle cx="-13" cy="-4" r="4" fill="#3a3030"/>
-        <circle cx="-12" cy="-5" r="0.8" fill="#fff"/>
-        <line x1="-4" y1="8" x2="-4" y2="13" stroke="#3a3030" stroke-width="1.2"/>
-        <line x1="4" y1="8" x2="4" y2="13" stroke="#3a3030" stroke-width="1.2"/>
-      </g>
-      <g transform="translate(310 365)">
+      <!-- 양 한 마리 (장식) -->
+      <g transform="translate(150 415)">
         <ellipse cx="0" cy="0" rx="11" ry="8" fill="#fff8e8"/>
-        <circle cx="-8" cy="-2" r="5" fill="#fff8e8"/>
-        <circle cx="-10" cy="-4" r="3" fill="#3a3030"/>
-        <line x1="-3" y1="6" x2="-3" y2="10" stroke="#3a3030" stroke-width="1"/>
-        <line x1="3" y1="6" x2="3" y2="10" stroke="#3a3030" stroke-width="1"/>
-      </g>
-
-      <!-- 울타리 -->
-      <g stroke="#a06030" stroke-width="2.5" fill="none" stroke-linecap="round">
-        <line x1="200" y1="350" x2="380" y2="350"/>
-        <line x1="200" y1="362" x2="380" y2="362"/>
-        <line x1="210" y1="345" x2="210" y2="370"/>
-        <line x1="240" y1="345" x2="240" y2="370"/>
-        <line x1="270" y1="345" x2="270" y2="370"/>
-        <line x1="300" y1="345" x2="300" y2="370"/>
-        <line x1="330" y1="345" x2="330" y2="370"/>
-        <line x1="360" y1="345" x2="360" y2="370"/>
+        <circle cx="-9" cy="-2" r="5" fill="#fff8e8"/>
+        <circle cx="-11" cy="-3" r="3" fill="#3a3030"/>
+        <circle cx="-10" cy="-3.5" r="0.5" fill="#fff"/>
+        <line x1="-4" y1="6" x2="-4" y2="10" stroke="#3a3030" stroke-width="1"/>
+        <line x1="4" y1="6" x2="4" y2="10" stroke="#3a3030" stroke-width="1"/>
       </g>
 
       <!-- 제목 두루마리 -->
@@ -2106,7 +2294,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-04</div>
+    <div class="version-tag" style="color:#a06030;">260507-05</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -2115,40 +2303,34 @@
         <use href="#bg-worldmap"/>
       </svg>
       <!-- (0,0) 놀이공원 -->
-      <button class="map-loc disabled" style="top:22%;left:25%" onclick="lockedLoc('놀이공원')">
-        <div class="loc-icon">🎡</div>
-        <div class="loc-name">놀이공원</div>
-        <div class="loc-status">🔒 준비중</div>
+      <button class="map-building locked" style="top:24%;left:25%" onclick="lockedLoc('놀이공원')" aria-label="놀이공원">
+        <svg viewBox="0 0 100 130"><use href="#bldg-amusement"/></svg>
+        <div class="bldg-label">놀이공원</div>
       </button>
-      <!-- (0,1) 저주받은 탑 (입장 가능) -->
-      <button class="map-loc available" style="top:22%;left:75%" onclick="goCharSelect()">
-        <div class="loc-icon">🏰</div>
-        <div class="loc-name">탑</div>
-        <div class="loc-status">▶ 모험</div>
+      <!-- (0,1) 저주받은 탑 -->
+      <button class="map-building available" style="top:24%;left:75%" onclick="goCharSelect()" aria-label="저주받은 탑">
+        <svg viewBox="0 0 80 140"><use href="#bldg-tower"/></svg>
+        <div class="bldg-label">탑 ▶</div>
       </button>
       <!-- (1,0) 미용실 -->
-      <button class="map-loc disabled" style="top:54%;left:25%" onclick="lockedLoc('미용실')">
-        <div class="loc-icon">💇</div>
-        <div class="loc-name">미용실</div>
-        <div class="loc-status">🔒 준비중</div>
+      <button class="map-building locked" style="top:54%;left:25%" onclick="lockedLoc('미용실')" aria-label="미용실">
+        <svg viewBox="0 0 100 120"><use href="#bldg-salon"/></svg>
+        <div class="bldg-label">미용실</div>
       </button>
       <!-- (1,1) 백화점 -->
-      <button class="map-loc disabled" style="top:54%;left:75%" onclick="lockedLoc('백화점')">
-        <div class="loc-icon">🏬</div>
-        <div class="loc-name">백화점</div>
-        <div class="loc-status">🔒 준비중</div>
+      <button class="map-building locked" style="top:54%;left:75%" onclick="lockedLoc('백화점')" aria-label="백화점">
+        <svg viewBox="0 0 100 130"><use href="#bldg-dept"/></svg>
+        <div class="bldg-label">백화점</div>
       </button>
       <!-- (2,0) 미니농장 -->
-      <button class="map-loc disabled" style="top:84%;left:25%" onclick="lockedLoc('미니농장')">
-        <div class="loc-icon">🚜</div>
-        <div class="loc-name">미니농장</div>
-        <div class="loc-status">🔒 준비중</div>
+      <button class="map-building locked" style="top:83%;left:25%" onclick="lockedLoc('미니농장')" aria-label="미니농장">
+        <svg viewBox="0 0 110 120"><use href="#bldg-minifarm"/></svg>
+        <div class="bldg-label">미니농장</div>
       </button>
       <!-- (2,1) 과수원 -->
-      <button class="map-loc disabled" style="top:84%;left:75%" onclick="lockedLoc('과수원')">
-        <div class="loc-icon">🍎</div>
-        <div class="loc-name">과수원</div>
-        <div class="loc-status">🔒 준비중</div>
+      <button class="map-building locked" style="top:83%;left:75%" onclick="lockedLoc('과수원')" aria-label="과수원">
+        <svg viewBox="0 0 130 120"><use href="#bldg-orchard"/></svg>
+        <div class="bldg-label">과수원</div>
       </button>
     </div>
   </div>
