@@ -803,6 +803,145 @@
   }
   .version-tag::before { content: '◆ v'; margin-right: 3px; color: #5a4a7a; }
 
+  /* === 월드맵 === */
+  .world-map-panel {
+    background: linear-gradient(180deg, #2a1855 0%, #150a30 100%);
+    border: 3px solid #6040a0;
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+  }
+  .map-title {
+    text-align: center;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.4rem;
+    color: #ffcc44;
+    text-shadow: 2px 2px 0 #2a1855;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .map-subtitle {
+    text-align: center;
+    color: #b0a0d0;
+    font-size: 0.82rem;
+    margin-bottom: 12px;
+  }
+  .map-player-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: linear-gradient(180deg, #3a2070, #2a1855);
+    border: 2px solid #6040a0;
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+  .map-player-portrait {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #4a2880, #2a1855);
+    border: 2px solid #8060c0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .map-player-portrait svg { width: 80%; height: 80%; }
+  .map-player-info { flex: 1; min-width: 0; }
+  .map-player-name {
+    font-family: 'Black Han Sans', sans-serif;
+    color: #ffcc44;
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+  .map-player-stats {
+    font-size: 0.75rem;
+    color: #b0a0d0;
+    margin-top: 2px;
+  }
+
+  .map-area {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/10;
+    background: linear-gradient(180deg, #1a0e3a, #0a0518);
+    border: 2px solid #4a3080;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.6);
+  }
+  .map-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .map-loc {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(180deg, #4a2880, #2a1855);
+    border: 2px solid #6040a0;
+    border-radius: 10px;
+    padding: 7px 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transition: all 0.2s;
+    z-index: 5;
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+  }
+  .map-loc.available {
+    border-color: #ffcc44;
+    background: linear-gradient(180deg, #5a3010, #2a1808);
+    animation: locPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes locPulse {
+    0%, 100% { box-shadow: 0 0 16px rgba(255, 204, 68, 0.5), 0 4px 10px rgba(0,0,0,0.5); }
+    50%      { box-shadow: 0 0 32px rgba(255, 204, 68, 0.85), 0 6px 14px rgba(0,0,0,0.5); }
+  }
+  .map-loc.available:hover { transform: translate(-50%, -50%) scale(1.08); }
+  .map-loc.disabled { opacity: 0.55; cursor: not-allowed; filter: grayscale(0.5); }
+  .map-loc.disabled:hover { transform: translate(-50%, -50%); }
+  .loc-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+  }
+  .loc-name {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    text-shadow: 1px 1px 2px #000;
+    letter-spacing: 0.5px;
+  }
+  .loc-status {
+    font-size: 0.58rem;
+    letter-spacing: 0.5px;
+  }
+  .map-loc.available .loc-status { color: #ffcc44; }
+  .map-loc.disabled .loc-status  { color: #8a7a9a; }
+
+  .map-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .map-actions .btn { flex: 1; }
+
+  @media (max-width: 600px) {
+    .map-area { aspect-ratio: 4/3; }
+    .map-loc { padding: 5px 7px; }
+    .loc-icon { font-size: 1.25rem; }
+    .loc-name { font-size: 0.65rem; }
+    .loc-status { font-size: 0.55rem; }
+    .map-title { font-size: 1.2rem; }
+  }
+
   /* === 캐릭터 선택 화면 === */
   .char-select-panel {
     background: linear-gradient(180deg, #3a2070 0%, #2a1855 100%);
@@ -1572,6 +1711,112 @@
       <text x="50" y="60" text-anchor="middle" fill="#ffcc44" font-size="20" font-family="serif">✦</text>
     </symbol>
 
+    <!-- 월드맵 배경 -->
+    <symbol id="bg-worldmap" viewBox="0 0 800 500">
+      <defs>
+        <radialGradient id="wmSky" cx="50%" cy="35%">
+          <stop offset="0%" stop-color="#3a2078"/>
+          <stop offset="60%" stop-color="#150a30"/>
+          <stop offset="100%" stop-color="#050218"/>
+        </radialGradient>
+      </defs>
+      <rect width="800" height="500" fill="url(#wmSky)"/>
+      <!-- 별들 -->
+      <g fill="#aa9988" opacity="0.7">
+        <circle cx="80" cy="50" r="1.2"/>
+        <circle cx="180" cy="80" r="1"/>
+        <circle cx="290" cy="40" r="1.4"/>
+        <circle cx="420" cy="60" r="1"/>
+        <circle cx="540" cy="90" r="1.3"/>
+        <circle cx="680" cy="50" r="1"/>
+        <circle cx="740" cy="100" r="1.5"/>
+        <circle cx="120" cy="180" r="1"/>
+        <circle cx="380" cy="200" r="1.2"/>
+        <circle cx="650" cy="220" r="1"/>
+      </g>
+      <!-- 안개 산맥 (멀리) -->
+      <path d="M0 200 L80 160 L160 195 L260 145 L360 180 L460 140 L560 175 L660 155 L760 190 L800 175 L800 280 L0 280 Z" fill="#1a1240" opacity="0.7"/>
+      <path d="M0 240 L100 215 L200 235 L300 200 L400 230 L500 205 L600 235 L700 215 L800 240 L800 280 L0 280 Z" fill="#0a0820" opacity="0.6"/>
+
+      <!-- 북서: 얼음 산맥 -->
+      <ellipse cx="120" cy="170" rx="80" ry="40" fill="#2a4a7a" opacity="0.4"/>
+      <path d="M70 180 L100 130 L130 175 Z" fill="#5078a8" opacity="0.6"/>
+      <path d="M110 185 L150 140 L180 180 Z" fill="#4068a0" opacity="0.6"/>
+      <path d="M115 145 L125 130 L135 145 Z" fill="#fff" opacity="0.5"/>
+      <path d="M155 155 L165 142 L175 155 Z" fill="#fff" opacity="0.5"/>
+
+      <!-- 북동: 어둠의 숲 -->
+      <ellipse cx="660" cy="180" rx="90" ry="50" fill="#1a3a20" opacity="0.5"/>
+      <g fill="#0a2a10" opacity="0.85">
+        <path d="M610 190 L605 170 L615 165 L620 190 Z"/>
+        <path d="M625 195 L620 165 L632 160 L640 195 Z"/>
+        <path d="M650 200 L645 165 L660 158 L668 200 Z"/>
+        <path d="M675 195 L670 168 L685 162 L693 195 Z"/>
+        <path d="M700 200 L695 172 L708 168 L715 200 Z"/>
+      </g>
+      <g fill="#3a6020">
+        <circle cx="612" cy="172" r="6"/>
+        <circle cx="630" cy="170" r="7"/>
+        <circle cx="655" cy="166" r="9"/>
+        <circle cx="680" cy="170" r="7"/>
+        <circle cx="705" cy="174" r="6"/>
+      </g>
+
+      <!-- 중앙: 저주받은 탑 영역 -->
+      <ellipse cx="400" cy="270" rx="160" ry="70" fill="#4a2080" opacity="0.45"/>
+      <ellipse cx="400" cy="270" rx="100" ry="40" fill="#5a1850" opacity="0.5"/>
+      <!-- 탑 실루엣 -->
+      <g opacity="0.9">
+        <path d="M380 290 L380 220 L420 220 L420 290 Z" fill="#1a0838"/>
+        <path d="M375 220 L425 220 L425 215 L375 215 Z" fill="#2a1858"/>
+        <path d="M380 215 L400 195 L420 215 Z" fill="#2a1858"/>
+        <line x1="400" y1="195" x2="400" y2="185" stroke="#6040a0" stroke-width="1"/>
+        <circle cx="400" cy="184" r="2" fill="#ff6080"/>
+        <rect x="392" y="240" width="6" height="10" fill="#ff8030" opacity="0.7"/>
+        <rect x="402" y="260" width="6" height="10" fill="#ff8030" opacity="0.5"/>
+      </g>
+
+      <!-- 남서: 바다 동굴 -->
+      <ellipse cx="160" cy="380" rx="90" ry="50" fill="#1a4068" opacity="0.5"/>
+      <path d="M120 380 Q140 360 160 380 Q180 360 200 380 Q220 360 240 380" stroke="#80c0e8" stroke-width="2" fill="none" opacity="0.5"/>
+      <path d="M130 395 Q150 378 170 395 Q190 378 210 395" stroke="#a0d8f0" stroke-width="1.5" fill="none" opacity="0.4"/>
+      <ellipse cx="160" cy="375" rx="22" ry="18" fill="#0a1830" opacity="0.85"/>
+      <ellipse cx="160" cy="378" rx="14" ry="10" fill="#000"/>
+
+      <!-- 남동: 고대 신전 -->
+      <ellipse cx="630" cy="390" rx="100" ry="55" fill="#3a2810" opacity="0.5"/>
+      <g fill="#5a4028" opacity="0.85">
+        <rect x="595" y="365" width="6" height="40"/>
+        <rect x="615" y="365" width="6" height="40"/>
+        <rect x="635" y="365" width="6" height="40"/>
+        <rect x="655" y="365" width="6" height="40"/>
+        <path d="M590 365 L666 365 L658 355 L598 355 Z"/>
+      </g>
+      <ellipse cx="628" cy="408" rx="40" ry="4" fill="#2a1808"/>
+
+      <!-- 길 연결 (점선) -->
+      <g stroke="#6040a0" stroke-width="2" stroke-dasharray="6 6" fill="none" opacity="0.5">
+        <path d="M400 270 Q280 220 160 175"/>
+        <path d="M400 270 Q540 220 660 180"/>
+        <path d="M400 270 Q280 330 165 380"/>
+        <path d="M400 270 Q520 330 630 385"/>
+      </g>
+
+      <!-- 나침반 (우상단) -->
+      <g transform="translate(740 60)">
+        <circle r="20" fill="rgba(0,0,0,0.5)" stroke="#8060c0" stroke-width="1.2"/>
+        <path d="M0 -16 L3 0 L0 16 L-3 0 Z" fill="#ffcc44"/>
+        <path d="M-16 0 L0 3 L16 0 L0 -3 Z" fill="#a080d0" opacity="0.7"/>
+        <text x="0" y="-22" text-anchor="middle" font-size="9" fill="#ffcc44" font-family="serif">N</text>
+      </g>
+
+      <!-- 제목 두루마리 -->
+      <g transform="translate(400 60)">
+        <rect x="-110" y="-18" width="220" height="36" rx="8" fill="rgba(0,0,0,0.6)" stroke="#ffcc44" stroke-width="1.5"/>
+        <text x="0" y="6" text-anchor="middle" font-size="16" fill="#ffcc44" font-family="serif" font-weight="bold">~ 동물농장 월드 ~</text>
+      </g>
+    </symbol>
+
     <!-- 두꺼비 상인 -->
     <symbol id="char-toad" viewBox="0 0 100 100">
       <ellipse cx="50" cy="93" rx="36" ry="4" fill="#000" opacity="0.4"/>
@@ -1756,7 +2001,7 @@
 <div class="container">
   <!-- 캐릭터 선택 -->
   <div id="char-select" class="char-select-panel">
-    <div class="version-tag">260507-01</div>
+    <div class="version-tag">260507-02</div>
     <div class="select-title">영혼을 빌릴 그릇을 선택하라</div>
     <div class="select-sub">~ choose your vessel ~</div>
     <div class="char-grid">
@@ -1784,6 +2029,61 @@
           <div class="char-desc">"바다에서 온 영민한 자"</div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- 월드맵 -->
+  <div id="world-map" class="world-map-panel hidden">
+    <div class="map-title">🌍 동물농장 월드</div>
+    <div class="map-subtitle">탐험할 지역을 선택하세요</div>
+    <div class="map-player-bar">
+      <div class="map-player-portrait">
+        <svg><use href="#char-dugong" id="map-portrait-use"/></svg>
+      </div>
+      <div class="map-player-info">
+        <div class="map-player-name" id="map-player-name">-</div>
+        <div class="map-player-stats" id="map-player-stats">-</div>
+      </div>
+    </div>
+
+    <div class="map-area">
+      <svg class="map-bg" preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 500">
+        <use href="#bg-worldmap"/>
+      </svg>
+      <!-- 중앙: 저주받은 탑 (입장 가능) -->
+      <button class="map-loc available" style="top:55%;left:50%" onclick="enterTower()">
+        <div class="loc-icon">🏰</div>
+        <div class="loc-name">저주받은 탑</div>
+        <div class="loc-status">▶ 입장 가능</div>
+      </button>
+      <!-- 북서: 얼음 산맥 -->
+      <button class="map-loc disabled" style="top:30%;left:18%" onclick="lockedLoc('얼음 산맥')">
+        <div class="loc-icon">❄️</div>
+        <div class="loc-name">얼음 산맥</div>
+        <div class="loc-status">🔒 준비중</div>
+      </button>
+      <!-- 북동: 어둠의 숲 -->
+      <button class="map-loc disabled" style="top:32%;left:82%" onclick="lockedLoc('어둠의 숲')">
+        <div class="loc-icon">🌲</div>
+        <div class="loc-name">어둠의 숲</div>
+        <div class="loc-status">🔒 준비중</div>
+      </button>
+      <!-- 남서: 바다 동굴 -->
+      <button class="map-loc disabled" style="top:78%;left:20%" onclick="lockedLoc('바다 동굴')">
+        <div class="loc-icon">🌊</div>
+        <div class="loc-name">바다 동굴</div>
+        <div class="loc-status">🔒 준비중</div>
+      </button>
+      <!-- 남동: 고대 신전 -->
+      <button class="map-loc disabled" style="top:80%;left:80%" onclick="lockedLoc('고대 신전')">
+        <div class="loc-icon">🏛️</div>
+        <div class="loc-name">고대 신전</div>
+        <div class="loc-status">🔒 준비중</div>
+      </button>
+    </div>
+
+    <div class="map-actions">
+      <button class="btn" onclick="backToCharSelect()">← 캐릭터 다시 선택</button>
     </div>
   </div>
 
@@ -1970,6 +2270,7 @@ const QUIZZES = [
 let player = null, enemy = null, floor = 1, inBattle = false;
 let potions = [], equipments = [];
 let bpTab = 'all';
+let selectedCharKey = null;
 
 // ============= 유틸 =============
 function $(id) { return document.getElementById(id); }
@@ -1990,34 +2291,68 @@ function showDialog(text, ms=2200) {
   showDialog._t = setTimeout(() => d.classList.add('hidden'), ms);
 }
 
-// ============= 캐릭터 선택 =============
+// ============= 캐릭터 선택 → 월드맵 =============
 document.querySelectorAll('.char-card').forEach(card => {
   card.addEventListener('click', () => {
-    const key = card.dataset.char;
-    const c = CHARACTERS[key];
-    player = {
-      name: c.name, svg: c.svg,
-      maxHp: c.hp, hp: c.hp,
-      maxMp: c.mp, mp: c.mp,
-      baseAtk: c.atk, atk: c.atk, spd: c.spd,
-      gold: 0
-    };
-    potions = [
-      { name:'붉은 물약', heal:30 },
-      { name:'붉은 물약', heal:30 }
-    ];
-    equipments = [];
-    floor = 1;
-    $('player-portrait-use').setAttribute('href', '#' + c.svg);
-    $('scene-player-use').setAttribute('href', '#' + c.svg);
-    $('char-select').classList.add('hidden');
-    $('main-game').classList.remove('hidden');
-    log(`너는 ${c.name}의 영혼으로 탑에 발을 들였다...`, 'system');
-    log('첫 번째 층, 두 개의 문이 너를 응시한다.', 'system');
-    showDoorScene();
-    updateUI();
+    selectedCharKey = card.dataset.char;
+    initPlayerFromChar();
+    showWorldMap();
   });
 });
+
+function initPlayerFromChar() {
+  const c = CHARACTERS[selectedCharKey];
+  player = {
+    name: c.name, svg: c.svg,
+    maxHp: c.hp, hp: c.hp,
+    maxMp: c.mp, mp: c.mp,
+    baseAtk: c.atk, atk: c.atk, spd: c.spd,
+    gold: 0
+  };
+  potions = [
+    { name:'붉은 물약', heal:30 },
+    { name:'붉은 물약', heal:30 }
+  ];
+  equipments = [];
+  floor = 1;
+}
+
+function showWorldMap() {
+  const c = CHARACTERS[selectedCharKey];
+  $('player-portrait-use').setAttribute('href', '#' + c.svg);
+  $('scene-player-use').setAttribute('href', '#' + c.svg);
+  $('map-portrait-use').setAttribute('href', '#' + c.svg);
+  $('map-player-name').textContent = c.name;
+  $('map-player-stats').textContent =
+    `HP ${player.maxHp} · MP ${player.maxMp} · ATK ${player.atk} · SPD ${player.spd} · 💰${player.gold}`;
+  $('char-select').classList.add('hidden');
+  $('main-game').classList.add('hidden');
+  $('world-map').classList.remove('hidden');
+}
+
+function enterTower() {
+  $('world-map').classList.add('hidden');
+  $('main-game').classList.remove('hidden');
+  $('log').innerHTML = '';
+  log(`너는 ${player.name}의 영혼으로 탑에 발을 들였다...`, 'system');
+  log('첫 번째 층, 문이 너를 응시한다.', 'system');
+  showDoorScene();
+  updateUI();
+}
+
+function lockedLoc(name) {
+  showDialog(`🔒 ${name} — 곧 추가됩니다!`, 2200);
+  log(`${name}은 아직 봉인되어 있다...`, 'system');
+}
+
+function backToCharSelect() {
+  selectedCharKey = null;
+  player = null;
+  potions = []; equipments = [];
+  floor = 1;
+  $('world-map').classList.add('hidden');
+  $('char-select').classList.remove('hidden');
+}
 
 // ============= UI =============
 function updateUI() {
@@ -3176,14 +3511,29 @@ function triumph() {
 }
 
 function restart() {
-  enemy = null; player = null;
-  potions = []; equipments = [];
-  floor = 1; inBattle = false;
+  enemy = null;
+  inBattle = false;
   $('log').innerHTML = '';
-  $('main-game').classList.add('hidden');
-  $('char-select').classList.remove('hidden');
   setSceneActions('');
+  // 컷신 잔여 정리
+  ['cs-dialog', 'scene-hag', 'scene-toad'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  });
   document.querySelectorAll('.btn').forEach(b => b.disabled = false);
+
+  if (selectedCharKey) {
+    // 같은 캐릭터로 월드맵 복귀
+    initPlayerFromChar();
+    showWorldMap();
+  } else {
+    // 캐릭터 선택부터
+    player = null;
+    potions = []; equipments = [];
+    floor = 1;
+    $('main-game').classList.add('hidden');
+    $('char-select').classList.remove('hidden');
+  }
 }
 </script>
 </body>
