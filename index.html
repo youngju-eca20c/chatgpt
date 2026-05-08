@@ -1158,7 +1158,22 @@
   .sp-int  .sp-fill { background: linear-gradient(90deg, #80b0ff, #3060c0); }
   .sp-cha  .sp-fill { background: linear-gradient(90deg, #ff90c8, #c040a0); }
   .sp-skl  .sp-fill { background: linear-gradient(90deg, #80e068, #208030); }
-  .stat-progress .sp-val { width: 40px; text-align: right; font-size: 0.65rem; color: #7a4020; }
+  .stat-progress .sp-val { min-width: 56px; text-align: right; font-size: 0.65rem; color: #7a4020; }
+  /* 400 도달 시 황금빛 강조 */
+  .stat-progress .sp-bar-max {
+    border-color: #ffcc44;
+    box-shadow: 0 0 8px rgba(255, 204, 68, 0.6);
+  }
+  .sp-max .sp-fill {
+    background: linear-gradient(90deg, #ffe070, #ffcc44, #ffaa20) !important;
+    box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.5);
+    animation: maxPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes maxPulse {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+  }
+  .sp-max .sp-val { color: #c08020; font-weight: bold; }
 
   /* 전투 스탯 표시 (탑 입장 카드) */
   .combat-stats {
@@ -1458,6 +1473,13 @@
     transform: scale(1.05);
     box-shadow: 0 0 0 3px rgba(255,204,68,0.5), 0 4px 10px rgba(0,0,0,0.3);
   }
+  .color-chip.chip-blocked {
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+  }
+  .color-chip.chip-blocked:hover { transform: none; box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 0 8px rgba(0,0,0,0.1); }
+  .chip-blocked-text { color: #a08868 !important; }
   .color-chip-name {
     text-align: center;
     font-size: 0.65rem;
@@ -1489,7 +1511,7 @@
   .orchard-worker svg { width: 100%; height: 100%; }
   /* 사과 따기 - 큰 나무 옆에서 점프하며 사과 따기 */
   .orchard-worker.picker {
-    left: 56%;
+    left: 52%;
     top: 36%;
     animation: pick-apple 1.6s ease-in-out infinite;
   }
@@ -1499,22 +1521,31 @@
     50% { transform: translateY(-22px) rotate(0); }
     75% { transform: translateY(-10px) rotate(3deg); }
   }
-  /* 사과 운반 - 큰 바구니까지 왔다갔다 */
+  /* 픽업 바구니 (picker 발 아래) */
+  .pickup-basket {
+    position: absolute;
+    left: 56%;
+    top: 78%;
+    width: 9%;
+    z-index: 4;
+    transform: translate(-50%, 0);
+    pointer-events: none;
+  }
+  .pickup-basket svg { width: 100%; height: auto; display: block; }
+  /* 사과 운반 - 픽업 바구니에서 창고까지 */
   .orchard-worker.carrier {
     top: 60%;
-    animation: carry-walk 6s ease-in-out infinite;
+    animation: carry-walk 7s ease-in-out infinite;
   }
   @keyframes carry-walk {
-    0%   { left: 12%; transform: scaleX(1) translateY(0); }
-    24%  { left: 76%; transform: scaleX(1) translateY(0); }
-    25%  { left: 76%; transform: scaleX(-1) translateY(0); }
-    49%  { left: 12%; transform: scaleX(-1) translateY(0); }
-    50%  { left: 12%; transform: scaleX(1) translateY(0); }
-    74%  { left: 76%; transform: scaleX(1) translateY(0); }
-    75%  { left: 76%; transform: scaleX(-1) translateY(0); }
-    100% { left: 12%; transform: scaleX(-1) translateY(0); }
+    0%   { left: 56%; transform: scaleX(1); }
+    8%   { left: 56%; transform: scaleX(1); }
+    42%  { left: 86%; transform: scaleX(1); }
+    50%  { left: 86%; transform: scaleX(-1); }
+    92%  { left: 56%; transform: scaleX(-1); }
+    100% { left: 56%; transform: scaleX(1); }
   }
-  /* 옮기는 사과 (carrier 위에 작은 빨강 점) */
+  /* 옮기는 사과 (운반 중 = 0~50%만 보임) */
   .carry-apple {
     position: absolute;
     top: 60%;
@@ -1525,11 +1556,15 @@
     box-shadow: 0 1px 2px rgba(0,0,0,0.4);
     z-index: 6;
     pointer-events: none;
-    animation: carry-walk 6s ease-in-out infinite;
+    animation: carry-walk 7s ease-in-out infinite, apple-show 7s linear infinite;
     margin-left: 4%;
     margin-top: -2%;
   }
-  /* 떨어지는 사과 (picker가 따낸 후 카트에 떨어짐 효과) */
+  @keyframes apple-show {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  /* 떨어지는 사과 (picker → 픽업 바구니로) */
   .falling-apple {
     position: absolute;
     width: 10px;
@@ -1541,9 +1576,10 @@
     animation: fall-apple 1.6s ease-in infinite;
   }
   @keyframes fall-apple {
-    0%, 24% { transform: translateY(0); opacity: 0; }
-    25% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(60px); opacity: 0; }
+    0%, 24% { top: 30%; opacity: 0; transform: scale(1); }
+    25%     { top: 30%; opacity: 1; }
+    85%     { top: 76%; opacity: 1; transform: scale(1); }
+    100%    { top: 76%; opacity: 0; transform: scale(0.6); }
   }
 
   /* 작업 슬롯 */
@@ -2396,15 +2432,37 @@
       <ellipse cx="78" cy="80" rx="3" ry="2" fill="#5a3010" transform="rotate(20 78 80)"/>
     </symbol>
 
-    <!-- 얼룩빛 (보더콜리 스타일 패치 오버레이) -->
-    <symbol id="coat-spots" viewBox="0 0 100 100">
-      <g opacity="0.78">
-        <ellipse cx="35" cy="36" rx="11" ry="8" fill="#1a1a1a" transform="rotate(-15 35 36)"/>
-        <ellipse cx="64" cy="42" rx="9" ry="7" fill="#1a1a1a" transform="rotate(10 64 42)"/>
-        <ellipse cx="48" cy="62" rx="13" ry="7" fill="#1a1a1a" transform="rotate(-8 48 62)"/>
-        <circle cx="28" cy="64" r="6" fill="#1a1a1a"/>
-        <ellipse cx="72" cy="66" rx="7" ry="5" fill="#1a1a1a" transform="rotate(20 72 66)"/>
-        <circle cx="58" cy="28" r="4" fill="#1a1a1a"/>
+    <!-- 픽업 바구니 (과수원 picker 아래) -->
+    <symbol id="pickup-basket-sym" viewBox="0 0 60 60">
+      <ellipse cx="30" cy="55" rx="26" ry="4" fill="#000" opacity="0.3"/>
+      <path d="M6 18 L54 18 L48 50 L12 50 Z" fill="#a06030" stroke="#5a3010" stroke-width="2"/>
+      <ellipse cx="30" cy="18" rx="24" ry="5" fill="#7a4818"/>
+      <path d="M8 22 Q30 14 52 22" fill="none" stroke="#5a3010" stroke-width="1.2"/>
+      <line x1="10" y1="28" x2="50" y2="28" stroke="#5a3010" stroke-width="1"/>
+      <line x1="11" y1="36" x2="49" y2="36" stroke="#5a3010" stroke-width="1"/>
+      <line x1="13" y1="44" x2="47" y2="44" stroke="#5a3010" stroke-width="1"/>
+      <!-- 사과 (소량) -->
+      <circle cx="20" cy="14" r="4" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+      <circle cx="30" cy="12" r="4" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+      <circle cx="40" cy="14" r="4" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+    </symbol>
+
+    <!-- 얼룩빛 (강아지 전용 보더콜리 패턴) -->
+    <symbol id="coat-spots-dog" viewBox="0 0 100 100">
+      <g fill="#1a1a1a" opacity="0.92">
+        <!-- 머리 양옆 (눈 주변 검은 영역) -->
+        <ellipse cx="32" cy="40" rx="10" ry="13"/>
+        <ellipse cx="68" cy="40" rx="10" ry="13"/>
+        <!-- 머리 위 -->
+        <ellipse cx="50" cy="22" rx="14" ry="7"/>
+        <!-- 귀 (검은) -->
+        <path d="M28 28 Q26 14 36 24 L40 36 Z"/>
+        <path d="M72 28 Q74 14 64 24 L60 36 Z"/>
+        <!-- 등 -->
+        <ellipse cx="50" cy="62" rx="20" ry="10"/>
+        <!-- 엉덩이/측면 -->
+        <ellipse cx="62" cy="74" rx="9" ry="6"/>
+        <ellipse cx="36" cy="73" rx="6" ry="5"/>
       </g>
     </symbol>
 
@@ -3159,27 +3217,29 @@
       </g>
       <!-- 흙길 -->
       <path d="M30 380 Q150 360 280 360 Q420 360 570 340" stroke="#dab886" stroke-width="22" fill="none" stroke-linecap="round" opacity="0.85"/>
-      <!-- 큰 바구니 (사과 운반용 - 우측) -->
-      <g transform="translate(530 350)">
-        <ellipse cx="0" cy="20" rx="35" ry="6" fill="#000" opacity="0.3"/>
-        <path d="M-26 0 L26 0 L22 32 L-22 32 Z" fill="#a06030" stroke="#5a3010" stroke-width="2"/>
-        <ellipse cx="0" cy="0" rx="26" ry="5" fill="#7a4818"/>
-        <line x1="-18" y1="8" x2="18" y2="8" stroke="#5a3010" stroke-width="1"/>
-        <line x1="-20" y1="16" x2="20" y2="16" stroke="#5a3010" stroke-width="1"/>
-        <line x1="-22" y1="24" x2="22" y2="24" stroke="#5a3010" stroke-width="1"/>
-        <!-- 사과 가득 -->
-        <circle cx="-12" cy="-3" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
-        <circle cx="-2" cy="-4" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
-        <circle cx="10" cy="-3" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
-        <circle cx="-7" cy="-9" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
-        <circle cx="5" cy="-9" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
-      </g>
-      <!-- 작은 바구니 (좌측) -->
-      <g transform="translate(60 360)">
-        <path d="M-12 0 L12 0 L10 18 L-10 18 Z" fill="#a06030" stroke="#5a3010"/>
-        <ellipse cx="0" cy="0" rx="12" ry="3" fill="#7a4818"/>
-        <circle cx="-4" cy="-2" r="2.5" fill="#d04040" stroke="#7a1010" stroke-width="0.4"/>
-        <circle cx="4" cy="-2" r="2.5" fill="#d04040" stroke="#7a1010" stroke-width="0.4"/>
+      <!-- 창고 (사과 저장 — 우측 끝) -->
+      <g transform="translate(540 340)">
+        <ellipse cx="0" cy="32" rx="44" ry="6" fill="#000" opacity="0.35"/>
+        <!-- 창고 본체 (나무 상자형) -->
+        <rect x="-38" y="-30" width="76" height="60" fill="#a06030" stroke="#5a3010" stroke-width="2.5"/>
+        <rect x="-38" y="-30" width="76" height="6" fill="#7a4818"/>
+        <line x1="-38" y1="-12" x2="38" y2="-12" stroke="#5a3010" stroke-width="1"/>
+        <line x1="-38" y1="6" x2="38" y2="6" stroke="#5a3010" stroke-width="1"/>
+        <line x1="-38" y1="20" x2="38" y2="20" stroke="#5a3010" stroke-width="1"/>
+        <line x1="0" y1="-30" x2="0" y2="30" stroke="#5a3010" stroke-width="1.2"/>
+        <text x="0" y="-15" text-anchor="middle" font-size="8" fill="#fff5dc" font-weight="bold">창고</text>
+        <!-- 입구 (어두운) -->
+        <rect x="-12" y="-2" width="24" height="32" fill="#3a1808" stroke="#1a0808"/>
+        <!-- 사과 산더미 (앞) -->
+        <ellipse cx="0" cy="35" rx="34" ry="5" fill="#7a1818"/>
+        <circle cx="-22" cy="32" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+        <circle cx="-12" cy="30" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+        <circle cx="-2" cy="32" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+        <circle cx="8" cy="30" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+        <circle cx="18" cy="32" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+        <circle cx="28" cy="33" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+        <circle cx="-7" cy="26" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+        <circle cx="13" cy="26" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
       </g>
       <!-- 떨어진 사과 -->
       <circle cx="160" cy="380" r="3" fill="#d04040" stroke="#7a1010" stroke-width="0.4"/>
@@ -3685,7 +3745,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-19</div>
+    <div class="version-tag" style="color:#a06030;">260507-21</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -3967,7 +4027,7 @@ const COAT_COLORS = [
   { name:'보라빛', filter:'hue-rotate(230deg) saturate(1.1)',              chip:'#9070c8' },
   { name:'분홍빛', filter:'hue-rotate(310deg) saturate(1.2)',              chip:'#ff90c8' },
   { name:'은빛',   filter:'saturate(0.15) brightness(1.15)',               chip:'#d8d8e0' },
-  { name:'얼룩빛', filter:'grayscale(0.5) contrast(1.1) brightness(0.96)', chip:'spotted', spotted:true },
+  { name:'얼룩빛', filter:'grayscale(1) brightness(1.55) contrast(0.85)', chip:'spotted', spotted:true, dogOnly:true },
   { name:'하얀빛', filter:'grayscale(1) brightness(1.45) contrast(0.85)',  chip:'#fafafa' }
 ];
 const SPOT_COLOR_INDEX = 9;
@@ -3982,12 +4042,13 @@ function animalCoatStyle(animal) {
 let _spotClipCounter = 0;
 function animalSvgInner(animal) {
   let inner = `<use href="#${animal.svg}"/>`;
-  if (animal && animal.color === SPOT_COLOR_INDEX) {
+  // 얼룩빛은 강아지에게만 적용
+  if (animal && animal.color === SPOT_COLOR_INDEX && animal.species === 'dog') {
     const cid = `cp-spot-${++_spotClipCounter}`;
     inner = `
       <defs><clipPath id="${cid}"><use href="#${animal.svg}"/></clipPath></defs>
       <use href="#${animal.svg}"/>
-      <use href="#coat-spots" clip-path="url(#${cid})"/>
+      <use href="#coat-spots-dog" clip-path="url(#${cid})"/>
     `;
   }
   return inner;
@@ -4038,9 +4099,10 @@ function migrateSave(data) {
   if (typeof data.nextAnimalId !== 'number') data.nextAnimalId = 1;
   if (!data.inventory) data.inventory = { food: 0, book: 0, mirror: 0, toy: 0 };
   if (!data.orchard) data.orchard = { picker: null, carrier: null, lastEarnAt: Date.now() };
-  // 동물에 color 필드 보장
+  // 동물에 color 필드 보장 + 얼룩빛은 강아지만
   data.animals.forEach(a => {
     if (typeof a.color !== 'number') a.color = 0;
+    if (a.color === SPOT_COLOR_INDEX && a.species !== 'dog') a.color = 0;
   });
   return data;
 }
@@ -4495,7 +4557,7 @@ function canBathe(a) { return !isToday(a.lastBathedAt); }
 
 // 백화점 아이템 (구매 → 인벤토리 → 농장에서 사용)
 const SHOP_ITEMS = [
-  { id:'food',  name:'사료',     icon:'🍎', stat:'fit',   amount:2, price:10 },
+  { id:'food',  name:'사과',     icon:'🍎', stat:'fit',   amount:2, price:10 },
   { id:'book',  name:'그림책',   icon:'📚', stat:'intel', amount:2, price:10 },
   { id:'mirror',name:'거울',     icon:'🪞', stat:'charm', amount:2, price:10 },
   { id:'toy',   name:'장난감',   icon:'🧸', stat:'skill', amount:2, price:10 }
@@ -4596,18 +4658,22 @@ function renderOrchard() {
   // 작업장 씬 — 동물 + 사과 효과
   const scene = $('orchard-scene');
   // 기존 워커 제거
-  scene.querySelectorAll('.orchard-worker, .carry-apple, .falling-apple').forEach(el => el.remove());
+  scene.querySelectorAll('.orchard-worker, .carry-apple, .falling-apple, .pickup-basket').forEach(el => el.remove());
 
   if (picker) {
     const div = document.createElement('div');
     div.className = 'orchard-worker picker';
     div.innerHTML = `<svg viewBox="0 0 100 100" style="${animalCoatStyle(picker)}">${animalSvgInner(picker)}</svg>`;
     scene.appendChild(div);
-    // 떨어지는 사과 효과
+    // 픽업 바구니 (picker 아래)
+    const basket = document.createElement('div');
+    basket.className = 'pickup-basket';
+    basket.innerHTML = `<svg viewBox="0 0 60 60"><use href="#pickup-basket-sym"/></svg>`;
+    scene.appendChild(basket);
+    // 떨어지는 사과 효과 (트리에서 → 바구니로)
     const apple = document.createElement('div');
     apple.className = 'falling-apple';
-    apple.style.left = '63%';
-    apple.style.top = '32%';
+    apple.style.left = '56%';
     scene.appendChild(apple);
   }
   if (carrier) {
@@ -4736,9 +4802,14 @@ function selectSalonAnimal(id) {
   renderSalon();
 }
 
-function changeCoat(animalId, colorIdx) {
+function previewCoat(animalId, colorIdx) {
   const a = save.animals.find(x => x.id === animalId);
   if (!a) return;
+  const c = COAT_COLORS[colorIdx];
+  if (c.dogOnly && a.species !== 'dog') {
+    alert('🐕 얼룩빛은 강아지에게만 어울려요!');
+    return;
+  }
   if ((a.color || 0) === colorIdx) {
     alert('💁 이미 이 색깔이에요!');
     return;
@@ -4747,10 +4818,34 @@ function changeCoat(animalId, colorIdx) {
     alert(`💰 골드가 부족해요! (${SALON_COST}골드 필요)`);
     return;
   }
+  // 미리보기용 임시 객체
+  const previewAnimal = { ...a, color: colorIdx };
+  const overlay = $('confirm-overlay');
+  overlay.classList.remove('hidden');
+  overlay.innerHTML = `
+    <div class="confirm-box">
+      <div class="cb-title">${c.name}으로 염색할까요?</div>
+      <svg viewBox="0 0 100 100" style="${animalCoatStyle(previewAnimal)};width:120px;height:120px;display:block;margin:8px auto;">${animalSvgInner(previewAnimal)}</svg>
+      <div class="cb-msg">
+        💰 <b>${SALON_COST}골드</b> 사용 · 매력 <b>+${SALON_CHARM_BONUS}</b>
+      </div>
+      <div class="cb-actions">
+        <button class="btn" onclick="closeConfirm()">취소</button>
+        <button class="btn success" onclick="applyCoatChange(${animalId}, ${colorIdx})">💇 염색!</button>
+      </div>
+    </div>
+  `;
+}
+
+function applyCoatChange(animalId, colorIdx) {
+  const a = save.animals.find(x => x.id === animalId);
+  if (!a) { closeConfirm(); return; }
+  if (save.gold < SALON_COST) { closeConfirm(); return; }
   save.gold -= SALON_COST;
   a.color = colorIdx;
   bumpStat(a, 'charm', SALON_CHARM_BONUS);
   saveSave();
+  closeConfirm();
   renderSalon();
 }
 
@@ -4771,16 +4866,20 @@ function renderSalon() {
     </div>
   `).join('');
 
-  const palette = COAT_COLORS.map((c, i) => `
-    <div class="chip-wrap">
-      <div class="color-chip ${i === (a.color || 0) ? 'current' : ''}"
-           style="background:${chipBackground(c.chip)}"
-           onclick="changeCoat(${a.id}, ${i})">
-        ${i === (a.color || 0) ? '✓' : ''}
+  const palette = COAT_COLORS.map((c, i) => {
+    const blocked = c.dogOnly && a.species !== 'dog';
+    const isCur = i === (a.color || 0);
+    return `
+      <div class="chip-wrap">
+        <div class="color-chip ${isCur ? 'current' : ''}${blocked ? ' chip-blocked' : ''}"
+             style="background:${chipBackground(c.chip)}"
+             onclick="${blocked ? `alert('🐕 얼룩빛은 강아지 전용이에요!')` : `previewCoat(${a.id}, ${i})`}">
+          ${blocked ? '🔒' : (isCur ? '✓' : '')}
+        </div>
+        <div class="color-chip-name${blocked ? ' chip-blocked-text' : ''}">${c.name}${blocked ? ' (🐕)' : ''}</div>
       </div>
-      <div class="color-chip-name">${c.name}</div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 
   content.innerHTML = `
     <div class="salon-anim-row">${animRow}</div>
@@ -4871,7 +4970,8 @@ function setActiveAnimal(id) {
 }
 
 function bumpStat(animal, stat, amount) {
-  animal.stats[stat] = Math.min(400, (animal.stats[stat] || 0) + amount);
+  // 400은 시각적 최대치, 실제 값은 더 올라갈 수 있음 (인간 변환 시험 후 활용 등)
+  animal.stats[stat] = (animal.stats[stat] || 0) + amount;
 }
 
 function playWithAnimal(id) {
@@ -4995,12 +5095,15 @@ function releaseAnimal(id) {
 
 function renderStatBars(s) {
   const row = (cls, label, val) => {
-    const pct = (val/400*100).toFixed(0);
+    const pct = Math.min(100, (val/400)*100).toFixed(0);
+    const over = val >= 400;
     return `
-    <div class="sp-row ${cls}">
+    <div class="sp-row ${cls}${over ? ' sp-max' : ''}">
       <span class="sp-label">${label}</span>
-      <span class="sp-bar"><span class="sp-fill" data-target="${pct}"></span></span>
-      <span class="sp-val">${val}</span>
+      <span class="sp-bar${over ? ' sp-bar-max' : ''}">
+        <span class="sp-fill" data-target="${pct}"></span>
+      </span>
+      <span class="sp-val">${over ? '★ ' : ''}${val}${val > 400 ? '' : '/400'}</span>
     </div>`;
   };
   // 다음 프레임에 width 적용해 0%→target%로 채워지는 애니메이션 트리거
