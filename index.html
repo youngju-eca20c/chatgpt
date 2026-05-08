@@ -2447,22 +2447,65 @@
       <circle cx="40" cy="14" r="4" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
     </symbol>
 
-    <!-- 얼룩빛 (강아지 전용 보더콜리 패턴) -->
+    <!-- 얼룩빛 강아지 전용 (흑백 포메라니안/치와와 스타일) -->
+    <symbol id="char-dog-spotted" viewBox="0 0 100 100">
+      <!-- 그림자 -->
+      <ellipse cx="50" cy="92" rx="22" ry="3" fill="#000" opacity="0.4"/>
+      <!-- 꼬리 (검은 풍성한 털) -->
+      <ellipse cx="76" cy="58" rx="8" ry="9" fill="#1a1a1a" transform="rotate(40 76 58)"/>
+      <ellipse cx="78" cy="56" rx="6" ry="7" fill="#0a0a0a" transform="rotate(40 78 56)"/>
+      <!-- 몸통 베이스 (흰 가슴 + 검은 등) -->
+      <ellipse cx="50" cy="68" rx="22" ry="20" fill="#fff8f0"/>
+      <!-- 등 검은 패치 -->
+      <path d="M30 56 Q40 50 50 52 Q60 50 70 56 Q72 65 60 66 Q50 64 40 66 Q28 65 30 56 Z" fill="#1a1a1a"/>
+      <!-- 가슴 흰털 풍성 (앞쪽) -->
+      <ellipse cx="50" cy="76" rx="13" ry="8" fill="#ffffff"/>
+      <path d="M42 68 Q46 72 50 70 Q54 72 58 68" stroke="#e0e0e0" stroke-width="0.8" fill="none"/>
+      <!-- 다리 (흰) -->
+      <rect x="37" y="80" width="7" height="10" rx="3" fill="#fff8f0"/>
+      <rect x="56" y="80" width="7" height="10" rx="3" fill="#fff8f0"/>
+      <ellipse cx="40" cy="88" rx="4" ry="2" fill="#3a2010"/>
+      <ellipse cx="60" cy="88" rx="4" ry="2" fill="#3a2010"/>
+      <!-- 머리 (검은 베이스) -->
+      <ellipse cx="50" cy="40" rx="22" ry="20" fill="#1a1a1a"/>
+      <!-- 머리 풍성한 털 (양옆) -->
+      <ellipse cx="32" cy="42" rx="6" ry="10" fill="#1a1a1a"/>
+      <ellipse cx="68" cy="42" rx="6" ry="10" fill="#1a1a1a"/>
+      <!-- 흰 입주변/턱 -->
+      <ellipse cx="50" cy="48" rx="13" ry="11" fill="#ffffff"/>
+      <!-- 흰 이마 줄무늬 (Blaze) -->
+      <path d="M46 18 Q44 30 47 40 Q50 44 53 40 Q56 30 54 18 Q50 16 46 18 Z" fill="#ffffff"/>
+      <!-- 귀 (검은) -->
+      <path d="M30 30 Q24 8 38 22 L42 38 Z" fill="#1a1a1a"/>
+      <path d="M70 30 Q76 8 62 22 L58 38 Z" fill="#1a1a1a"/>
+      <!-- 귀 안쪽 (살짝 분홍/어둡게) -->
+      <path d="M32 26 Q30 16 36 22 L38 30 Z" fill="#5a3030" opacity="0.7"/>
+      <path d="M68 26 Q70 16 64 22 L62 30 Z" fill="#5a3030" opacity="0.7"/>
+      <!-- 눈 (검은 마스크 위) -->
+      <ellipse cx="42" cy="38" rx="4" ry="5" fill="#fff"/>
+      <ellipse cx="58" cy="38" rx="4" ry="5" fill="#fff"/>
+      <ellipse cx="42" cy="39" rx="2.8" ry="3.5" fill="#1a0a0a"/>
+      <ellipse cx="58" cy="39" rx="2.8" ry="3.5" fill="#1a0a0a"/>
+      <circle cx="43" cy="38" r="1.1" fill="#fff"/>
+      <circle cx="59" cy="38" r="1.1" fill="#fff"/>
+      <!-- 코 (흰 입주변 위에) -->
+      <ellipse cx="50" cy="46" rx="3" ry="2.5" fill="#1a0a0a"/>
+      <!-- 입 -->
+      <path d="M50 49 Q46 54 41 52" stroke="#1a0a0a" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      <path d="M50 49 Q54 54 59 52" stroke="#1a0a0a" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      <!-- 혀 -->
+      <ellipse cx="50" cy="53" rx="2.2" ry="1.5" fill="#ff80a0"/>
+      <!-- 머리 위 흑백 경계 살짝 (자연스러움) -->
+      <path d="M40 24 Q50 20 60 24" stroke="#0a0a0a" stroke-width="0.8" fill="none" opacity="0.5"/>
+    </symbol>
+
+    <!-- 얼룩빛 강아지 전용 (구버전 - clip 오버레이 폴백) -->
     <symbol id="coat-spots-dog" viewBox="0 0 100 100">
       <g fill="#1a1a1a" opacity="0.92">
-        <!-- 머리 양옆 (눈 주변 검은 영역) -->
         <ellipse cx="32" cy="40" rx="10" ry="13"/>
         <ellipse cx="68" cy="40" rx="10" ry="13"/>
-        <!-- 머리 위 -->
         <ellipse cx="50" cy="22" rx="14" ry="7"/>
-        <!-- 귀 (검은) -->
-        <path d="M28 28 Q26 14 36 24 L40 36 Z"/>
-        <path d="M72 28 Q74 14 64 24 L60 36 Z"/>
-        <!-- 등 -->
         <ellipse cx="50" cy="62" rx="20" ry="10"/>
-        <!-- 엉덩이/측면 -->
-        <ellipse cx="62" cy="74" rx="9" ry="6"/>
-        <ellipse cx="36" cy="73" rx="6" ry="5"/>
       </g>
     </symbol>
 
@@ -3745,7 +3788,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-21</div>
+    <div class="version-tag" style="color:#a06030;">260507-22</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -4027,7 +4070,7 @@ const COAT_COLORS = [
   { name:'보라빛', filter:'hue-rotate(230deg) saturate(1.1)',              chip:'#9070c8' },
   { name:'분홍빛', filter:'hue-rotate(310deg) saturate(1.2)',              chip:'#ff90c8' },
   { name:'은빛',   filter:'saturate(0.15) brightness(1.15)',               chip:'#d8d8e0' },
-  { name:'얼룩빛', filter:'grayscale(1) brightness(1.55) contrast(0.85)', chip:'spotted', spotted:true, dogOnly:true },
+  { name:'얼룩빛', filter:'none', chip:'spotted', spotted:true, dogOnly:true },
   { name:'하얀빛', filter:'grayscale(1) brightness(1.45) contrast(0.85)',  chip:'#fafafa' }
 ];
 const SPOT_COLOR_INDEX = 9;
@@ -4039,19 +4082,12 @@ function animalCoatFilter(animal) {
 function animalCoatStyle(animal) {
   return `filter:${animalCoatFilter(animal)}`;
 }
-let _spotClipCounter = 0;
 function animalSvgInner(animal) {
-  let inner = `<use href="#${animal.svg}"/>`;
-  // 얼룩빛은 강아지에게만 적용
+  // 얼룩빛 강아지는 별도로 그린 흑백 SVG 사용
   if (animal && animal.color === SPOT_COLOR_INDEX && animal.species === 'dog') {
-    const cid = `cp-spot-${++_spotClipCounter}`;
-    inner = `
-      <defs><clipPath id="${cid}"><use href="#${animal.svg}"/></clipPath></defs>
-      <use href="#${animal.svg}"/>
-      <use href="#coat-spots-dog" clip-path="url(#${cid})"/>
-    `;
+    return `<use href="#char-dog-spotted"/>`;
   }
-  return inner;
+  return `<use href="#${animal && animal.svg}"/>`;
 }
 function chipBackground(chip) {
   if (chip === 'spotted') {
@@ -5155,14 +5191,18 @@ function renderCharSelect() {
 
 function initPlayerFromAnimal(animal) {
   const t = animalToTowerStats(animal);
+  // 얼룩빛 강아지 = char-dog-spotted
+  const isSpottedDog = animal.color === SPOT_COLOR_INDEX && animal.species === 'dog';
   player = {
-    name: animal.name, svg: animal.svg,
+    name: animal.name,
+    svg: isSpottedDog ? 'char-dog-spotted' : animal.svg,
+    species: animal.species,
     maxHp: t.maxHp, hp: t.maxHp,
     maxMp: t.maxMp, mp: t.maxMp,
     baseAtk: t.atk, atk: t.atk, spd: t.spd,
     defense: t.defense,
     gold: save.gold,
-    coatFilter: animalCoatFilter(animal),
+    coatFilter: isSpottedDog ? 'none' : animalCoatFilter(animal),
     coatColor: animal.color || 0
   };
   potions = [
@@ -5187,11 +5227,10 @@ function enterTower() {
   const sp = document.getElementById('scene-player');
   if (pp) pp.style.filter = f;
   if (sp) sp.style.filter = f;
-  // 얼룩빛 spots 토글
-  const showSpots = player.coatColor === SPOT_COLOR_INDEX;
+  // 얼룩빛 강아지는 char-dog-spotted SVG 자체로 처리되므로 overlay spots는 항상 숨김
   ['player-portrait-spots', 'scene-player-spots'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.style.display = showSpots ? '' : 'none';
+    if (el) el.style.display = 'none';
   });
   hideAllPanels();
   $('main-game').classList.remove('hidden');
