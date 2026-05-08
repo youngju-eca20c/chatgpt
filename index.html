@@ -1131,7 +1131,8 @@
   }
   .stat-progress .sp-fill {
     height: 100%;
-    transition: width 0.3s;
+    width: 0;
+    transition: width 1s cubic-bezier(0.3, 0.7, 0.4, 1);
   }
   .sp-fit  .sp-fill { background: linear-gradient(90deg, #ff9080, #d04040); }
   .sp-int  .sp-fill { background: linear-gradient(90deg, #80b0ff, #3060c0); }
@@ -1623,6 +1624,65 @@
   .worker-pick-card:hover { background: #fff; border-color: #ff8050; transform: translateY(-2px); }
   .worker-pick-card svg { width: 50px; height: 50px; display: block; margin: 0 auto 2px; }
 
+  /* 동물도감 */
+  .confirm-box.compendium {
+    max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    text-align: left;
+  }
+  .compendium .cb-title { text-align: center; }
+  .compendium .cb-msg { text-align: center; margin-bottom: 12px; }
+  .cp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .cp-card {
+    background: #fff;
+    border: 2px solid #a06030;
+    border-radius: 10px;
+    padding: 8px 4px;
+    text-align: center;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .cp-card svg { width: 60px; height: 60px; display: block; margin: 0 auto 2px; }
+  .cp-card.cp-locked { background: #2a2a2a; border-color: #555; }
+  .cp-card.cp-locked svg { filter: brightness(0) invert(0.15); }
+  .cp-card.cp-locked .cp-name { color: #888; }
+  .cp-card.cp-locked .cp-price { color: #888; }
+  .cp-card.cp-owned { background: linear-gradient(180deg, #fff8e0, #fff5dc); }
+  .cp-name {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.85rem;
+    color: #5a3010;
+    margin-bottom: 2px;
+  }
+  .cp-rarity {
+    display: inline-block;
+    font-size: 0.62rem;
+    padding: 1px 6px;
+    border-radius: 999px;
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  .cp-price {
+    font-size: 0.75rem;
+    color: #c08020;
+  }
+  .cp-owned-tag {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #50a040;
+    color: #fff;
+    font-size: 0.62rem;
+    padding: 1px 6px;
+    border-radius: 999px;
+  }
+
   /* 입양 확인 다이얼로그 */
   .confirm-overlay {
     position: fixed;
@@ -1976,17 +2036,22 @@
       gap: 10px;
     }
 
-    /* 모바일 좌측: 가로 압축 */
+    /* 모바일 좌측: 가로 압축 + 컴팩트 */
     .left-col {
       display: grid;
-      grid-template-columns: 110px 1fr;
-      gap: 10px;
+      grid-template-columns: 84px 1fr;
+      gap: 8px;
       align-items: start;
     }
-    .left-col .floor-badge { grid-column: 1 / -1; padding: 6px; font-size: 0.95rem; }
-    .portrait-frame { max-width: 110px; }
-    .stats-card { padding: 8px; }
-    .stat-row { font-size: 0.8rem; padding: 3px 0; }
+    .left-col .floor-badge { grid-column: 1 / -1; padding: 4px; font-size: 0.85rem; box-shadow: 0 2px 0 #2a1855; }
+    .portrait-frame { max-width: 84px; }
+    .portrait-frame { box-shadow: 0 0 0 3px #2a1855, 0 0 0 4px #6040a0, 0 4px 10px rgba(0,0,0,0.6); }
+    .stats-card { padding: 6px 8px; }
+    .stat-row { font-size: 0.74rem; padding: 2px 0; }
+    .hp-bar, .mp-bar { height: 11px; }
+    .hp-text, .mp-text { font-size: 0.62rem; line-height: 9px; }
+    .hp-block { margin: 4px 0 2px; }
+    .mp-block { margin: 2px 0; }
 
     /* 모바일 우측: 가로 장착칸 4개 */
     .right-col {
@@ -3600,7 +3665,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-17</div>
+    <div class="version-tag" style="color:#a06030;">260507-18</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -3700,6 +3765,7 @@
     <div class="gold-bar" id="shelter-gold">200</div>
     <div class="shelter-grid" id="shelter-grid"></div>
     <div class="farm-actions">
+      <button class="btn gold" onclick="openCompendium()">📖 동물도감</button>
       <button class="btn" onclick="enterMyAnimals()">🐾 내 농장</button>
       <button class="btn" onclick="showWorldMap()">← 월드맵</button>
     </div>
@@ -3736,7 +3802,11 @@
       <aside class="left-col">
         <div class="floor-badge" id="floor-text">제 1 층</div>
         <div class="portrait-frame">
-          <svg id="player-portrait" viewBox="0 0 100 100"><use href="#char-dugong" id="player-portrait-use"/><use href="#coat-spots" id="player-portrait-spots" style="display:none"/></svg>
+          <svg id="player-portrait" viewBox="0 0 100 100">
+            <defs><clipPath id="player-portrait-clip"><use href="#char-dugong" id="player-portrait-clip-use"/></clipPath></defs>
+            <use href="#char-dugong" id="player-portrait-use"/>
+            <use href="#coat-spots" id="player-portrait-spots" clip-path="url(#player-portrait-clip)" style="display:none"/>
+          </svg>
         </div>
         <div class="stats-card">
           <div class="hp-block">
@@ -3785,8 +3855,9 @@
 
           <!-- 캐릭터 -->
           <svg class="scene-char left hidden" id="scene-player" viewBox="0 0 100 100">
+            <defs><clipPath id="scene-player-clip"><use href="#char-dugong" id="scene-player-clip-use"/></clipPath></defs>
             <use href="#char-dugong" id="scene-player-use"/>
-            <use href="#coat-spots" id="scene-player-spots" style="display:none"/>
+            <use href="#coat-spots" id="scene-player-spots" clip-path="url(#scene-player-clip)" style="display:none"/>
           </svg>
           <!-- 적 -->
           <svg class="scene-char right hidden" id="scene-enemy">
@@ -3874,7 +3945,8 @@ const COAT_COLORS = [
   { name:'보라빛', filter:'hue-rotate(230deg) saturate(1.1)',              chip:'#9070c8' },
   { name:'분홍빛', filter:'hue-rotate(310deg) saturate(1.2)',              chip:'#ff90c8' },
   { name:'은빛',   filter:'saturate(0.15) brightness(1.15)',               chip:'#d8d8e0' },
-  { name:'얼룩빛', filter:'grayscale(0.5) contrast(1.1) brightness(0.96)', chip:'spotted', spotted:true }
+  { name:'얼룩빛', filter:'grayscale(0.5) contrast(1.1) brightness(0.96)', chip:'spotted', spotted:true },
+  { name:'하얀빛', filter:'grayscale(1) brightness(1.45) contrast(0.85)',  chip:'#fafafa' }
 ];
 const SPOT_COLOR_INDEX = 9;
 
@@ -3885,10 +3957,16 @@ function animalCoatFilter(animal) {
 function animalCoatStyle(animal) {
   return `filter:${animalCoatFilter(animal)}`;
 }
+let _spotClipCounter = 0;
 function animalSvgInner(animal) {
   let inner = `<use href="#${animal.svg}"/>`;
   if (animal && animal.color === SPOT_COLOR_INDEX) {
-    inner += `<use href="#coat-spots"/>`;
+    const cid = `cp-spot-${++_spotClipCounter}`;
+    inner = `
+      <defs><clipPath id="${cid}"><use href="#${animal.svg}"/></clipPath></defs>
+      <use href="#${animal.svg}"/>
+      <use href="#coat-spots" clip-path="url(#${cid})"/>
+    `;
   }
   return inner;
 }
@@ -4204,6 +4282,33 @@ function confirmAdopt(speciesKey) {
 function closeConfirm() {
   $('confirm-overlay').classList.add('hidden');
   $('confirm-overlay').innerHTML = '';
+}
+
+function openCompendium() {
+  const overlay = $('confirm-overlay');
+  overlay.classList.remove('hidden');
+  const ownedSpecies = new Set((save.animals || []).map(a => a.species));
+  const total = Object.keys(ANIMAL_SPECIES).length;
+  const html = Object.entries(ANIMAL_SPECIES).map(([key, sp]) => {
+    const owned = ownedSpecies.has(key);
+    return `
+      <div class="cp-card ${owned ? 'cp-owned' : 'cp-locked'}">
+        <svg viewBox="0 0 100 100"><use href="#${sp.svg}"/></svg>
+        <div class="cp-name">${owned ? sp.name : '???'}</div>
+        <div class="cp-rarity" style="background:${RARITY_COLOR[sp.rarity] || '#888'}">${sp.rarity}</div>
+        <div class="cp-price">${sp.price === 0 ? '무료' : `💰 ${sp.price}`}</div>
+        ${owned ? '<div class="cp-owned-tag">✓ 만났음</div>' : ''}
+      </div>
+    `;
+  }).join('');
+  overlay.innerHTML = `
+    <div class="confirm-box compendium">
+      <div class="cb-title">📖 동물도감</div>
+      <div class="cb-msg">만난 동물 <b>${ownedSpecies.size}</b> / ${total}</div>
+      <div class="cp-grid">${html}</div>
+      <div class="cb-actions"><button class="btn" onclick="closeConfirm()">닫기</button></div>
+    </div>
+  `;
 }
 
 function adoptAnimal(speciesKey) {
@@ -4867,12 +4972,23 @@ function releaseAnimal(id) {
 }
 
 function renderStatBars(s) {
-  const row = (cls, label, val) => `
+  const row = (cls, label, val) => {
+    const pct = (val/400*100).toFixed(0);
+    return `
     <div class="sp-row ${cls}">
       <span class="sp-label">${label}</span>
-      <span class="sp-bar"><span class="sp-fill" style="width:${(val/400*100).toFixed(0)}%"></span></span>
+      <span class="sp-bar"><span class="sp-fill" data-target="${pct}"></span></span>
       <span class="sp-val">${val}</span>
     </div>`;
+  };
+  // 다음 프레임에 width 적용해 0%→target%로 채워지는 애니메이션 트리거
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.sp-fill[data-target]').forEach(el => {
+      const t = el.getAttribute('data-target');
+      el.style.width = t + '%';
+      el.removeAttribute('data-target');
+    });
+  });
   return `<div class="stat-progress">
     ${row('sp-fit','체력',s.fit)}
     ${row('sp-int','지능',s.intel)}
@@ -4935,6 +5051,11 @@ function initPlayerFromAnimal(animal) {
 function enterTower() {
   $('player-portrait-use').setAttribute('href', '#' + player.svg);
   $('scene-player-use').setAttribute('href', '#' + player.svg);
+  // 클립 패스용 use도 같이 갱신
+  const ppc = document.getElementById('player-portrait-clip-use');
+  const spc = document.getElementById('scene-player-clip-use');
+  if (ppc) ppc.setAttribute('href', '#' + player.svg);
+  if (spc) spc.setAttribute('href', '#' + player.svg);
   // 색상 필터 적용
   const f = player.coatFilter || 'none';
   const pp = document.getElementById('player-portrait');
