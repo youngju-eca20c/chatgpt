@@ -3788,7 +3788,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-22</div>
+    <div class="version-tag" style="color:#a06030;">260507-23</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -4164,14 +4164,15 @@ function getActiveAnimal() {
 }
 
 // 4스탯 → 전투 스탯 변환
+// 0~400 기준. 적은 값에서도 체감되도록 단위 조정
 function animalToTowerStats(animal) {
   const s = animal.stats;
   return {
-    maxHp:  50 + Math.floor(s.fit / 2),
-    maxMp:  30 + Math.floor(s.intel / 5),
-    atk:    8  + Math.floor(s.skill / 25),
-    defense: Math.floor(s.charm / 100),
-    spd:    5  + Math.floor(s.charm / 100)
+    maxHp:   50 + Math.floor(s.fit / 2),       // 50 ~ 250
+    maxMp:   30 + Math.floor(s.intel / 4),     // 30 ~ 130
+    atk:     8  + Math.floor(s.skill / 15),    // 8 ~ 34
+    defense:      Math.floor(s.charm / 40),    // 0 ~ 10
+    spd:     5  + Math.floor(s.charm / 80)     // 5 ~ 10
   };
 }
 
