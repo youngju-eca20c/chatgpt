@@ -1345,6 +1345,107 @@
   .item-card .it-effect { color: #5aa030; font-size: 0.7rem; margin-top: 2px; }
   .item-card .it-price { color: #c08020; font-size: 0.72rem; margin-top: 2px; }
 
+  /* === 미용실 === */
+  .salon-anim-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0 8px;
+    margin-bottom: 10px;
+  }
+  .sl-anim {
+    flex: 0 0 auto;
+    cursor: pointer;
+    text-align: center;
+    padding: 6px 4px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    transition: all 0.15s;
+    min-width: 64px;
+    background: rgba(255,255,255,0.4);
+  }
+  .sl-anim svg { width: 50px; height: 50px; display: block; margin: 0 auto; }
+  .sl-anim div { font-size: 0.72rem; color: #5a3010; margin-top: 2px; }
+  .sl-anim.active {
+    background: linear-gradient(180deg, #ffe8a0, #ffd060);
+    border-color: #c08020;
+  }
+
+  .salon-preview {
+    text-align: center;
+    background: #fff;
+    border: 2px solid #a06030;
+    border-radius: 14px;
+    padding: 14px 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 3px 8px rgba(80, 40, 10, 0.2);
+  }
+  .salon-preview svg {
+    width: 130px;
+    height: 130px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+    transition: filter 0.3s;
+  }
+  .sp-name {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.1rem;
+    color: #5a3010;
+    margin-top: 4px;
+  }
+  .sp-charm {
+    display: inline-block;
+    margin-left: 8px;
+    background: linear-gradient(180deg, #ffaae0, #c060a0);
+    color: #fff;
+    font-size: 0.72rem;
+    padding: 2px 9px;
+    border-radius: 999px;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+  }
+
+  .palette-info {
+    text-align: center;
+    color: #7a4020;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+  }
+  .palette-info b { color: #c04040; }
+  .palette {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(54px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .color-chip {
+    aspect-ratio: 1/1;
+    border: 2.5px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 0 8px rgba(0,0,0,0.1);
+    transition: all 0.15s;
+    font-weight: bold;
+  }
+  .color-chip:hover { transform: scale(1.12); box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
+  .color-chip.current {
+    border-color: #ffcc44;
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(255,204,68,0.5), 0 4px 10px rgba(0,0,0,0.3);
+  }
+  .color-chip-name {
+    text-align: center;
+    font-size: 0.65rem;
+    color: #5a3010;
+    margin-top: 2px;
+    line-height: 1;
+  }
+  .chip-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+
   /* === 과수원 작업장 === */
   .orchard-scene {
     position: relative;
@@ -3487,7 +3588,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-15</div>
+    <div class="version-tag" style="color:#a06030;">260507-16</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -3521,15 +3622,27 @@
         <div class="bldg-label">🎈 놀이공원</div>
       </button>
       <!-- 미용실 (좌측 하단) -->
-      <button class="map-building locked" style="top:72%;left:25%;width:14%" onclick="lockedLoc('미용실')" aria-label="미용실">
+      <button class="map-building available" style="top:72%;left:25%;width:14%" onclick="enterSalon()" aria-label="미용실">
         <svg viewBox="0 0 100 130"><use href="#bldg-salon"/></svg>
-        <div class="bldg-label">미용실</div>
+        <div class="bldg-label">💇 미용실</div>
       </button>
       <!-- 과수원 (우하단) -->
       <button class="map-building available" style="top:80%;left:70%;width:22%" onclick="enterOrchard()" aria-label="과수원">
         <svg viewBox="0 0 140 120"><use href="#bldg-orchard"/></svg>
         <div class="bldg-label">🍎 과수원</div>
       </button>
+    </div>
+  </div>
+
+  <!-- 미용실 -->
+  <div id="salon" class="farm-panel hidden">
+    <div class="farm-title">💇 미용실</div>
+    <div class="farm-sub">동물의 색깔을 바꾸고 매력을 올려보세요</div>
+    <div class="gold-bar" id="salon-gold">200</div>
+    <div id="salon-content"></div>
+    <div class="farm-actions">
+      <button class="btn" onclick="enterMyAnimals()">🐾 내 농장</button>
+      <button class="btn" onclick="showWorldMap()">← 월드맵</button>
     </div>
   </div>
 
@@ -3736,6 +3849,27 @@ const RANK_INFO = {
   // 향후: 평민 → 시민 → 귀족 → 영주 → 왕족 등 확장
 };
 
+// 미용실 코트 색상 (CSS filter 기반)
+const COAT_COLORS = [
+  { name:'기본',   filter:'none',                                          chip:'#fff5e8' },
+  { name:'붉은빛', filter:'hue-rotate(-20deg) saturate(1.4)',              chip:'#e88060' },
+  { name:'주황빛', filter:'hue-rotate(20deg) saturate(1.3)',               chip:'#ffaa50' },
+  { name:'노랑빛', filter:'hue-rotate(50deg) saturate(1.5) brightness(1.05)', chip:'#ffe070' },
+  { name:'초록빛', filter:'hue-rotate(110deg) saturate(0.9)',              chip:'#7ac050' },
+  { name:'푸른빛', filter:'hue-rotate(180deg) saturate(0.85)',             chip:'#60a8d0' },
+  { name:'보라빛', filter:'hue-rotate(230deg) saturate(1.1)',              chip:'#9070c8' },
+  { name:'분홍빛', filter:'hue-rotate(310deg) saturate(1.2)',              chip:'#ff90c8' },
+  { name:'은빛',   filter:'saturate(0.15) brightness(1.15)',              chip:'#d8d8e0' }
+];
+
+function animalCoatFilter(animal) {
+  const idx = animal && typeof animal.color === 'number' ? animal.color : 0;
+  return COAT_COLORS[idx]?.filter || 'none';
+}
+function animalCoatStyle(animal) {
+  return `filter:${animalCoatFilter(animal)}`;
+}
+
 // ===== localStorage 저장 시스템 =====
 const SAVE_KEY = 'animalfarm_save_v1';
 let save = null;
@@ -3775,6 +3909,10 @@ function migrateSave(data) {
   if (typeof data.nextAnimalId !== 'number') data.nextAnimalId = 1;
   if (!data.inventory) data.inventory = { food: 0, book: 0, mirror: 0, toy: 0 };
   if (!data.orchard) data.orchard = { picker: null, carrier: null, lastEarnAt: Date.now() };
+  // 동물에 color 필드 보장
+  data.animals.forEach(a => {
+    if (typeof a.color !== 'number') a.color = 0;
+  });
   return data;
 }
 
@@ -3926,7 +4064,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function hideAllPanels() {
-  ['world-map','char-select','main-game','shelter','my-animals','dept-shop','orchard'].forEach(id => {
+  ['world-map','char-select','main-game','shelter','my-animals','dept-shop','orchard','salon'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add('hidden');
   });
@@ -4053,6 +4191,7 @@ function adoptAnimal(speciesKey) {
     species: speciesKey,
     svg: sp.svg,
     name: sp.name,
+    color: 0,
     stats: { fit: 0, intel: 0, charm: 0, skill: 0 },
     adoptedAt: Date.now()
   };
@@ -4165,7 +4304,7 @@ function renderYard() {
     div.style.left = pos.left + '%';
     div.style.top = pos.top + '%';
     div.style.animationDelay = pos.delay + 's';
-    div.innerHTML = `<svg viewBox="0 0 100 100"><use href="#${a.svg}"/></svg>`;
+    div.innerHTML = `<svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}"><use href="#${a.svg}"/></svg>`;
     div.onclick = () => selectYardAnimal(a.id);
     yard.appendChild(div);
   });
@@ -4306,7 +4445,7 @@ function renderOrchard() {
   if (picker) {
     const div = document.createElement('div');
     div.className = 'orchard-worker picker';
-    div.innerHTML = `<svg viewBox="0 0 100 100"><use href="#${picker.svg}"/></svg>`;
+    div.innerHTML = `<svg viewBox="0 0 100 100" style="${animalCoatStyle(picker)}"><use href="#${picker.svg}"/></svg>`;
     scene.appendChild(div);
     // 떨어지는 사과 효과
     const apple = document.createElement('div');
@@ -4318,7 +4457,7 @@ function renderOrchard() {
   if (carrier) {
     const div = document.createElement('div');
     div.className = 'orchard-worker carrier';
-    div.innerHTML = `<svg viewBox="0 0 100 100"><use href="#${carrier.svg}"/></svg>`;
+    div.innerHTML = `<svg viewBox="0 0 100 100" style="${animalCoatStyle(carrier)}"><use href="#${carrier.svg}"/></svg>`;
     scene.appendChild(div);
     // 운반 사과 표시
     const apple = document.createElement('div');
@@ -4357,7 +4496,7 @@ function renderSlot(role, animal, label, hint, statKey, statKo) {
       <button class="ws-clear" onclick="event.stopPropagation();clearWorker('${role}')">×</button>
       <div class="ws-label">${label}</div>
       <div class="ws-stat">${hint}</div>
-      <svg class="ws-portrait" viewBox="0 0 100 100"><use href="#${animal.svg}"/></svg>
+      <svg class="ws-portrait" viewBox="0 0 100 100" style="${animalCoatStyle(animal)}"><use href="#${animal.svg}"/></svg>
       <div class="ws-name">${escapeHTML(animal.name)}</div>
       <div class="ws-stat-val">${statKo} ${animal.stats[statKey]}</div>
     </div>
@@ -4387,7 +4526,7 @@ function openWorkerPicker(role) {
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:260px;overflow-y:auto;">
         ${candidates.map(a => `
           <div class="worker-pick-card" onclick="assignWorker('${role}', ${a.id})">
-            <svg viewBox="0 0 100 100"><use href="#${a.svg}"/></svg>
+            <svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}"><use href="#${a.svg}"/></svg>
             <div>${escapeHTML(a.name)}</div>
             <div style="color:#5aa030;font-weight:bold">${statKo} ${a.stats[statKey]}</div>
           </div>
@@ -4419,6 +4558,90 @@ function clearWorker(role) {
   renderOrchard();
 }
 
+// ============= 미용실 =============
+const SALON_COST = 30;
+const SALON_CHARM_BONUS = 5;
+let salonSelectedId = null;
+
+function enterSalon() {
+  if (!save) save = loadSave();
+  hideAllPanels();
+  if (save.animals.length > 0) {
+    if (!salonSelectedId || !save.animals.find(a => a.id === salonSelectedId)) {
+      salonSelectedId = save.activeAnimalId || save.animals[0].id;
+    }
+  }
+  renderSalon();
+  $('salon').classList.remove('hidden');
+}
+
+function selectSalonAnimal(id) {
+  salonSelectedId = id;
+  renderSalon();
+}
+
+function changeCoat(animalId, colorIdx) {
+  const a = save.animals.find(x => x.id === animalId);
+  if (!a) return;
+  if ((a.color || 0) === colorIdx) {
+    alert('💁 이미 이 색깔이에요!');
+    return;
+  }
+  if (save.gold < SALON_COST) {
+    alert(`💰 골드가 부족해요! (${SALON_COST}골드 필요)`);
+    return;
+  }
+  save.gold -= SALON_COST;
+  a.color = colorIdx;
+  bumpStat(a, 'charm', SALON_CHARM_BONUS);
+  saveSave();
+  renderSalon();
+}
+
+function renderSalon() {
+  $('salon-gold').textContent = save.gold;
+  const content = $('salon-content');
+  if (save.animals.length === 0) {
+    content.innerHTML = '<div class="farm-empty">먼저 보호소에서 동물을 입양하세요</div>';
+    return;
+  }
+  const a = save.animals.find(x => x.id === salonSelectedId) || save.animals[0];
+  salonSelectedId = a.id;
+
+  const animRow = save.animals.map(an => `
+    <div class="sl-anim ${an.id === a.id ? 'active' : ''}" onclick="selectSalonAnimal(${an.id})">
+      <svg viewBox="0 0 100 100" style="${animalCoatStyle(an)}"><use href="#${an.svg}"/></svg>
+      <div>${escapeHTML(an.name)}</div>
+    </div>
+  `).join('');
+
+  const palette = COAT_COLORS.map((c, i) => `
+    <div class="chip-wrap">
+      <div class="color-chip ${i === (a.color || 0) ? 'current' : ''}"
+           style="background:${c.chip}"
+           onclick="changeCoat(${a.id}, ${i})">
+        ${i === (a.color || 0) ? '✓' : ''}
+      </div>
+      <div class="color-chip-name">${c.name}</div>
+    </div>
+  `).join('');
+
+  content.innerHTML = `
+    <div class="salon-anim-row">${animRow}</div>
+    <div class="salon-preview">
+      <svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}"><use href="#${a.svg}"/></svg>
+      <div class="sp-name">
+        ${escapeHTML(a.name)}
+        <span class="sp-charm">매력 ${a.stats.charm}</span>
+      </div>
+    </div>
+    <div class="palette-info">
+      색깔을 선택하면 적용됩니다 · <b>${SALON_COST}골드</b> · 매력 +${SALON_CHARM_BONUS}
+    </div>
+    <div class="palette">${palette}</div>
+  `;
+}
+
 function renderAnimalDetail(a) {
   const detail = $('animal-detail');
   detail.classList.remove('hidden');
@@ -4430,7 +4653,7 @@ function renderAnimalDetail(a) {
   detail.innerHTML = `
     <button class="ad-close" onclick="closeAnimalDetail()">×</button>
     <div class="ad-header">
-      <div class="ad-portrait"><svg viewBox="0 0 100 100"><use href="#${a.svg}"/></svg></div>
+      <div class="ad-portrait"><svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}"><use href="#${a.svg}"/></svg></div>
       <div class="ad-info">
         <div class="ad-name editable" onclick="renameAnimal(${a.id})" title="클릭해서 이름 변경">
           ${safeName}<span class="ad-edit-icon">✏</span>${isActive ? '<span class="ad-active-tag">★ 활동중</span>' : ''}
@@ -4643,9 +4866,9 @@ function renderCharSelect() {
     const card = document.createElement('div');
     card.className = 'char-card';
     card.innerHTML = `
-      <div class="char-bigportrait"><svg viewBox="0 0 100 100"><use href="#${a.svg}"/></svg></div>
+      <div class="char-bigportrait"><svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}"><use href="#${a.svg}"/></svg></div>
       <div>
-        <div class="char-name">${a.name}</div>
+        <div class="char-name">${escapeHTML(a.name)}</div>
         <div class="char-stats">HP ${t.maxHp} · MP ${t.maxMp}<br/>ATK ${t.atk} · DEF ${t.defense} · SPD ${t.spd}</div>
         <div class="char-desc">체${a.stats.fit} 지${a.stats.intel} 매${a.stats.charm} 기${a.stats.skill}</div>
       </div>
@@ -4668,7 +4891,8 @@ function initPlayerFromAnimal(animal) {
     maxMp: t.maxMp, mp: t.maxMp,
     baseAtk: t.atk, atk: t.atk, spd: t.spd,
     defense: t.defense,
-    gold: save.gold
+    gold: save.gold,
+    coatFilter: animalCoatFilter(animal)
   };
   potions = [
     { name:'붉은 물약', heal:30 },
@@ -4681,6 +4905,12 @@ function initPlayerFromAnimal(animal) {
 function enterTower() {
   $('player-portrait-use').setAttribute('href', '#' + player.svg);
   $('scene-player-use').setAttribute('href', '#' + player.svg);
+  // 색상 필터 적용
+  const f = player.coatFilter || 'none';
+  const pp = document.getElementById('player-portrait');
+  const sp = document.getElementById('scene-player');
+  if (pp) pp.style.filter = f;
+  if (sp) sp.style.filter = f;
   hideAllPanels();
   $('main-game').classList.remove('hidden');
   $('log').innerHTML = '';
