@@ -160,6 +160,26 @@
   .stat-row .label { color: var(--text-dim); }
   .stat-row .val { color: #fff; }
 
+  /* 탑 상단 인라인 스탯 (한 줄) */
+  .stat-inline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    margin-top: 4px;
+    padding: 4px 6px;
+    background: rgba(0,0,0,0.18);
+    border-radius: 6px;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
+  .stat-inline span { white-space: nowrap; }
+  .stat-inline b { color: #fff; font-weight: bold; }
+  .stat-inline .stat-gold-mini b { color: #ffcc44; }
+  @media (max-width: 760px) {
+    .stat-inline { font-size: 0.7rem; padding: 3px 5px; gap: 2px; }
+  }
+
   .hp-block { margin: 6px 0 4px; }
   .mp-block { margin: 4px 0; }
   .hp-bar, .mp-bar {
@@ -1635,7 +1655,7 @@
   .compendium .cb-msg { text-align: center; margin-bottom: 12px; }
   .cp-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 8px;
     margin-bottom: 10px;
   }
@@ -3665,7 +3685,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-18</div>
+    <div class="version-tag" style="color:#a06030;">260507-19</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -3821,10 +3841,12 @@
               <div class="mp-text" id="player-mp-text">30/30</div>
             </div>
           </div>
-          <div class="stat-row"><span class="label">⚔ 공격</span><span class="val" id="stat-atk">10</span></div>
-          <div class="stat-row"><span class="label">🛡 방어</span><span class="val" id="stat-def">0</span></div>
-          <div class="stat-row"><span class="label">⚡ 속도</span><span class="val" id="stat-spd">5</span></div>
-          <div class="stat-row"><span class="label">💰 골드</span><span class="val" id="stat-gold" style="color:#ffcc44">0</span></div>
+          <div class="stat-inline">
+            <span>⚔ <b id="stat-atk">10</b></span>
+            <span>🛡 <b id="stat-def">0</b></span>
+            <span>⚡ <b id="stat-spd">5</b></span>
+            <span class="stat-gold-mini">💰 <b id="stat-gold">0</b></span>
+          </div>
         </div>
       </aside>
 
