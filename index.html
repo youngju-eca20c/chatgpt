@@ -2311,6 +2311,18 @@
       <ellipse cx="78" cy="80" rx="3" ry="2" fill="#5a3010" transform="rotate(20 78 80)"/>
     </symbol>
 
+    <!-- 얼룩빛 (보더콜리 스타일 패치 오버레이) -->
+    <symbol id="coat-spots" viewBox="0 0 100 100">
+      <g opacity="0.78">
+        <ellipse cx="35" cy="36" rx="11" ry="8" fill="#1a1a1a" transform="rotate(-15 35 36)"/>
+        <ellipse cx="64" cy="42" rx="9" ry="7" fill="#1a1a1a" transform="rotate(10 64 42)"/>
+        <ellipse cx="48" cy="62" rx="13" ry="7" fill="#1a1a1a" transform="rotate(-8 48 62)"/>
+        <circle cx="28" cy="64" r="6" fill="#1a1a1a"/>
+        <ellipse cx="72" cy="66" rx="7" ry="5" fill="#1a1a1a" transform="rotate(20 72 66)"/>
+        <circle cx="58" cy="28" r="4" fill="#1a1a1a"/>
+      </g>
+    </symbol>
+
     <!-- 박쥐 -->
     <symbol id="mon-bat" viewBox="0 0 100 100">
       <ellipse cx="50" cy="90" rx="20" ry="3" fill="#000" opacity="0.4"/>
@@ -3588,7 +3600,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-16</div>
+    <div class="version-tag" style="color:#a06030;">260507-17</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -3724,7 +3736,7 @@
       <aside class="left-col">
         <div class="floor-badge" id="floor-text">제 1 층</div>
         <div class="portrait-frame">
-          <svg id="player-portrait"><use href="#char-dugong" id="player-portrait-use"/></svg>
+          <svg id="player-portrait" viewBox="0 0 100 100"><use href="#char-dugong" id="player-portrait-use"/><use href="#coat-spots" id="player-portrait-spots" style="display:none"/></svg>
         </div>
         <div class="stats-card">
           <div class="hp-block">
@@ -3772,8 +3784,9 @@
           <div id="door-overlay"></div>
 
           <!-- 캐릭터 -->
-          <svg class="scene-char left hidden" id="scene-player">
+          <svg class="scene-char left hidden" id="scene-player" viewBox="0 0 100 100">
             <use href="#char-dugong" id="scene-player-use"/>
+            <use href="#coat-spots" id="scene-player-spots" style="display:none"/>
           </svg>
           <!-- 적 -->
           <svg class="scene-char right hidden" id="scene-enemy">
@@ -3850,6 +3863,7 @@ const RANK_INFO = {
 };
 
 // 미용실 코트 색상 (CSS filter 기반)
+// spotted: SVG 오버레이로 검은 얼룩 추가
 const COAT_COLORS = [
   { name:'기본',   filter:'none',                                          chip:'#fff5e8' },
   { name:'붉은빛', filter:'hue-rotate(-20deg) saturate(1.4)',              chip:'#e88060' },
@@ -3859,8 +3873,10 @@ const COAT_COLORS = [
   { name:'푸른빛', filter:'hue-rotate(180deg) saturate(0.85)',             chip:'#60a8d0' },
   { name:'보라빛', filter:'hue-rotate(230deg) saturate(1.1)',              chip:'#9070c8' },
   { name:'분홍빛', filter:'hue-rotate(310deg) saturate(1.2)',              chip:'#ff90c8' },
-  { name:'은빛',   filter:'saturate(0.15) brightness(1.15)',              chip:'#d8d8e0' }
+  { name:'은빛',   filter:'saturate(0.15) brightness(1.15)',               chip:'#d8d8e0' },
+  { name:'얼룩빛', filter:'grayscale(0.5) contrast(1.1) brightness(0.96)', chip:'spotted', spotted:true }
 ];
+const SPOT_COLOR_INDEX = 9;
 
 function animalCoatFilter(animal) {
   const idx = animal && typeof animal.color === 'number' ? animal.color : 0;
@@ -3868,6 +3884,19 @@ function animalCoatFilter(animal) {
 }
 function animalCoatStyle(animal) {
   return `filter:${animalCoatFilter(animal)}`;
+}
+function animalSvgInner(animal) {
+  let inner = `<use href="#${animal.svg}"/>`;
+  if (animal && animal.color === SPOT_COLOR_INDEX) {
+    inner += `<use href="#coat-spots"/>`;
+  }
+  return inner;
+}
+function chipBackground(chip) {
+  if (chip === 'spotted') {
+    return "radial-gradient(circle at 28% 35%, #1a1a1a 9%, transparent 15%), radial-gradient(circle at 70% 45%, #1a1a1a 9%, transparent 15%), radial-gradient(circle at 45% 75%, #1a1a1a 7%, transparent 13%), #fff";
+  }
+  return chip;
 }
 
 // ===== localStorage 저장 시스템 =====
@@ -4304,7 +4333,7 @@ function renderYard() {
     div.style.left = pos.left + '%';
     div.style.top = pos.top + '%';
     div.style.animationDelay = pos.delay + 's';
-    div.innerHTML = `<svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}"><use href="#${a.svg}"/></svg>`;
+    div.innerHTML = `<svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}">${animalSvgInner(a)}</svg>`;
     div.onclick = () => selectYardAnimal(a.id);
     yard.appendChild(div);
   });
@@ -4445,7 +4474,7 @@ function renderOrchard() {
   if (picker) {
     const div = document.createElement('div');
     div.className = 'orchard-worker picker';
-    div.innerHTML = `<svg viewBox="0 0 100 100" style="${animalCoatStyle(picker)}"><use href="#${picker.svg}"/></svg>`;
+    div.innerHTML = `<svg viewBox="0 0 100 100" style="${animalCoatStyle(picker)}">${animalSvgInner(picker)}</svg>`;
     scene.appendChild(div);
     // 떨어지는 사과 효과
     const apple = document.createElement('div');
@@ -4457,7 +4486,7 @@ function renderOrchard() {
   if (carrier) {
     const div = document.createElement('div');
     div.className = 'orchard-worker carrier';
-    div.innerHTML = `<svg viewBox="0 0 100 100" style="${animalCoatStyle(carrier)}"><use href="#${carrier.svg}"/></svg>`;
+    div.innerHTML = `<svg viewBox="0 0 100 100" style="${animalCoatStyle(carrier)}">${animalSvgInner(carrier)}</svg>`;
     scene.appendChild(div);
     // 운반 사과 표시
     const apple = document.createElement('div');
@@ -4496,7 +4525,7 @@ function renderSlot(role, animal, label, hint, statKey, statKo) {
       <button class="ws-clear" onclick="event.stopPropagation();clearWorker('${role}')">×</button>
       <div class="ws-label">${label}</div>
       <div class="ws-stat">${hint}</div>
-      <svg class="ws-portrait" viewBox="0 0 100 100" style="${animalCoatStyle(animal)}"><use href="#${animal.svg}"/></svg>
+      <svg class="ws-portrait" viewBox="0 0 100 100" style="${animalCoatStyle(animal)}">${animalSvgInner(animal)}</svg>
       <div class="ws-name">${escapeHTML(animal.name)}</div>
       <div class="ws-stat-val">${statKo} ${animal.stats[statKey]}</div>
     </div>
@@ -4526,7 +4555,7 @@ function openWorkerPicker(role) {
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:260px;overflow-y:auto;">
         ${candidates.map(a => `
           <div class="worker-pick-card" onclick="assignWorker('${role}', ${a.id})">
-            <svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}"><use href="#${a.svg}"/></svg>
+            <svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}">${animalSvgInner(a)}</svg>
             <div>${escapeHTML(a.name)}</div>
             <div style="color:#5aa030;font-weight:bold">${statKo} ${a.stats[statKey]}</div>
           </div>
@@ -4610,7 +4639,7 @@ function renderSalon() {
 
   const animRow = save.animals.map(an => `
     <div class="sl-anim ${an.id === a.id ? 'active' : ''}" onclick="selectSalonAnimal(${an.id})">
-      <svg viewBox="0 0 100 100" style="${animalCoatStyle(an)}"><use href="#${an.svg}"/></svg>
+      <svg viewBox="0 0 100 100" style="${animalCoatStyle(an)}">${animalSvgInner(an)}</svg>
       <div>${escapeHTML(an.name)}</div>
     </div>
   `).join('');
@@ -4618,7 +4647,7 @@ function renderSalon() {
   const palette = COAT_COLORS.map((c, i) => `
     <div class="chip-wrap">
       <div class="color-chip ${i === (a.color || 0) ? 'current' : ''}"
-           style="background:${c.chip}"
+           style="background:${chipBackground(c.chip)}"
            onclick="changeCoat(${a.id}, ${i})">
         ${i === (a.color || 0) ? '✓' : ''}
       </div>
@@ -4629,7 +4658,7 @@ function renderSalon() {
   content.innerHTML = `
     <div class="salon-anim-row">${animRow}</div>
     <div class="salon-preview">
-      <svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}"><use href="#${a.svg}"/></svg>
+      <svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}">${animalSvgInner(a)}</svg>
       <div class="sp-name">
         ${escapeHTML(a.name)}
         <span class="sp-charm">매력 ${a.stats.charm}</span>
@@ -4653,7 +4682,7 @@ function renderAnimalDetail(a) {
   detail.innerHTML = `
     <button class="ad-close" onclick="closeAnimalDetail()">×</button>
     <div class="ad-header">
-      <div class="ad-portrait"><svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}"><use href="#${a.svg}"/></svg></div>
+      <div class="ad-portrait"><svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}">${animalSvgInner(a)}</svg></div>
       <div class="ad-info">
         <div class="ad-name editable" onclick="renameAnimal(${a.id})" title="클릭해서 이름 변경">
           ${safeName}<span class="ad-edit-icon">✏</span>${isActive ? '<span class="ad-active-tag">★ 활동중</span>' : ''}
@@ -4866,7 +4895,7 @@ function renderCharSelect() {
     const card = document.createElement('div');
     card.className = 'char-card';
     card.innerHTML = `
-      <div class="char-bigportrait"><svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}"><use href="#${a.svg}"/></svg></div>
+      <div class="char-bigportrait"><svg viewBox="0 0 100 100" style="${animalCoatStyle(a)}">${animalSvgInner(a)}</svg></div>
       <div>
         <div class="char-name">${escapeHTML(a.name)}</div>
         <div class="char-stats">HP ${t.maxHp} · MP ${t.maxMp}<br/>ATK ${t.atk} · DEF ${t.defense} · SPD ${t.spd}</div>
@@ -4892,7 +4921,8 @@ function initPlayerFromAnimal(animal) {
     baseAtk: t.atk, atk: t.atk, spd: t.spd,
     defense: t.defense,
     gold: save.gold,
-    coatFilter: animalCoatFilter(animal)
+    coatFilter: animalCoatFilter(animal),
+    coatColor: animal.color || 0
   };
   potions = [
     { name:'붉은 물약', heal:30 },
@@ -4911,6 +4941,12 @@ function enterTower() {
   const sp = document.getElementById('scene-player');
   if (pp) pp.style.filter = f;
   if (sp) sp.style.filter = f;
+  // 얼룩빛 spots 토글
+  const showSpots = player.coatColor === SPOT_COLOR_INDEX;
+  ['player-portrait-spots', 'scene-player-spots'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = showSpots ? '' : 'none';
+  });
   hideAllPanels();
   $('main-game').classList.remove('hidden');
   $('log').innerHTML = '';
