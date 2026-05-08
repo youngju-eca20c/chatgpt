@@ -1183,7 +1183,7 @@
     cursor: pointer;
     z-index: 5;
     filter: drop-shadow(0 3px 5px rgba(0,0,0,0.4));
-    transition: filter 0.2s;
+    transition: left 5s ease-in-out, top 5s ease-in-out, filter 0.2s;
   }
   .yard-animal:hover { filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5)) brightness(1.1); }
   .yard-animal svg { width: 100%; height: 100%; }
@@ -1277,6 +1277,21 @@
     font-size: 1.2rem;
     color: #5a3010;
   }
+  .ad-name.editable {
+    cursor: pointer;
+    transition: color 0.15s;
+    user-select: none;
+  }
+  .ad-name.editable:hover { color: #a04020; }
+  .ad-edit-icon {
+    font-size: 0.7rem;
+    color: #a08868;
+    opacity: 0.55;
+    margin-left: 6px;
+    margin-right: 4px;
+    transition: opacity 0.15s;
+  }
+  .ad-name.editable:hover .ad-edit-icon { opacity: 1; }
   .ad-active-tag {
     display: inline-block;
     margin-left: 6px;
@@ -1329,6 +1344,183 @@
   .item-card .it-name { font-family: 'Black Han Sans', sans-serif; font-size: 0.78rem; }
   .item-card .it-effect { color: #5aa030; font-size: 0.7rem; margin-top: 2px; }
   .item-card .it-price { color: #c08020; font-size: 0.72rem; margin-top: 2px; }
+
+  /* === 과수원 작업장 === */
+  .orchard-scene {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/2;
+    background: #cae8a0;
+    border: 3px solid #a06030;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 0 30px rgba(160, 96, 48, 0.2);
+    margin-bottom: 12px;
+  }
+  .orchard-worker {
+    position: absolute;
+    width: 16%;
+    aspect-ratio: 1/1;
+    z-index: 5;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.4));
+  }
+  .orchard-worker svg { width: 100%; height: 100%; }
+  /* 사과 따기 - 큰 나무 옆에서 점프하며 사과 따기 */
+  .orchard-worker.picker {
+    left: 56%;
+    top: 36%;
+    animation: pick-apple 1.6s ease-in-out infinite;
+  }
+  @keyframes pick-apple {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    25% { transform: translateY(-10px) rotate(-3deg); }
+    50% { transform: translateY(-22px) rotate(0); }
+    75% { transform: translateY(-10px) rotate(3deg); }
+  }
+  /* 사과 운반 - 큰 바구니까지 왔다갔다 */
+  .orchard-worker.carrier {
+    top: 60%;
+    animation: carry-walk 6s ease-in-out infinite;
+  }
+  @keyframes carry-walk {
+    0%   { left: 12%; transform: scaleX(1) translateY(0); }
+    24%  { left: 76%; transform: scaleX(1) translateY(0); }
+    25%  { left: 76%; transform: scaleX(-1) translateY(0); }
+    49%  { left: 12%; transform: scaleX(-1) translateY(0); }
+    50%  { left: 12%; transform: scaleX(1) translateY(0); }
+    74%  { left: 76%; transform: scaleX(1) translateY(0); }
+    75%  { left: 76%; transform: scaleX(-1) translateY(0); }
+    100% { left: 12%; transform: scaleX(-1) translateY(0); }
+  }
+  /* 옮기는 사과 (carrier 위에 작은 빨강 점) */
+  .carry-apple {
+    position: absolute;
+    top: 60%;
+    width: 14px;
+    height: 14px;
+    background: radial-gradient(circle at 30% 30%, #ff6060, #a01010);
+    border-radius: 50%;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    z-index: 6;
+    pointer-events: none;
+    animation: carry-walk 6s ease-in-out infinite;
+    margin-left: 4%;
+    margin-top: -2%;
+  }
+  /* 떨어지는 사과 (picker가 따낸 후 카트에 떨어짐 효과) */
+  .falling-apple {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle at 30% 30%, #ff6060, #a01010);
+    border-radius: 50%;
+    z-index: 4;
+    pointer-events: none;
+    animation: fall-apple 1.6s ease-in infinite;
+  }
+  @keyframes fall-apple {
+    0%, 24% { transform: translateY(0); opacity: 0; }
+    25% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(60px); opacity: 0; }
+  }
+
+  /* 작업 슬롯 */
+  .work-slots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .work-slot {
+    background: #fff;
+    border: 2px dashed #a06030;
+    border-radius: 12px;
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    color: #5a3010;
+    min-height: 130px;
+  }
+  .work-slot:hover { background: #fff5dc; border-color: #ff8050; }
+  .work-slot.filled {
+    border-style: solid;
+    background: linear-gradient(180deg, #fff8e0, #fff5dc);
+  }
+  .ws-label {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+  }
+  .ws-stat {
+    font-size: 0.7rem;
+    color: #c08020;
+    margin-bottom: 6px;
+  }
+  .ws-empty {
+    color: #a08868;
+    font-style: italic;
+    font-size: 0.85rem;
+    padding: 18px 0;
+  }
+  .ws-portrait {
+    width: 50px;
+    height: 50px;
+    margin: 4px auto;
+    display: block;
+  }
+  .ws-name {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.9rem;
+    color: #5a3010;
+  }
+  .ws-stat-val {
+    font-size: 0.75rem;
+    color: #5aa030;
+    font-weight: bold;
+  }
+  .ws-clear {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.1);
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #5a3010;
+    line-height: 1;
+  }
+  .ws-clear:hover { background: rgba(192,32,32,0.2); }
+
+  .earnings-info {
+    text-align: center;
+    background: rgba(255, 245, 220, 0.7);
+    border: 1.5px solid #a06030;
+    border-radius: 10px;
+    padding: 8px;
+    color: #5a3010;
+    font-size: 0.88rem;
+  }
+  .earnings-info b { color: #c08020; font-size: 1rem; }
+
+  /* 작업자 선택 그리드 */
+  .worker-pick-card {
+    background: #fff5dc;
+    border: 1.5px solid #a06030;
+    border-radius: 8px;
+    padding: 8px 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: #5a3010;
+    font-size: 0.78rem;
+  }
+  .worker-pick-card:hover { background: #fff; border-color: #ff8050; transform: translateY(-2px); }
+  .worker-pick-card svg { width: 50px; height: 50px; display: block; margin: 0 auto 2px; }
 
   /* 입양 확인 다이얼로그 */
   .confirm-overlay {
@@ -2709,6 +2901,103 @@
       <rect x="36" y="122" width="28" height="3" fill="#a08068" stroke="#3a1808" stroke-width="0.5"/>
     </symbol>
 
+    <!-- 과수원 작업장 배경 -->
+    <symbol id="bg-orchard-yard" viewBox="0 0 600 400">
+      <defs>
+        <linearGradient id="orcGrass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#bce080"/>
+          <stop offset="100%" stop-color="#7ab048"/>
+        </linearGradient>
+      </defs>
+      <!-- 풀밭 -->
+      <rect width="600" height="400" fill="url(#orcGrass)"/>
+      <!-- 위쪽 살짝 밝은 결 -->
+      <ellipse cx="300" cy="0" rx="600" ry="100" fill="#cae890" opacity="0.6"/>
+      <!-- 멀리 풀언덕 -->
+      <ellipse cx="120" cy="60" rx="160" ry="40" fill="#9ec860" opacity="0.65"/>
+      <ellipse cx="500" cy="55" rx="170" ry="38" fill="#9ec860" opacity="0.65"/>
+      <!-- 사과나무 5그루 (뒤쪽) -->
+      <g>
+        <!-- tree 1 -->
+        <rect x="68" y="180" width="10" height="60" fill="#5a3018"/>
+        <ellipse cx="73" cy="160" rx="34" ry="38" fill="#3a7028"/>
+        <ellipse cx="73" cy="155" rx="28" ry="32" fill="#5aa040"/>
+        <circle cx="60" cy="148" r="4" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="80" cy="155" r="4" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="70" cy="170" r="4" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="86" cy="170" r="4" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+
+        <!-- tree 2 -->
+        <rect x="218" y="170" width="12" height="68" fill="#5a3018"/>
+        <ellipse cx="224" cy="148" rx="40" ry="42" fill="#3a7028"/>
+        <ellipse cx="224" cy="143" rx="34" ry="36" fill="#5aa040"/>
+        <circle cx="208" cy="138" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="234" cy="142" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="218" cy="160" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="240" cy="160" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="220" cy="125" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+
+        <!-- tree 3 (center, biggest) -->
+        <rect x="368" y="160" width="14" height="80" fill="#5a3018"/>
+        <ellipse cx="375" cy="135" rx="46" ry="48" fill="#3a7028"/>
+        <ellipse cx="375" cy="130" rx="40" ry="42" fill="#5aa040"/>
+        <ellipse cx="375" cy="125" rx="28" ry="28" fill="#7ac050" opacity="0.5"/>
+        <circle cx="356" cy="124" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.7"/>
+        <circle cx="392" cy="128" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.7"/>
+        <circle cx="370" cy="148" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.7"/>
+        <circle cx="394" cy="152" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.7"/>
+        <circle cx="358" cy="148" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.7"/>
+        <circle cx="378" cy="170" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.7"/>
+        <circle cx="400" cy="135" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.7"/>
+
+        <!-- tree 4 -->
+        <rect x="488" y="170" width="12" height="68" fill="#5a3018"/>
+        <ellipse cx="494" cy="148" rx="38" ry="40" fill="#3a7028"/>
+        <ellipse cx="494" cy="143" rx="32" ry="34" fill="#5aa040"/>
+        <circle cx="480" cy="140" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="506" cy="144" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="490" cy="158" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="510" cy="160" r="4.5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+      </g>
+      <!-- 흙길 -->
+      <path d="M30 380 Q150 360 280 360 Q420 360 570 340" stroke="#dab886" stroke-width="22" fill="none" stroke-linecap="round" opacity="0.85"/>
+      <!-- 큰 바구니 (사과 운반용 - 우측) -->
+      <g transform="translate(530 350)">
+        <ellipse cx="0" cy="20" rx="35" ry="6" fill="#000" opacity="0.3"/>
+        <path d="M-26 0 L26 0 L22 32 L-22 32 Z" fill="#a06030" stroke="#5a3010" stroke-width="2"/>
+        <ellipse cx="0" cy="0" rx="26" ry="5" fill="#7a4818"/>
+        <line x1="-18" y1="8" x2="18" y2="8" stroke="#5a3010" stroke-width="1"/>
+        <line x1="-20" y1="16" x2="20" y2="16" stroke="#5a3010" stroke-width="1"/>
+        <line x1="-22" y1="24" x2="22" y2="24" stroke="#5a3010" stroke-width="1"/>
+        <!-- 사과 가득 -->
+        <circle cx="-12" cy="-3" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="-2" cy="-4" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="10" cy="-3" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="-7" cy="-9" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+        <circle cx="5" cy="-9" r="5" fill="#d04040" stroke="#7a1010" stroke-width="0.6"/>
+      </g>
+      <!-- 작은 바구니 (좌측) -->
+      <g transform="translate(60 360)">
+        <path d="M-12 0 L12 0 L10 18 L-10 18 Z" fill="#a06030" stroke="#5a3010"/>
+        <ellipse cx="0" cy="0" rx="12" ry="3" fill="#7a4818"/>
+        <circle cx="-4" cy="-2" r="2.5" fill="#d04040" stroke="#7a1010" stroke-width="0.4"/>
+        <circle cx="4" cy="-2" r="2.5" fill="#d04040" stroke="#7a1010" stroke-width="0.4"/>
+      </g>
+      <!-- 떨어진 사과 -->
+      <circle cx="160" cy="380" r="3" fill="#d04040" stroke="#7a1010" stroke-width="0.4"/>
+      <circle cx="320" cy="375" r="3" fill="#d04040" stroke="#7a1010" stroke-width="0.4"/>
+      <!-- 풀잎 디테일 -->
+      <g stroke="#5a8030" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.6">
+        <path d="M40 320 q1 -7 2 0"/>
+        <path d="M180 330 q1 -7 2 0 M186 333 q1 -6 2 0"/>
+        <path d="M340 320 q1 -7 2 0"/>
+        <path d="M450 330 q1 -7 2 0"/>
+      </g>
+      <!-- 꽃 -->
+      <circle cx="120" cy="370" r="2.5" fill="#ff80a0"/>
+      <circle cx="380" cy="380" r="2.5" fill="#ffe070"/>
+    </symbol>
+
     <!-- 내 농장 마당 배경 -->
     <symbol id="bg-yard" viewBox="0 0 600 400">
       <defs>
@@ -3198,7 +3487,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-14</div>
+    <div class="version-tag" style="color:#a06030;">260507-15</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -3237,10 +3526,32 @@
         <div class="bldg-label">미용실</div>
       </button>
       <!-- 과수원 (우하단) -->
-      <button class="map-building locked" style="top:80%;left:70%;width:22%" onclick="lockedLoc('과수원')" aria-label="과수원">
+      <button class="map-building available" style="top:80%;left:70%;width:22%" onclick="enterOrchard()" aria-label="과수원">
         <svg viewBox="0 0 140 120"><use href="#bldg-orchard"/></svg>
-        <div class="bldg-label">🧺 과수원</div>
+        <div class="bldg-label">🍎 과수원</div>
       </button>
+    </div>
+  </div>
+
+  <!-- 과수원 -->
+  <div id="orchard" class="farm-panel hidden">
+    <div class="farm-title">🍎 과수원</div>
+    <div class="farm-sub">동물에게 일을 시켜 시간당 골드를 벌어보세요</div>
+    <div class="gold-bar" id="orchard-gold">200</div>
+    <!-- 작업장 (사과나무 + 일하는 동물 애니메이션) -->
+    <div class="orchard-scene" id="orchard-scene">
+      <svg class="yard-bg" preserveAspectRatio="xMidYMid slice" viewBox="0 0 600 400">
+        <use href="#bg-orchard-yard"/>
+      </svg>
+      <!-- 사과 따기 동물 동적 삽입 -->
+      <!-- 사과 운반 동물 동적 삽입 -->
+      <!-- 떨어지는 사과 동적 삽입 -->
+    </div>
+    <!-- 작업 슬롯 -->
+    <div id="orchard-slots"></div>
+    <div class="farm-actions">
+      <button class="btn" onclick="enterMyAnimals()">🐾 내 농장</button>
+      <button class="btn" onclick="showWorldMap()">← 월드맵</button>
     </div>
   </div>
 
@@ -3450,7 +3761,8 @@ function defaultSave() {
     gold: 200,
     humans: [],
     shelterStock: null,
-    inventory: { food: 0, book: 0, mirror: 0, toy: 0 }
+    inventory: { food: 0, book: 0, mirror: 0, toy: 0 },
+    orchard: { picker: null, carrier: null, lastEarnAt: Date.now() }
   };
 }
 
@@ -3462,6 +3774,7 @@ function migrateSave(data) {
   if (!Array.isArray(data.humans)) data.humans = [];
   if (typeof data.nextAnimalId !== 'number') data.nextAnimalId = 1;
   if (!data.inventory) data.inventory = { food: 0, book: 0, mirror: 0, toy: 0 };
+  if (!data.orchard) data.orchard = { picker: null, carrier: null, lastEarnAt: Date.now() };
   return data;
 }
 
@@ -3597,20 +3910,27 @@ function showDialog(text, ms=2200) {
 // ============= 진입 = 월드맵 =============
 window.addEventListener('DOMContentLoaded', () => {
   save = loadSave();
+  // 게임 떠난 동안의 과수원 수익 자동 정산
+  const earned = checkOrchardEarnings();
   hideAllPanels();
   $('world-map').classList.remove('hidden');
   if (save.animals.length === 0) {
     setTimeout(() => {
       alert('🐾 「동물농장」에 오신 것을 환영합니다!\n먼저 보호소에서 첫 동물을 입양해주세요.');
     }, 300);
+  } else if (earned > 0) {
+    setTimeout(() => {
+      alert(`💰 과수원에서 일꾼들이 +${earned}골드를 모았어요!`);
+    }, 300);
   }
 });
 
 function hideAllPanels() {
-  ['world-map','char-select','main-game','shelter','my-animals','dept-shop'].forEach(id => {
+  ['world-map','char-select','main-game','shelter','my-animals','dept-shop','orchard'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add('hidden');
   });
+  stopYardWander();
 }
 
 function showWorldMap() {
@@ -3744,11 +4064,40 @@ function adoptAnimal(speciesKey) {
 }
 
 // ============= 내 농장 =============
+let yardWanderTimer = null;
+
 function enterMyAnimals() {
   if (!save) save = loadSave();
   hideAllPanels();
   renderMyAnimals();
   $('my-animals').classList.remove('hidden');
+  startYardWander();
+}
+
+function startYardWander() {
+  stopYardWander();
+  // 살짝 후에 한번 즉시 흔들기
+  setTimeout(wanderAnimals, 600);
+  yardWanderTimer = setInterval(wanderAnimals, 5500);
+}
+
+function stopYardWander() {
+  if (yardWanderTimer) { clearInterval(yardWanderTimer); yardWanderTimer = null; }
+}
+
+function wanderAnimals() {
+  const myAnimalsEl = document.getElementById('my-animals');
+  if (!myAnimalsEl || myAnimalsEl.classList.contains('hidden')) {
+    stopYardWander();
+    return;
+  }
+  document.querySelectorAll('#farm-yard .yard-animal').forEach(el => {
+    // 살짝 더 다양한 영역
+    const left = 8 + Math.random() * 70;
+    const top = 36 + Math.random() * 42;
+    el.style.left = left + '%';
+    el.style.top = top + '%';
+  });
 }
 
 // 종별 모션 매핑
@@ -3897,6 +4246,179 @@ function buyDeptItem(itemId) {
   renderDept();
 }
 
+// ============= 과수원 =============
+function orchardPerHour(picker, carrier) {
+  // 사과 따기 = 기술 영향, 운반 = 체력 영향
+  // 둘 다 있으면 평균적 결합. 한쪽이 약해도 다른쪽이 보완
+  return Math.floor((picker.stats.skill + carrier.stats.fit) / 4);
+}
+
+function checkOrchardEarnings() {
+  if (!save.orchard) save.orchard = { picker:null, carrier:null, lastEarnAt:Date.now() };
+  const picker = save.animals.find(a => a.id === save.orchard.picker);
+  const carrier = save.animals.find(a => a.id === save.orchard.carrier);
+  // 동물이 사라졌으면 슬롯 정리
+  if (save.orchard.picker && !picker) save.orchard.picker = null;
+  if (save.orchard.carrier && !carrier) save.orchard.carrier = null;
+  if (!picker || !carrier) {
+    save.orchard.lastEarnAt = Date.now();
+    saveSave();
+    return 0;
+  }
+  const now = Date.now();
+  const hoursElapsed = Math.floor((now - save.orchard.lastEarnAt) / 3600000);
+  if (hoursElapsed > 0) {
+    const perHour = orchardPerHour(picker, carrier);
+    const earned = perHour * hoursElapsed;
+    save.gold += earned;
+    save.orchard.lastEarnAt += hoursElapsed * 3600000;
+    saveSave();
+    return earned;
+  }
+  return 0;
+}
+
+function enterOrchard() {
+  if (!save) save = loadSave();
+  hideAllPanels();
+  const earned = checkOrchardEarnings();
+  renderOrchard();
+  $('orchard').classList.remove('hidden');
+  if (earned > 0) {
+    setTimeout(() => alert(`💰 과수원 일꾼들이 +${earned}골드를 벌어왔어요!`), 200);
+  }
+}
+
+function renderOrchard() {
+  $('orchard-gold').textContent = save.gold;
+  const picker = save.animals.find(a => a.id === save.orchard?.picker);
+  const carrier = save.animals.find(a => a.id === save.orchard?.carrier);
+  const both = picker && carrier;
+  const perHour = both ? orchardPerHour(picker, carrier) : 0;
+  const nextEarnMs = both ? Math.max(0, save.orchard.lastEarnAt + 3600000 - Date.now()) : 0;
+  const nextMin = Math.ceil(nextEarnMs / 60000);
+
+  // 작업장 씬 — 동물 + 사과 효과
+  const scene = $('orchard-scene');
+  // 기존 워커 제거
+  scene.querySelectorAll('.orchard-worker, .carry-apple, .falling-apple').forEach(el => el.remove());
+
+  if (picker) {
+    const div = document.createElement('div');
+    div.className = 'orchard-worker picker';
+    div.innerHTML = `<svg viewBox="0 0 100 100"><use href="#${picker.svg}"/></svg>`;
+    scene.appendChild(div);
+    // 떨어지는 사과 효과
+    const apple = document.createElement('div');
+    apple.className = 'falling-apple';
+    apple.style.left = '63%';
+    apple.style.top = '32%';
+    scene.appendChild(apple);
+  }
+  if (carrier) {
+    const div = document.createElement('div');
+    div.className = 'orchard-worker carrier';
+    div.innerHTML = `<svg viewBox="0 0 100 100"><use href="#${carrier.svg}"/></svg>`;
+    scene.appendChild(div);
+    // 운반 사과 표시
+    const apple = document.createElement('div');
+    apple.className = 'carry-apple';
+    scene.appendChild(apple);
+  }
+
+  // 슬롯 UI
+  const slotsHtml = `
+    <div class="work-slots">
+      ${renderSlot('picker', picker, '🍎 사과 따기', '기술 영향', 'skill', '기술')}
+      ${renderSlot('carrier', carrier, '🚚 사과 운반', '체력 영향', 'fit', '체력')}
+    </div>
+    <div class="earnings-info">
+      ${both
+        ? `시간당 <b>+${perHour}골드</b> · 다음 수금까지 <b>${nextMin}분</b>`
+        : '두 자리를 모두 채우면 시간당 골드를 벌어요'
+      }
+    </div>
+  `;
+  $('orchard-slots').innerHTML = slotsHtml;
+}
+
+function renderSlot(role, animal, label, hint, statKey, statKo) {
+  if (!animal) {
+    return `
+      <div class="work-slot" onclick="openWorkerPicker('${role}')">
+        <div class="ws-label">${label}</div>
+        <div class="ws-stat">${hint}</div>
+        <div class="ws-empty">+ 동물 배치</div>
+      </div>
+    `;
+  }
+  return `
+    <div class="work-slot filled" onclick="openWorkerPicker('${role}')">
+      <button class="ws-clear" onclick="event.stopPropagation();clearWorker('${role}')">×</button>
+      <div class="ws-label">${label}</div>
+      <div class="ws-stat">${hint}</div>
+      <svg class="ws-portrait" viewBox="0 0 100 100"><use href="#${animal.svg}"/></svg>
+      <div class="ws-name">${escapeHTML(animal.name)}</div>
+      <div class="ws-stat-val">${statKo} ${animal.stats[statKey]}</div>
+    </div>
+  `;
+}
+
+function openWorkerPicker(role) {
+  if (!save.animals.length) {
+    alert('보호소에서 먼저 동물을 입양하세요!');
+    return;
+  }
+  const overlay = $('confirm-overlay');
+  overlay.classList.remove('hidden');
+  const isPicker = role === 'picker';
+  const statKey = isPicker ? 'skill' : 'fit';
+  const statKo = isPicker ? '기술' : '체력';
+  const roleEmoji = isPicker ? '🍎' : '🚚';
+  const roleName = isPicker ? '사과 따기' : '사과 운반';
+  const otherRoleId = isPicker ? save.orchard?.carrier : save.orchard?.picker;
+  const candidates = save.animals.filter(a => a.id !== otherRoleId);
+  overlay.innerHTML = `
+    <div class="confirm-box" style="max-width:420px">
+      <div class="cb-title">${roleEmoji} ${roleName} 담당 선택</div>
+      <div class="cb-msg" style="font-size:0.85rem;text-align:left;color:#7a4020">
+        <b>${statKo}</b>이 좋을수록 더 많이 벌어요!
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:260px;overflow-y:auto;">
+        ${candidates.map(a => `
+          <div class="worker-pick-card" onclick="assignWorker('${role}', ${a.id})">
+            <svg viewBox="0 0 100 100"><use href="#${a.svg}"/></svg>
+            <div>${escapeHTML(a.name)}</div>
+            <div style="color:#5aa030;font-weight:bold">${statKo} ${a.stats[statKey]}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="cb-actions" style="margin-top:8px"><button class="btn" onclick="closeConfirm()">취소</button></div>
+    </div>
+  `;
+}
+
+function assignWorker(role, animalId) {
+  if (!save.orchard) save.orchard = { picker:null, carrier:null, lastEarnAt:Date.now() };
+  // 변경 전 누적 보상 정산
+  checkOrchardEarnings();
+  save.orchard[role] = animalId;
+  save.orchard.lastEarnAt = Date.now();
+  saveSave();
+  closeConfirm();
+  renderOrchard();
+}
+
+function clearWorker(role) {
+  if (!save.orchard) return;
+  // 정산 후 슬롯 비우기
+  checkOrchardEarnings();
+  save.orchard[role] = null;
+  save.orchard.lastEarnAt = Date.now();
+  saveSave();
+  renderOrchard();
+}
+
 function renderAnimalDetail(a) {
   const detail = $('animal-detail');
   detail.classList.remove('hidden');
@@ -3904,12 +4426,15 @@ function renderAnimalDetail(a) {
   const isActive = a.id === save.activeAnimalId;
   const playOk = canPlay(a);
   const batheOk = canBathe(a);
+  const safeName = escapeHTML(a.name);
   detail.innerHTML = `
     <button class="ad-close" onclick="closeAnimalDetail()">×</button>
     <div class="ad-header">
       <div class="ad-portrait"><svg viewBox="0 0 100 100"><use href="#${a.svg}"/></svg></div>
       <div class="ad-info">
-        <div class="ad-name">${a.name}${isActive ? '<span class="ad-active-tag">★ 활동중</span>' : ''}</div>
+        <div class="ad-name editable" onclick="renameAnimal(${a.id})" title="클릭해서 이름 변경">
+          ${safeName}<span class="ad-edit-icon">✏</span>${isActive ? '<span class="ad-active-tag">★ 활동중</span>' : ''}
+        </div>
         <div class="ad-combat">⚔ ${t.atk}  🛡 ${t.defense}  ❤ ${t.maxHp}  💧 ${t.maxMp}  ⚡ ${t.spd}</div>
       </div>
     </div>
@@ -3927,6 +4452,35 @@ function renderAnimalDetail(a) {
 
 function setActiveAnimalAndStay(id) {
   save.activeAnimalId = id;
+  saveSave();
+  renderMyAnimals();
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g, c => (
+    { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]
+  ));
+}
+
+function renameAnimal(id) {
+  const a = save.animals.find(x => x.id === id);
+  if (!a) return;
+  const input = prompt(`${a.name}의 새 이름을 입력하세요 (1~8자)`, a.name);
+  if (input === null) return; // 취소
+  const newName = input.trim();
+  if (!newName) {
+    alert('이름을 입력해주세요!');
+    return;
+  }
+  if (newName.length > 8) {
+    alert('이름은 최대 8자까지 가능해요!');
+    return;
+  }
+  if (/[<>&"']/.test(newName)) {
+    alert('특수문자(< > & " \')는 사용할 수 없어요!');
+    return;
+  }
+  a.name = newName;
   saveSave();
   renderMyAnimals();
 }
