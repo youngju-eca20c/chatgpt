@@ -1735,27 +1735,75 @@
   }
   .compendium .cb-title { text-align: center; }
   .compendium .cb-msg { text-align: center; margin-bottom: 12px; }
-  .cp-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+  .cp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     margin-bottom: 10px;
   }
-  .cp-card {
-    background: #fff;
+  .cp-row {
+    background: rgba(255,255,255,0.85);
     border: 2px solid #a06030;
-    border-radius: 10px;
-    padding: 8px 4px;
-    text-align: center;
-    position: relative;
-    transition: all 0.15s;
+    border-radius: 12px;
+    padding: 8px;
+    transition: all 0.2s;
   }
-  .cp-card svg { width: 60px; height: 60px; display: block; margin: 0 auto 2px; }
-  .cp-card.cp-locked { background: #2a2a2a; border-color: #555; }
-  .cp-card.cp-locked svg { filter: brightness(0) invert(0.15); }
-  .cp-card.cp-locked .cp-name { color: #888; }
-  .cp-card.cp-locked .cp-price { color: #888; }
-  .cp-card.cp-owned { background: linear-gradient(180deg, #fff8e0, #fff5dc); }
+  .cp-row-owned {
+    background: linear-gradient(180deg, #fff8e0, #fff5dc);
+    border-color: #ffcc44;
+    box-shadow: 0 2px 6px rgba(255, 204, 68, 0.4);
+  }
+  .cp-row-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed #a06030;
+  }
+  .cp-row-head .cp-name {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    color: #5a3010;
+    flex: 1;
+  }
+  .cp-rarity-row {
+    font-size: 0.62rem;
+    padding: 1px 7px;
+    border-radius: 999px;
+    color: #fff;
+    font-family: 'Black Han Sans', sans-serif;
+  }
+  .cp-row-head .cp-price {
+    font-size: 0.78rem;
+    color: #c08020;
+    font-family: 'Black Han Sans', sans-serif;
+  }
+  .cp-stages {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .cp-cell {
+    background: #fff;
+    border: 1.5px solid #c0a070;
+    border-radius: 8px;
+    padding: 4px;
+    text-align: center;
+  }
+  .cp-cell svg { width: 56px; height: 56px; display: block; margin: 0 auto 1px; }
+  .cp-cell.cp-cell-dim { opacity: 0.4; filter: grayscale(0.5); }
+  .cp-cell-reached { border-color: #ffcc44; background: linear-gradient(180deg, #fff8e0, #fff5dc); }
+  .cp-cell-label {
+    font-size: 0.62rem;
+    padding: 1px 4px;
+    border-radius: 999px;
+    display: inline-block;
+    font-family: 'Black Han Sans', sans-serif;
+  }
+  .cp-cell-label.stage-1 { background: #d8d8d8; color: #5a3010; }
+  .cp-cell-label.stage-2 { background: linear-gradient(180deg, #80c8ff, #4080d0); color: #fff; }
+  .cp-cell-label.stage-3 { background: linear-gradient(180deg, #ffcc44, #ff8030); color: #fff; }
   .cp-name {
     font-family: 'Black Han Sans', sans-serif;
     font-size: 0.85rem;
@@ -2291,6 +2339,204 @@
           <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite"/>
         </circle>
       </g>
+    </symbol>
+
+    <!-- ═════════ 신규 5종 동물 ═════════ -->
+    <!-- 늑대 -->
+    <symbol id="char-wolf" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="92" rx="22" ry="3" fill="#000" opacity="0.4"/>
+      <path d="M72 68 Q88 60 86 50 Q82 58 78 64" fill="#6a6a78" stroke="#3a3a48" stroke-width="0.6"/>
+      <ellipse cx="50" cy="68" rx="22" ry="20" fill="#7a7a88"/>
+      <ellipse cx="50" cy="66" rx="19" ry="17" fill="#9a9aa8"/>
+      <rect x="38" y="80" width="6" height="10" rx="3" fill="#5a5a68"/>
+      <rect x="55" y="80" width="6" height="10" rx="3" fill="#5a5a68"/>
+      <ellipse cx="50" cy="40" rx="22" ry="20" fill="#7a7a88"/>
+      <ellipse cx="50" cy="46" rx="11" ry="9" fill="#9a9aa8"/>
+      <path d="M28 26 L26 8 L40 22 Z" fill="#5a5a68"/>
+      <path d="M72 26 L74 8 L60 22 Z" fill="#5a5a68"/>
+      <path d="M30 24 L29 14 L38 22 Z" fill="#3a3a48"/>
+      <path d="M70 24 L71 14 L62 22 Z" fill="#3a3a48"/>
+      <ellipse cx="42" cy="38" rx="3" ry="4" fill="#fff"/>
+      <ellipse cx="58" cy="38" rx="3" ry="4" fill="#fff"/>
+      <ellipse cx="42" cy="38" rx="2" ry="3" fill="#ffcc44"/>
+      <ellipse cx="58" cy="38" rx="2" ry="3" fill="#ffcc44"/>
+      <ellipse cx="42" cy="38" rx="0.8" ry="2.5" fill="#1a0a0a"/>
+      <ellipse cx="58" cy="38" rx="0.8" ry="2.5" fill="#1a0a0a"/>
+      <ellipse cx="50" cy="44" rx="3" ry="2.5" fill="#1a0a0a"/>
+      <path d="M50 46 Q44 52 41 50" stroke="#1a0a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M50 46 Q56 52 59 50" stroke="#1a0a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M46 50 L45 54 L47 51 Z" fill="#fff"/>
+      <path d="M54 50 L55 54 L53 51 Z" fill="#fff"/>
+    </symbol>
+    <symbol id="char-wolf-2" viewBox="0 0 100 100">
+      <use href="#char-wolf"/>
+      <path d="M40 58 Q50 64 60 58" stroke="#4080d0" stroke-width="1.2" fill="none"/>
+      <path d="M50 62 L47 68 L53 68 Z" fill="#4080d0" stroke="#102060" stroke-width="0.5"/>
+      <circle cx="50" cy="64" r="1" fill="#a0d0ff"/>
+    </symbol>
+    <symbol id="char-wolf-3" viewBox="0 0 100 100">
+      <use href="#char-wolf-2"/>
+      <use href="#stage3-aura"/>
+    </symbol>
+
+    <!-- 호랑이 -->
+    <symbol id="char-tiger" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="92" rx="22" ry="3" fill="#000" opacity="0.4"/>
+      <path d="M72 68 Q86 64 88 54" stroke="#e07020" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M76 64 L78 60 M82 60 L84 56" stroke="#1a1a1a" stroke-width="1"/>
+      <ellipse cx="50" cy="68" rx="22" ry="20" fill="#e07020"/>
+      <ellipse cx="50" cy="66" rx="19" ry="17" fill="#ff9040"/>
+      <ellipse cx="50" cy="74" rx="13" ry="8" fill="#fff5e0"/>
+      <path d="M30 60 Q34 56 38 60" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+      <path d="M62 60 Q66 56 70 60" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+      <path d="M44 70 Q48 68 52 70 Q56 68 60 70" stroke="#1a1a1a" stroke-width="1.5" fill="none"/>
+      <rect x="38" y="80" width="6" height="10" rx="3" fill="#a05010"/>
+      <rect x="55" y="80" width="6" height="10" rx="3" fill="#a05010"/>
+      <ellipse cx="50" cy="40" rx="22" ry="20" fill="#e07020"/>
+      <ellipse cx="50" cy="40" rx="19" ry="17" fill="#ff9040"/>
+      <path d="M36 26 L38 32 M44 24 L46 30 M54 24 L52 30 M62 26 L60 32" stroke="#1a1a1a" stroke-width="1.5"/>
+      <ellipse cx="50" cy="46" rx="11" ry="9" fill="#fff5e0"/>
+      <circle cx="34" cy="24" r="6" fill="#e07020"/>
+      <circle cx="66" cy="24" r="6" fill="#e07020"/>
+      <circle cx="34" cy="24" r="3" fill="#1a1a1a"/>
+      <circle cx="66" cy="24" r="3" fill="#1a1a1a"/>
+      <ellipse cx="42" cy="38" rx="3" ry="4" fill="#fff"/>
+      <ellipse cx="58" cy="38" rx="3" ry="4" fill="#fff"/>
+      <ellipse cx="42" cy="38" rx="2" ry="3" fill="#80c040"/>
+      <ellipse cx="58" cy="38" rx="2" ry="3" fill="#80c040"/>
+      <ellipse cx="42" cy="38" rx="0.8" ry="2.5" fill="#1a0a0a"/>
+      <ellipse cx="58" cy="38" rx="0.8" ry="2.5" fill="#1a0a0a"/>
+      <ellipse cx="50" cy="44" rx="3" ry="2.5" fill="#1a0a0a"/>
+      <path d="M50 47 Q44 52 41 50" stroke="#1a0a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M50 47 Q56 52 59 50" stroke="#1a0a0a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M46 50 L44 54 L47 51 Z" fill="#fff"/>
+      <path d="M54 50 L56 54 L53 51 Z" fill="#fff"/>
+    </symbol>
+    <symbol id="char-tiger-2" viewBox="0 0 100 100">
+      <use href="#char-tiger"/>
+      <path d="M46 48 L43 56 L48 51 Z" fill="#fff" stroke="#1a1a1a" stroke-width="0.4"/>
+      <path d="M54 48 L57 56 L52 51 Z" fill="#fff" stroke="#1a1a1a" stroke-width="0.4"/>
+    </symbol>
+    <symbol id="char-tiger-3" viewBox="0 0 100 100">
+      <use href="#char-tiger-2"/>
+      <use href="#stage3-aura"/>
+    </symbol>
+
+    <!-- 판다 -->
+    <symbol id="char-panda" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="92" rx="22" ry="3" fill="#000" opacity="0.4"/>
+      <ellipse cx="50" cy="68" rx="22" ry="20" fill="#fff8f0"/>
+      <ellipse cx="32" cy="62" rx="8" ry="10" fill="#1a1a1a"/>
+      <ellipse cx="68" cy="62" rx="8" ry="10" fill="#1a1a1a"/>
+      <rect x="36" y="78" width="8" height="12" rx="3" fill="#1a1a1a"/>
+      <rect x="56" y="78" width="8" height="12" rx="3" fill="#1a1a1a"/>
+      <circle cx="50" cy="40" r="20" fill="#fff8f0"/>
+      <ellipse cx="34" cy="26" rx="6" ry="7" fill="#1a1a1a"/>
+      <ellipse cx="66" cy="26" rx="6" ry="7" fill="#1a1a1a"/>
+      <ellipse cx="34" cy="26" rx="4" ry="5" fill="#3a3a48"/>
+      <ellipse cx="66" cy="26" rx="4" ry="5" fill="#3a3a48"/>
+      <ellipse cx="42" cy="38" rx="5" ry="6" fill="#1a1a1a" transform="rotate(-15 42 38)"/>
+      <ellipse cx="58" cy="38" rx="5" ry="6" fill="#1a1a1a" transform="rotate(15 58 38)"/>
+      <circle cx="42" cy="38" r="2" fill="#fff"/>
+      <circle cx="58" cy="38" r="2" fill="#fff"/>
+      <circle cx="42" cy="38" r="1.2" fill="#1a0a0a"/>
+      <circle cx="58" cy="38" r="1.2" fill="#1a0a0a"/>
+      <ellipse cx="50" cy="46" rx="2.5" ry="2" fill="#1a0a0a"/>
+      <path d="M50 48 L50 51" stroke="#1a0a0a" stroke-width="0.8"/>
+      <path d="M50 51 Q47 53 45 52" stroke="#1a0a0a" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <path d="M50 51 Q53 53 55 52" stroke="#1a0a0a" stroke-width="1" fill="none" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="char-panda-2" viewBox="0 0 100 100">
+      <use href="#char-panda"/>
+      <line x1="78" y1="80" x2="82" y2="60" stroke="#5aa030" stroke-width="3"/>
+      <ellipse cx="78" cy="62" rx="4" ry="2.5" fill="#7ac050"/>
+      <ellipse cx="84" cy="68" rx="4" ry="2.5" fill="#7ac050"/>
+    </symbol>
+    <symbol id="char-panda-3" viewBox="0 0 100 100">
+      <use href="#char-panda-2"/>
+      <use href="#stage3-aura"/>
+    </symbol>
+
+    <!-- 사슴 -->
+    <symbol id="char-deer" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="92" rx="22" ry="3" fill="#000" opacity="0.4"/>
+      <ellipse cx="50" cy="68" rx="22" ry="18" fill="#b08050"/>
+      <ellipse cx="50" cy="66" rx="19" ry="15" fill="#c89868"/>
+      <circle cx="40" cy="60" r="1.5" fill="#fff5dc" opacity="0.85"/>
+      <circle cx="56" cy="64" r="1.5" fill="#fff5dc" opacity="0.85"/>
+      <circle cx="48" cy="72" r="1.5" fill="#fff5dc" opacity="0.85"/>
+      <circle cx="60" cy="70" r="1.5" fill="#fff5dc" opacity="0.85"/>
+      <rect x="38" y="80" width="4" height="10" fill="#5a3010"/>
+      <rect x="57" y="80" width="4" height="10" fill="#5a3010"/>
+      <ellipse cx="40" cy="90" rx="3" ry="1.5" fill="#1a0a0a"/>
+      <ellipse cx="59" cy="90" rx="3" ry="1.5" fill="#1a0a0a"/>
+      <ellipse cx="50" cy="76" rx="10" ry="6" fill="#fff5dc"/>
+      <ellipse cx="50" cy="40" rx="18" ry="17" fill="#c89868"/>
+      <ellipse cx="50" cy="48" rx="9" ry="7" fill="#fff5dc"/>
+      <line x1="40" y1="22" x2="36" y2="12" stroke="#5a3010" stroke-width="2"/>
+      <line x1="36" y1="12" x2="32" y2="10" stroke="#5a3010" stroke-width="1.5"/>
+      <line x1="36" y1="12" x2="38" y2="6" stroke="#5a3010" stroke-width="1.5"/>
+      <line x1="60" y1="22" x2="64" y2="12" stroke="#5a3010" stroke-width="2"/>
+      <line x1="64" y1="12" x2="68" y2="10" stroke="#5a3010" stroke-width="1.5"/>
+      <line x1="64" y1="12" x2="62" y2="6" stroke="#5a3010" stroke-width="1.5"/>
+      <ellipse cx="32" cy="32" rx="4" ry="7" fill="#a07040" transform="rotate(-30 32 32)"/>
+      <ellipse cx="68" cy="32" rx="4" ry="7" fill="#a07040" transform="rotate(30 68 32)"/>
+      <ellipse cx="32" cy="32" rx="2" ry="5" fill="#ff80a0" transform="rotate(-30 32 32)"/>
+      <ellipse cx="68" cy="32" rx="2" ry="5" fill="#ff80a0" transform="rotate(30 68 32)"/>
+      <ellipse cx="42" cy="38" rx="3" ry="4" fill="#fff"/>
+      <ellipse cx="58" cy="38" rx="3" ry="4" fill="#fff"/>
+      <ellipse cx="42" cy="39" rx="2.2" ry="3" fill="#3a2010"/>
+      <ellipse cx="58" cy="39" rx="2.2" ry="3" fill="#3a2010"/>
+      <circle cx="43" cy="38" r="0.8" fill="#fff"/>
+      <circle cx="59" cy="38" r="0.8" fill="#fff"/>
+      <ellipse cx="50" cy="46" rx="2.5" ry="2" fill="#1a0a0a"/>
+      <path d="M50 48 L50 50" stroke="#1a0a0a" stroke-width="0.6"/>
+    </symbol>
+    <symbol id="char-deer-2" viewBox="0 0 100 100">
+      <use href="#char-deer"/>
+      <line x1="34" y1="10" x2="30" y2="4" stroke="#5a3010" stroke-width="1.5"/>
+      <line x1="66" y1="10" x2="70" y2="4" stroke="#5a3010" stroke-width="1.5"/>
+      <circle cx="44" cy="20" r="2" fill="#ffe070" stroke="#a08020" stroke-width="0.4"/>
+      <circle cx="56" cy="20" r="2" fill="#ff80a0" stroke="#a04060" stroke-width="0.4"/>
+    </symbol>
+    <symbol id="char-deer-3" viewBox="0 0 100 100">
+      <use href="#char-deer-2"/>
+      <use href="#stage3-aura"/>
+    </symbol>
+
+    <!-- 펭귄 -->
+    <symbol id="char-penguin" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="92" rx="22" ry="3" fill="#000" opacity="0.4"/>
+      <ellipse cx="50" cy="60" rx="22" ry="28" fill="#2a2a3a"/>
+      <ellipse cx="50" cy="62" rx="16" ry="23" fill="#fff5e8"/>
+      <ellipse cx="50" cy="32" rx="17" ry="18" fill="#2a2a3a"/>
+      <ellipse cx="50" cy="38" rx="11" ry="10" fill="#fff5e8"/>
+      <path d="M50 40 L46 47 L54 47 Z" fill="#ff8030" stroke="#a04010" stroke-width="0.5"/>
+      <line x1="50" y1="42" x2="50" y2="45" stroke="#a04010" stroke-width="0.4"/>
+      <circle cx="42" cy="36" r="2.5" fill="#fff"/>
+      <circle cx="58" cy="36" r="2.5" fill="#fff"/>
+      <circle cx="42" cy="36" r="1.4" fill="#1a0a0a"/>
+      <circle cx="58" cy="36" r="1.4" fill="#1a0a0a"/>
+      <circle cx="42.5" cy="35.5" r="0.5" fill="#fff"/>
+      <circle cx="58.5" cy="35.5" r="0.5" fill="#fff"/>
+      <path d="M28 60 Q22 65 25 78 Q30 75 32 65 Z" fill="#1a1a2a"/>
+      <path d="M72 60 Q78 65 75 78 Q70 75 68 65 Z" fill="#1a1a2a"/>
+      <ellipse cx="42" cy="88" rx="5" ry="3" fill="#ff8030" stroke="#a04010" stroke-width="0.5"/>
+      <ellipse cx="58" cy="88" rx="5" ry="3" fill="#ff8030" stroke="#a04010" stroke-width="0.5"/>
+      <line x1="38" y1="88" x2="42" y2="89" stroke="#a04010" stroke-width="0.5"/>
+      <line x1="42" y1="88" x2="46" y2="89" stroke="#a04010" stroke-width="0.5"/>
+      <line x1="54" y1="88" x2="58" y2="89" stroke="#a04010" stroke-width="0.5"/>
+      <line x1="58" y1="88" x2="62" y2="89" stroke="#a04010" stroke-width="0.5"/>
+    </symbol>
+    <symbol id="char-penguin-2" viewBox="0 0 100 100">
+      <use href="#char-penguin"/>
+      <path d="M42 50 L48 53 L48 47 Z" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+      <path d="M58 50 L52 53 L52 47 Z" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+      <rect x="48" y="48" width="4" height="4" fill="#a02020" stroke="#7a1010" stroke-width="0.4"/>
+    </symbol>
+    <symbol id="char-penguin-3" viewBox="0 0 100 100">
+      <use href="#char-penguin-2"/>
+      <use href="#stage3-aura"/>
     </symbol>
 
     <!-- 초록 슬라임 -->
@@ -3969,7 +4215,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-24</div>
+    <div class="version-tag" style="color:#a06030;">260507-25</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -4218,13 +4464,18 @@ const CHARACTERS = {
 
 // 입양 가능 동물 종 (보호소 풀)
 const ANIMAL_SPECIES = {
-  dugong:  { name:'듀공',   svg:'char-dugong',  rarity:'common', price:0   },
-  dog:     { name:'강아지', svg:'char-dog',     rarity:'common', price:0   },
-  dolphin: { name:'돌고래', svg:'char-dolphin', rarity:'common', price:0   },
-  rabbit:  { name:'토끼',   svg:'char-rabbit',  rarity:'common', price:120 },
-  hamster: { name:'햄스터', svg:'char-hamster', rarity:'common', price:80  },
-  cat:     { name:'고양이', svg:'char-cat',     rarity:'rare',   price:280 },
-  fox:     { name:'여우',   svg:'char-fox',     rarity:'rare',   price:320 }
+  dugong:  { name:'듀공',   svg:'char-dugong',  rarity:'common',    price:0    },
+  dog:     { name:'강아지', svg:'char-dog',     rarity:'common',    price:0    },
+  dolphin: { name:'돌고래', svg:'char-dolphin', rarity:'common',    price:0    },
+  rabbit:  { name:'토끼',   svg:'char-rabbit',  rarity:'common',    price:120  },
+  hamster: { name:'햄스터', svg:'char-hamster', rarity:'common',    price:80   },
+  cat:     { name:'고양이', svg:'char-cat',     rarity:'rare',      price:280  },
+  fox:     { name:'여우',   svg:'char-fox',     rarity:'rare',      price:320  },
+  penguin: { name:'펭귄',   svg:'char-penguin', rarity:'rare',      price:260  },
+  deer:    { name:'사슴',   svg:'char-deer',    rarity:'rare',      price:300  },
+  panda:   { name:'판다',   svg:'char-panda',   rarity:'rare',      price:420  },
+  wolf:    { name:'늑대',   svg:'char-wolf',    rarity:'legendary', price:800  },
+  tiger:   { name:'호랑이', svg:'char-tiger',   rarity:'legendary', price:1500 }
 };
 
 const RARITY_COLOR = {
@@ -4607,7 +4858,6 @@ function closeConfirm() {
 function openCompendium() {
   const overlay = $('confirm-overlay');
   overlay.classList.remove('hidden');
-  // 종별 최고 진화 단계 계산
   const maxStageBySpecies = {};
   (save.animals || []).forEach(a => {
     const st = getStage(a);
@@ -4617,17 +4867,29 @@ function openCompendium() {
   });
   const ownedCount = Object.keys(maxStageBySpecies).length;
   const total = Object.keys(ANIMAL_SPECIES).length;
-  const html = Object.entries(ANIMAL_SPECIES).map(([key, sp]) => {
+  const rows = Object.entries(ANIMAL_SPECIES).map(([key, sp]) => {
     const owned = !!maxStageBySpecies[key];
-    const stage = owned ? maxStageBySpecies[key] : 1;
-    const stagedSvg = stage > 1 ? `${sp.svg}-${stage}` : sp.svg;
+    const maxSt = maxStageBySpecies[key] || 0;
+    const cell = (st) => {
+      const id = st > 1 ? `${sp.svg}-${st}` : sp.svg;
+      const reached = maxSt >= st;
+      return `
+        <div class="cp-cell ${reached ? 'cp-cell-reached' : 'cp-cell-dim'}">
+          <svg viewBox="0 0 100 100"><use href="#${id}"/></svg>
+          <div class="cp-cell-label stage-${st}">${st}단계${reached ? ' ✓' : ''}</div>
+        </div>
+      `;
+    };
     return `
-      <div class="cp-card ${owned ? 'cp-owned' : 'cp-locked'}">
-        <svg viewBox="0 0 100 100"><use href="#${stagedSvg}"/></svg>
-        <div class="cp-name">${owned ? sp.name : '???'}</div>
-        <div class="cp-rarity" style="background:${RARITY_COLOR[sp.rarity] || '#888'}">${sp.rarity}</div>
-        <div class="cp-price">${sp.price === 0 ? '무료' : `💰 ${sp.price}`}</div>
-        ${owned ? `<div class="cp-stage-tag stage-${stage}">${stage}단계</div>` : ''}
+      <div class="cp-row ${owned ? 'cp-row-owned' : ''}">
+        <div class="cp-row-head">
+          <div class="cp-name">${sp.name}${owned ? ' ✓' : ''}</div>
+          <div class="cp-rarity-row" style="background:${RARITY_COLOR[sp.rarity] || '#888'}">${sp.rarity}</div>
+          <div class="cp-price">${sp.price === 0 ? '무료' : `💰${sp.price}`}</div>
+        </div>
+        <div class="cp-stages">
+          ${cell(1)}${cell(2)}${cell(3)}
+        </div>
       </div>
     `;
   }).join('');
@@ -4637,7 +4899,7 @@ function openCompendium() {
       <div class="cb-msg">만난 동물 <b>${ownedCount}</b> / ${total}<br/>
         <span style="font-size:0.78rem;color:#a06030">모든 4스탯 100 → 2단계, 200 → 3단계 진화</span>
       </div>
-      <div class="cp-grid">${html}</div>
+      <div class="cp-list">${rows}</div>
       <div class="cb-actions"><button class="btn" onclick="closeConfirm()">닫기</button></div>
     </div>
   `;
@@ -4712,6 +4974,11 @@ const MOTION_MAP = {
   'char-dog':     'motion-pace',
   'char-cat':     'motion-pace',
   'char-fox':     'motion-pace',
+  'char-wolf':    'motion-pace',
+  'char-tiger':   'motion-pace',
+  'char-deer':    'motion-pace',
+  'char-panda':   'motion-wiggle',
+  'char-penguin': 'motion-wiggle',
   'char-dugong':  'motion-float',
   'char-dolphin': 'motion-float'
 };
