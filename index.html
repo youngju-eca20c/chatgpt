@@ -1134,31 +1134,53 @@
   .stat-progress .sp-row {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 0.7rem;
+    gap: 6px;
+    font-size: 0.72rem;
     color: #5a3010;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
   }
   .stat-progress .sp-label { width: 40px; flex-shrink: 0; }
   .stat-progress .sp-bar {
     flex: 1;
-    height: 8px;
-    background: #f0d8b0;
-    border: 1px solid #a06030;
-    border-radius: 4px;
+    height: 11px;
+    background: rgba(80, 40, 10, 0.1);
+    border: 1px solid rgba(160, 96, 48, 0.45);
+    border-radius: 6px;
     overflow: hidden;
     position: relative;
+    box-shadow: inset 0 2px 3px rgba(80, 40, 10, 0.15);
   }
   .stat-progress .sp-fill {
     height: 100%;
     width: 0;
-    transition: width 1s cubic-bezier(0.3, 0.7, 0.4, 1);
+    border-radius: 5px 0 0 5px;
+    transition: width 1.2s cubic-bezier(0.3, 0.7, 0.4, 1);
+    position: relative;
   }
-  .sp-fit  .sp-fill { background: linear-gradient(90deg, #ff9080, #d04040); }
-  .sp-int  .sp-fill { background: linear-gradient(90deg, #80b0ff, #3060c0); }
-  .sp-cha  .sp-fill { background: linear-gradient(90deg, #ff90c8, #c040a0); }
-  .sp-skl  .sp-fill { background: linear-gradient(90deg, #80e068, #208030); }
-  .stat-progress .sp-val { min-width: 56px; text-align: right; font-size: 0.65rem; color: #7a4020; }
+  .stat-progress .sp-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 50%);
+    border-radius: 5px 0 0 5px;
+  }
+  .sp-fit  .sp-fill {
+    background: linear-gradient(90deg, #ff8060 0%, #d02828 100%);
+    box-shadow: 0 0 6px rgba(220, 60, 40, 0.5), inset 0 0 4px rgba(255,255,255,0.2);
+  }
+  .sp-int  .sp-fill {
+    background: linear-gradient(90deg, #60a0ff 0%, #1040b0 100%);
+    box-shadow: 0 0 6px rgba(80, 140, 255, 0.55), inset 0 0 4px rgba(255,255,255,0.2);
+  }
+  .sp-cha  .sp-fill {
+    background: linear-gradient(90deg, #ff80c0 0%, #b02080 100%);
+    box-shadow: 0 0 6px rgba(255, 100, 180, 0.55), inset 0 0 4px rgba(255,255,255,0.2);
+  }
+  .sp-skl  .sp-fill {
+    background: linear-gradient(90deg, #70d048 0%, #1a7028 100%);
+    box-shadow: 0 0 6px rgba(80, 200, 60, 0.55), inset 0 0 4px rgba(255,255,255,0.2);
+  }
+  .stat-progress .sp-val { min-width: 56px; text-align: right; font-size: 0.66rem; color: #7a4020; font-weight: bold; }
   /* 400 도달 시 황금빛 강조 */
   .stat-progress .sp-bar-max {
     border-color: #ffcc44;
@@ -1337,6 +1359,30 @@
     padding: 1px 7px;
     border-radius: 999px;
   }
+  .ad-stage-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-family: 'Black Han Sans', sans-serif;
+    letter-spacing: 0.5px;
+  }
+  .ad-stage-tag.stage-1 { background: #d8d8d8; color: #5a3010; }
+  .ad-stage-tag.stage-2 { background: linear-gradient(180deg, #80c8ff, #4080d0); color: #fff; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); }
+  .ad-stage-tag.stage-3 { background: linear-gradient(180deg, #ffcc44, #ff8030); color: #fff; text-shadow: 1px 1px 1px rgba(0,0,0,0.4); box-shadow: 0 0 8px rgba(255, 204, 68, 0.6); }
+  /* 도감 stage 표시 */
+  .cp-stage-tag {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    font-size: 0.6rem;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-family: 'Black Han Sans', sans-serif;
+  }
+  .cp-stage-tag.stage-1 { background: #d8d8d8; color: #5a3010; }
+  .cp-stage-tag.stage-2 { background: linear-gradient(180deg, #80c8ff, #4080d0); color: #fff; }
+  .cp-stage-tag.stage-3 { background: linear-gradient(180deg, #ffcc44, #ff8030); color: #fff; }
   .ad-combat {
     font-size: 0.75rem;
     color: #7a4020;
@@ -2507,6 +2553,141 @@
         <ellipse cx="50" cy="22" rx="14" ry="7"/>
         <ellipse cx="50" cy="62" rx="20" ry="10"/>
       </g>
+    </symbol>
+
+    <!-- ===== 진화 데코 (3단계 공통: 왕관+후광+날개) ===== -->
+    <symbol id="stage3-aura" viewBox="0 0 100 100">
+      <!-- 후광 (점선 원) -->
+      <circle cx="50" cy="55" r="49" fill="none" stroke="#ffe070" stroke-width="1.5" opacity="0.55" stroke-dasharray="4 4"/>
+      <!-- 작은 별 -->
+      <text x="14" y="22" font-size="6" fill="#ffe070">✨</text>
+      <text x="84" y="26" font-size="5" fill="#ffe070">✨</text>
+      <text x="10" y="50" font-size="5" fill="#fff5a0">✦</text>
+      <text x="86" y="60" font-size="5" fill="#fff5a0">✦</text>
+      <!-- 좌측 날개 -->
+      <path d="M22 56 Q6 48 4 64 Q16 68 26 60 Z" fill="rgba(255,255,255,0.88)" stroke="#a0a0c0" stroke-width="0.7"/>
+      <path d="M22 56 Q12 52 10 60" stroke="#c0c0d0" stroke-width="0.5" fill="none"/>
+      <!-- 우측 날개 -->
+      <path d="M78 56 Q94 48 96 64 Q84 68 74 60 Z" fill="rgba(255,255,255,0.88)" stroke="#a0a0c0" stroke-width="0.7"/>
+      <path d="M78 56 Q88 52 90 60" stroke="#c0c0d0" stroke-width="0.5" fill="none"/>
+      <!-- 황금 왕관 -->
+      <g transform="translate(50 8)">
+        <path d="M-13 5 L-9 -3 L-5 3 L0 -7 L5 3 L9 -3 L13 5 L11 9 L-11 9 Z"
+              fill="#ffcc44" stroke="#7a4010" stroke-width="0.9"/>
+        <circle cx="0" cy="0" r="2" fill="#ff4040" stroke="#7a1010" stroke-width="0.4"/>
+        <circle cx="-7" cy="2" r="1.2" fill="#a02030"/>
+        <circle cx="7" cy="2" r="1.2" fill="#a02030"/>
+      </g>
+    </symbol>
+
+    <!-- 강아지 2단계 (분홍 리본) -->
+    <symbol id="char-dog-2" viewBox="0 0 100 100">
+      <use href="#char-dog"/>
+      <g transform="translate(70 24)">
+        <path d="M-6 0 L-10 -4 L-10 4 Z" fill="#ff80a0" stroke="#a04060" stroke-width="0.6"/>
+        <path d="M6 0 L10 -4 L10 4 Z" fill="#ff80a0" stroke="#a04060" stroke-width="0.6"/>
+        <circle cx="0" cy="0" r="3" fill="#ff60a0" stroke="#a04060" stroke-width="0.6"/>
+        <circle cx="0" cy="0" r="0.8" fill="#fff5dc"/>
+      </g>
+    </symbol>
+    <!-- 강아지 3단계 -->
+    <symbol id="char-dog-3" viewBox="0 0 100 100">
+      <use href="#char-dog-2"/>
+      <use href="#stage3-aura"/>
+    </symbol>
+
+    <!-- 듀공 2단계 (어깨 가시 갑주) -->
+    <symbol id="char-dugong-2" viewBox="0 0 100 100">
+      <use href="#char-dugong"/>
+      <path d="M22 50 L18 38 L26 46 Z" fill="#a0a0b8" stroke="#1a1a2a" stroke-width="0.6"/>
+      <path d="M78 50 L82 38 L74 46 Z" fill="#a0a0b8" stroke="#1a1a2a" stroke-width="0.6"/>
+      <!-- 이마 보석 -->
+      <circle cx="50" cy="24" r="2.5" fill="#4080ff" stroke="#102060" stroke-width="0.5"/>
+    </symbol>
+    <symbol id="char-dugong-3" viewBox="0 0 100 100">
+      <use href="#char-dugong-2"/>
+      <use href="#stage3-aura"/>
+    </symbol>
+
+    <!-- 돌고래 2단계 (이마 크리스탈) -->
+    <symbol id="char-dolphin-2" viewBox="0 0 100 100">
+      <use href="#char-dolphin"/>
+      <g transform="translate(65 30)">
+        <path d="M0 0 L-4 7 L4 7 Z" fill="#a8e0ff" stroke="#3060c0" stroke-width="0.7"/>
+        <circle cx="0" cy="3" r="1.2" fill="#fff" opacity="0.9"/>
+      </g>
+    </symbol>
+    <symbol id="char-dolphin-3" viewBox="0 0 100 100">
+      <use href="#char-dolphin-2"/>
+      <use href="#stage3-aura"/>
+    </symbol>
+
+    <!-- 토끼 2단계 (빨강 리본 - 귀에) -->
+    <symbol id="char-rabbit-2" viewBox="0 0 100 100">
+      <use href="#char-rabbit"/>
+      <g transform="translate(56 18)">
+        <path d="M-4 0 L-7 -3 L-7 3 Z" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+        <path d="M4 0 L7 -3 L7 3 Z" fill="#d04040" stroke="#7a1010" stroke-width="0.5"/>
+        <circle cx="0" cy="0" r="2.2" fill="#ff4040" stroke="#7a1010" stroke-width="0.5"/>
+      </g>
+    </symbol>
+    <symbol id="char-rabbit-3" viewBox="0 0 100 100">
+      <use href="#char-rabbit-2"/>
+      <use href="#stage3-aura"/>
+    </symbol>
+
+    <!-- 햄스터 2단계 (빨강 망토) -->
+    <symbol id="char-hamster-2" viewBox="0 0 100 100">
+      <use href="#char-hamster"/>
+      <path d="M22 48 Q30 46 50 48 Q70 46 78 48 L75 80 L25 80 Z"
+            fill="#d04040" stroke="#7a1010" stroke-width="0.8" opacity="0.92"/>
+      <ellipse cx="50" cy="48" rx="6" ry="3" fill="#ffcc44" stroke="#7a4010" stroke-width="0.6"/>
+    </symbol>
+    <symbol id="char-hamster-3" viewBox="0 0 100 100">
+      <use href="#char-hamster-2"/>
+      <use href="#stage3-aura"/>
+    </symbol>
+
+    <!-- 고양이 2단계 (방울 목걸이) -->
+    <symbol id="char-cat-2" viewBox="0 0 100 100">
+      <use href="#char-cat"/>
+      <path d="M34 54 Q50 60 66 54" stroke="#d04040" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <circle cx="50" cy="58" r="3" fill="#ffcc44" stroke="#7a4010" stroke-width="0.6"/>
+      <line x1="50" y1="58" x2="50" y2="61" stroke="#7a4010" stroke-width="0.5"/>
+      <circle cx="50" cy="58" r="0.7" fill="#fff5dc"/>
+    </symbol>
+    <symbol id="char-cat-3" viewBox="0 0 100 100">
+      <use href="#char-cat-2"/>
+      <use href="#stage3-aura"/>
+    </symbol>
+
+    <!-- 여우 2단계 (두 번째 꼬리) -->
+    <symbol id="char-fox-2" viewBox="0 0 100 100">
+      <use href="#char-fox"/>
+      <path d="M72 76 Q92 78 92 60 Q88 70 80 74" fill="#e08040" stroke="#7a3010" stroke-width="0.8"/>
+      <ellipse cx="91" cy="62" rx="5" ry="4" fill="#fff5e8"/>
+    </symbol>
+    <!-- 여우 3단계 (세 번째 꼬리 + 후광) -->
+    <symbol id="char-fox-3" viewBox="0 0 100 100">
+      <use href="#char-fox-2"/>
+      <path d="M70 80 Q94 86 96 70 Q92 78 84 80" fill="#e08040" stroke="#7a3010" stroke-width="0.8"/>
+      <ellipse cx="95" cy="73" rx="4" ry="3" fill="#fff5e8"/>
+      <use href="#stage3-aura"/>
+    </symbol>
+
+    <!-- 강아지 얼룩빛 2단계 -->
+    <symbol id="char-dog-spotted-2" viewBox="0 0 100 100">
+      <use href="#char-dog-spotted"/>
+      <g transform="translate(70 24)">
+        <path d="M-6 0 L-10 -4 L-10 4 Z" fill="#ff80a0" stroke="#a04060" stroke-width="0.6"/>
+        <path d="M6 0 L10 -4 L10 4 Z" fill="#ff80a0" stroke="#a04060" stroke-width="0.6"/>
+        <circle cx="0" cy="0" r="3" fill="#ff60a0" stroke="#a04060" stroke-width="0.6"/>
+        <circle cx="0" cy="0" r="0.8" fill="#fff5dc"/>
+      </g>
+    </symbol>
+    <symbol id="char-dog-spotted-3" viewBox="0 0 100 100">
+      <use href="#char-dog-spotted-2"/>
+      <use href="#stage3-aura"/>
     </symbol>
 
     <!-- 박쥐 -->
@@ -3788,7 +3969,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-23</div>
+    <div class="version-tag" style="color:#a06030;">260507-24</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -4082,12 +4263,30 @@ function animalCoatFilter(animal) {
 function animalCoatStyle(animal) {
   return `filter:${animalCoatFilter(animal)}`;
 }
-function animalSvgInner(animal) {
-  // 얼룩빛 강아지는 별도로 그린 흑백 SVG 사용
+function getStage(animal) {
+  if (!animal || !animal.stats) return 1;
+  const s = animal.stats;
+  if (s.fit >= 200 && s.intel >= 200 && s.charm >= 200 && s.skill >= 200) return 3;
+  if (s.fit >= 100 && s.intel >= 100 && s.charm >= 100 && s.skill >= 100) return 2;
+  return 1;
+}
+
+function animalBaseSvg(animal) {
+  // 얼룩빛 강아지는 별도 SVG
   if (animal && animal.color === SPOT_COLOR_INDEX && animal.species === 'dog') {
-    return `<use href="#char-dog-spotted"/>`;
+    return 'char-dog-spotted';
   }
-  return `<use href="#${animal && animal.svg}"/>`;
+  return animal && animal.svg;
+}
+
+function animalStagedSvg(animal) {
+  const base = animalBaseSvg(animal);
+  const stage = getStage(animal);
+  return stage > 1 ? `${base}-${stage}` : base;
+}
+
+function animalSvgInner(animal) {
+  return `<use href="#${animalStagedSvg(animal)}"/>`;
 }
 function chipBackground(chip) {
   if (chip === 'spotted') {
@@ -4408,24 +4607,36 @@ function closeConfirm() {
 function openCompendium() {
   const overlay = $('confirm-overlay');
   overlay.classList.remove('hidden');
-  const ownedSpecies = new Set((save.animals || []).map(a => a.species));
+  // 종별 최고 진화 단계 계산
+  const maxStageBySpecies = {};
+  (save.animals || []).forEach(a => {
+    const st = getStage(a);
+    if (!maxStageBySpecies[a.species] || maxStageBySpecies[a.species] < st) {
+      maxStageBySpecies[a.species] = st;
+    }
+  });
+  const ownedCount = Object.keys(maxStageBySpecies).length;
   const total = Object.keys(ANIMAL_SPECIES).length;
   const html = Object.entries(ANIMAL_SPECIES).map(([key, sp]) => {
-    const owned = ownedSpecies.has(key);
+    const owned = !!maxStageBySpecies[key];
+    const stage = owned ? maxStageBySpecies[key] : 1;
+    const stagedSvg = stage > 1 ? `${sp.svg}-${stage}` : sp.svg;
     return `
       <div class="cp-card ${owned ? 'cp-owned' : 'cp-locked'}">
-        <svg viewBox="0 0 100 100"><use href="#${sp.svg}"/></svg>
+        <svg viewBox="0 0 100 100"><use href="#${stagedSvg}"/></svg>
         <div class="cp-name">${owned ? sp.name : '???'}</div>
         <div class="cp-rarity" style="background:${RARITY_COLOR[sp.rarity] || '#888'}">${sp.rarity}</div>
         <div class="cp-price">${sp.price === 0 ? '무료' : `💰 ${sp.price}`}</div>
-        ${owned ? '<div class="cp-owned-tag">✓ 만났음</div>' : ''}
+        ${owned ? `<div class="cp-stage-tag stage-${stage}">${stage}단계</div>` : ''}
       </div>
     `;
   }).join('');
   overlay.innerHTML = `
     <div class="confirm-box compendium">
       <div class="cb-title">📖 동물도감</div>
-      <div class="cb-msg">만난 동물 <b>${ownedSpecies.size}</b> / ${total}</div>
+      <div class="cb-msg">만난 동물 <b>${ownedCount}</b> / ${total}<br/>
+        <span style="font-size:0.78rem;color:#a06030">모든 4스탯 100 → 2단계, 200 → 3단계 진화</span>
+      </div>
       <div class="cp-grid">${html}</div>
       <div class="cb-actions"><button class="btn" onclick="closeConfirm()">닫기</button></div>
     </div>
@@ -4647,11 +4858,12 @@ function orchardPerHour(picker, carrier) {
   return Math.floor((picker.stats.skill + carrier.stats.fit) / 4);
 }
 
+const ORCHARD_MAX_HOURS = 6;
+
 function checkOrchardEarnings() {
   if (!save.orchard) save.orchard = { picker:null, carrier:null, lastEarnAt:Date.now() };
   const picker = save.animals.find(a => a.id === save.orchard.picker);
   const carrier = save.animals.find(a => a.id === save.orchard.carrier);
-  // 동물이 사라졌으면 슬롯 정리
   if (save.orchard.picker && !picker) save.orchard.picker = null;
   if (save.orchard.carrier && !carrier) save.orchard.carrier = null;
   if (!picker || !carrier) {
@@ -4660,16 +4872,21 @@ function checkOrchardEarnings() {
     return 0;
   }
   const now = Date.now();
-  const hoursElapsed = Math.floor((now - save.orchard.lastEarnAt) / 3600000);
-  if (hoursElapsed > 0) {
-    const perHour = orchardPerHour(picker, carrier);
-    const earned = perHour * hoursElapsed;
-    save.gold += earned;
-    save.orchard.lastEarnAt += hoursElapsed * 3600000;
-    saveSave();
-    return earned;
+  const fullHours = Math.floor((now - save.orchard.lastEarnAt) / 3600000);
+  if (fullHours <= 0) return 0;
+  // 최대 6시간까지만 수령
+  const cappedHours = Math.min(ORCHARD_MAX_HOURS, fullHours);
+  const perHour = orchardPerHour(picker, carrier);
+  const earned = perHour * cappedHours;
+  save.gold += earned;
+  if (fullHours > ORCHARD_MAX_HOURS) {
+    // 6시간 초과 시 초과분은 버리고 lastEarnAt 리셋
+    save.orchard.lastEarnAt = now;
+  } else {
+    save.orchard.lastEarnAt += fullHours * 3600000;
   }
-  return 0;
+  saveSave();
+  return earned;
 }
 
 function enterOrchard() {
@@ -4732,7 +4949,7 @@ function renderOrchard() {
     </div>
     <div class="earnings-info">
       ${both
-        ? `시간당 <b>+${perHour}골드</b> · 다음 수금까지 <b>${nextMin}분</b>`
+        ? `시간당 <b>+${perHour}골드</b> · 다음 수금까지 <b>${nextMin}분</b><br/><span style="font-size:0.72rem;color:#a06030">최대 ${ORCHARD_MAX_HOURS}시간치까지 누적</span>`
         : '두 자리를 모두 채우면 시간당 골드를 벌어요'
       }
     </div>
@@ -4942,6 +5159,8 @@ function renderAnimalDetail(a) {
   const playOk = canPlay(a);
   const batheOk = canBathe(a);
   const safeName = escapeHTML(a.name);
+  const stage = getStage(a);
+  const stageTag = `<span class="ad-stage-tag stage-${stage}">${'★'.repeat(stage)} ${stage}단계</span>`;
   detail.innerHTML = `
     <button class="ad-close" onclick="closeAnimalDetail()">×</button>
     <div class="ad-header">
@@ -4950,6 +5169,7 @@ function renderAnimalDetail(a) {
         <div class="ad-name editable" onclick="renameAnimal(${a.id})" title="클릭해서 이름 변경">
           ${safeName}<span class="ad-edit-icon">✏</span>${isActive ? '<span class="ad-active-tag">★ 활동중</span>' : ''}
         </div>
+        <div style="margin:3px 0">${stageTag}</div>
         <div class="ad-combat">⚔ ${t.atk}  🛡 ${t.defense}  ❤ ${t.maxHp}  💧 ${t.maxMp}  ⚡ ${t.spd}</div>
       </div>
     </div>
@@ -5007,8 +5227,15 @@ function setActiveAnimal(id) {
 }
 
 function bumpStat(animal, stat, amount) {
-  // 400은 시각적 최대치, 실제 값은 더 올라갈 수 있음 (인간 변환 시험 후 활용 등)
+  const beforeStage = getStage(animal);
   animal.stats[stat] = (animal.stats[stat] || 0) + amount;
+  const afterStage = getStage(animal);
+  if (afterStage > beforeStage) {
+    // 진화! 알림
+    setTimeout(() => {
+      alert(`✨ ${animal.name}이(가) ${afterStage}단계로 진화했어요! ✨`);
+    }, 200);
+  }
 }
 
 function playWithAnimal(id) {
@@ -5143,12 +5370,14 @@ function renderStatBars(s) {
       <span class="sp-val">${over ? '★ ' : ''}${val}${val > 400 ? '' : '/400'}</span>
     </div>`;
   };
-  // 다음 프레임에 width 적용해 0%→target%로 채워지는 애니메이션 트리거
+  // 더블 RAF로 0% → target% 애니메이션을 안정적으로 트리거
   requestAnimationFrame(() => {
-    document.querySelectorAll('.sp-fill[data-target]').forEach(el => {
-      const t = el.getAttribute('data-target');
-      el.style.width = t + '%';
-      el.removeAttribute('data-target');
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.sp-fill[data-target]').forEach(el => {
+        const t = el.getAttribute('data-target');
+        el.style.width = t + '%';
+        el.removeAttribute('data-target');
+      });
     });
   });
   return `<div class="stat-progress">
@@ -5192,11 +5421,11 @@ function renderCharSelect() {
 
 function initPlayerFromAnimal(animal) {
   const t = animalToTowerStats(animal);
-  // 얼룩빛 강아지 = char-dog-spotted
   const isSpottedDog = animal.color === SPOT_COLOR_INDEX && animal.species === 'dog';
+  const stagedSvg = animalStagedSvg(animal);  // 진화 단계 반영
   player = {
     name: animal.name,
-    svg: isSpottedDog ? 'char-dog-spotted' : animal.svg,
+    svg: stagedSvg,
     species: animal.species,
     maxHp: t.maxHp, hp: t.maxHp,
     maxMp: t.maxMp, mp: t.maxMp,
@@ -5204,7 +5433,8 @@ function initPlayerFromAnimal(animal) {
     defense: t.defense,
     gold: save.gold,
     coatFilter: isSpottedDog ? 'none' : animalCoatFilter(animal),
-    coatColor: animal.color || 0
+    coatColor: animal.color || 0,
+    stage: getStage(animal)
   };
   potions = [
     { name:'붉은 물약', heal:30 },
