@@ -4478,7 +4478,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-31</div>
+    <div class="version-tag" style="color:#a06030;">260507-32</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -6551,10 +6551,19 @@ async function fountainGive() {
 
   const atkBonus = rand(1, 5);
   const hpBonus = rand(10, 30);
+  const defBonus = rand(1, 4);
+  const hpHeal = rand(10, 40);
+  const mpHeal = rand(5, 20);
+  // 영구 강화
   player.atk += atkBonus;
   player.maxHp += hpBonus;
-  log(`💎 노파의 검은 빛이 흐른다... ATK +${atkBonus}, 최대 HP +${hpBonus} (영구)`, 'gain');
-  showRewardPopup('💎', `ATK+${atkBonus} · HP+${hpBonus}`);
+  player.defense = (player.defense || 0) + defBonus;
+  // 즉시 회복
+  player.hp = Math.min(player.maxHp, player.hp + hpHeal);
+  player.mp = Math.min(player.maxMp, player.mp + mpHeal);
+  log(`💎 노파의 검은 빛... ATK+${atkBonus} · 최대HP+${hpBonus} · DEF+${defBonus} (영구)`, 'gain');
+  log(`✨ 동시에 HP+${hpHeal}, MP+${mpHeal} 회복!`, 'gain');
+  showRewardPopup('💎', `A+${atkBonus} D+${defBonus} H+${hpBonus}`);
 
   // 노파가 흩어지듯 사라짐
   const hag = $('scene-hag');
