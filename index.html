@@ -1151,6 +1151,7 @@
   }
   .stat-progress .sp-label { width: 40px; flex-shrink: 0; }
   .stat-progress .sp-bar {
+    display: block;
     flex: 1;
     height: 11px;
     background: rgba(80, 40, 10, 0.1);
@@ -1161,6 +1162,7 @@
     box-shadow: inset 0 2px 3px rgba(80, 40, 10, 0.15);
   }
   .stat-progress .sp-fill {
+    display: block;
     height: 100%;
     width: 0;
     border-radius: 5px 0 0 5px;
@@ -4226,7 +4228,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-28</div>
+    <div class="version-tag" style="color:#a06030;">260507-29</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -5672,21 +5674,20 @@ function renderStatBars(s) {
     <div class="sp-row ${cls}${over ? ' sp-max' : ''}">
       <span class="sp-label">${label}</span>
       <span class="sp-bar${over ? ' sp-bar-max' : ''}">
-        <span class="sp-fill" data-target="${pct}"></span>
+        <span class="sp-fill" style="width:0%" data-target="${pct}"></span>
       </span>
       <span class="sp-val">${over ? '★ ' : ''}${val}${val > 400 ? '' : '/400'}</span>
     </div>`;
   };
-  // 더블 RAF로 0% → target% 애니메이션을 안정적으로 트리거
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      document.querySelectorAll('.sp-fill[data-target]').forEach(el => {
-        const t = el.getAttribute('data-target');
-        el.style.width = t + '%';
-        el.removeAttribute('data-target');
-      });
+  // DOM 삽입 후 안정적으로 0% → target% 애니메이션
+  setTimeout(() => {
+    document.querySelectorAll('.sp-fill[data-target]').forEach(el => {
+      const t = el.getAttribute('data-target');
+      void el.offsetWidth; // 강제 reflow
+      el.style.width = t + '%';
+      el.removeAttribute('data-target');
     });
-  });
+  }, 30);
   return `<div class="stat-progress">
     ${row('sp-fit','체력',s.fit)}
     ${row('sp-int','지능',s.intel)}
