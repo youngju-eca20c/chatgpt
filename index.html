@@ -2,7 +2,11 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#a06030" />
 <title>동물농장 - 저주받은 탑</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Black+Han+Sans&display=swap');
@@ -26,14 +30,20 @@
     --hp-track: #1a0a2a;
   }
 
-  html, body { min-height: 100vh; overflow-x: hidden; }
+  html, body {
+    /* iOS Safari/WebKit 폴백: 100vh는 주소창 포함해 잘림 */
+    min-height: 100vh;
+    /* 최신 브라우저: 동적 viewport (주소창 변화에 반응) */
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
 
   body {
     font-family: 'Gowun Dodum', 'Apple SD Gothic Neo', sans-serif;
     color: var(--text);
     background:
       radial-gradient(ellipse at top, #2a1a55 0%, #0e0820 70%, #000 100%);
-    padding: 0;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     -webkit-font-smoothing: antialiased;
     font-weight: 400;
   }
@@ -1730,6 +1740,7 @@
   .confirm-box.compendium {
     max-width: 500px;
     max-height: 85vh;
+    max-height: 85dvh;
     overflow-y: auto;
     text-align: left;
   }
@@ -4215,7 +4226,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-25</div>
+    <div class="version-tag" style="color:#a06030;">260507-26</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
