@@ -961,6 +961,124 @@
     .map-subtitle { font-size: 0.75rem; }
   }
 
+  /* === 인게임 토스트 알림 === */
+  .toast-stack {
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    width: calc(100% - 32px);
+    max-width: 480px;
+  }
+  .toast {
+    pointer-events: auto;
+    background: linear-gradient(180deg, #fff5dc, #f5d8a0);
+    border: 2px solid #a06030;
+    border-radius: 14px;
+    padding: 10px 16px;
+    color: #5a3010;
+    font-family: 'Gowun Dodum', sans-serif;
+    font-size: 0.92rem;
+    box-shadow: 0 8px 20px rgba(80, 40, 10, 0.5);
+    animation: toastIn 0.35s cubic-bezier(0.2, 1.5, 0.4, 1) backwards,
+               toastOut 0.4s 2.8s ease-in forwards;
+    text-align: center;
+    line-height: 1.4;
+    white-space: pre-line;
+  }
+  .toast.toast-warn { background: linear-gradient(180deg, #ffe0d0, #ffb88a); border-color: #c04040; color: #5a1010; }
+  .toast.toast-good { background: linear-gradient(180deg, #d8f0a0, #a0d870); border-color: #4a8020; color: #1a4010; }
+  .toast.toast-info { background: linear-gradient(180deg, #d0e8ff, #a0c0e8); border-color: #2050a0; color: #102050; }
+  .toast.toast-magic {
+    background: linear-gradient(180deg, #fff5a0, #ffcc44);
+    border-color: #c08020;
+    color: #5a3010;
+    box-shadow: 0 8px 24px rgba(255, 204, 68, 0.6), 0 0 24px rgba(255, 204, 68, 0.5);
+  }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(-20px) scale(0.85); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes toastOut {
+    to { opacity: 0; transform: translateY(-12px) scale(0.95); }
+  }
+  .toast.persist { animation: toastIn 0.35s cubic-bezier(0.2, 1.5, 0.4, 1); }
+
+  /* 진화 축하 오버레이 */
+  .evolve-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255, 204, 68, 0.35), rgba(0, 0, 0, 0.7));
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+    animation: evolveBgIn 0.5s ease-out;
+    backdrop-filter: blur(2px);
+  }
+  @keyframes evolveBgIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .evolve-card {
+    background: linear-gradient(180deg, #fff5dc, #fff8e0);
+    border: 3px solid #ffcc44;
+    border-radius: 18px;
+    padding: 24px 28px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(255, 204, 68, 0.7), 0 8px 32px rgba(0,0,0,0.5);
+    animation: evolveCardIn 0.6s cubic-bezier(0.2, 1.5, 0.4, 1);
+  }
+  @keyframes evolveCardIn {
+    from { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .evolve-title {
+    font-family: 'Black Han Sans', sans-serif;
+    color: #c08020;
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    text-shadow: 2px 2px 0 #fff, 4px 4px 10px rgba(255,204,68,0.5);
+  }
+  .evolve-portrait {
+    width: 130px;
+    height: 130px;
+    margin: 4px auto 10px;
+    filter: drop-shadow(0 0 20px rgba(255, 204, 68, 0.9));
+    animation: evolveSpin 1.2s ease-out;
+  }
+  @keyframes evolveSpin {
+    0%   { transform: rotate(-90deg) scale(0.3); }
+    100% { transform: rotate(0) scale(1); }
+  }
+  .evolve-msg {
+    color: #5a3010;
+    font-size: 1rem;
+    margin-bottom: 14px;
+  }
+  .evolve-msg b { color: #c04040; font-size: 1.2rem; }
+  .evolve-btn {
+    background: linear-gradient(180deg, #ffcc44, #c08020);
+    border: 2px solid #fff;
+    border-radius: 999px;
+    padding: 10px 24px;
+    color: #fff;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+  }
+  .evolve-btn:hover { transform: translateY(-2px); }
+
   /* === 보호소 / 내 농장 (따뜻한 톤) === */
   .farm-panel {
     background: linear-gradient(180deg, #fff5dc 0%, #f5e0b8 100%);
@@ -4228,7 +4346,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-29</div>
+    <div class="version-tag" style="color:#a06030;">260507-30</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -4357,6 +4475,12 @@
 
   <!-- 입양 확인 다이얼로그 -->
   <div id="confirm-overlay" class="confirm-overlay hidden"></div>
+
+  <!-- 인게임 토스트 알림 스택 -->
+  <div id="toast-stack" class="toast-stack"></div>
+
+  <!-- 진화 축하 오버레이 -->
+  <div id="evolve-overlay" class="evolve-overlay hidden"></div>
 
   <!-- 게임 화면 -->
   <div id="main-game" class="hidden">
@@ -4745,11 +4869,11 @@ window.addEventListener('DOMContentLoaded', () => {
   $('world-map').classList.remove('hidden');
   if (save.animals.length === 0) {
     setTimeout(() => {
-      alert('🐾 「동물농장」에 오신 것을 환영합니다!\n먼저 보호소에서 첫 동물을 입양해주세요.');
+      toast('🐾 「동물농장」에 오신 것을 환영합니다!\n먼저 보호소에서 첫 동물을 입양해주세요.', 'info');
     }, 300);
   } else if (earned > 0) {
     setTimeout(() => {
-      alert(`💰 과수원에서 일꾼들이 +${earned}골드를 모았어요!`);
+      toast(`💰 과수원 일꾼들이 +${earned}골드를 모았어요!`, 'good');
     }, 300);
   }
 });
@@ -4770,7 +4894,7 @@ function showWorldMap() {
 // 탑 클릭 → 동물 선택
 function goCharSelect() {
   if (!save || save.animals.length === 0) {
-    alert('🔒 먼저 보호소에서 동물을 입양하세요!');
+    toast('🔒 먼저 보호소에서 동물을 입양하세요!', 'warn');
     enterShelter();
     return;
   }
@@ -4923,7 +5047,7 @@ function adoptAnimal(speciesKey) {
   if (save.gold < sp.price) { closeConfirm(); return; }
   if (isAnimalSlotFull()) {
     closeConfirm();
-    alert(`🔒 ${save.userRank} 등급은 ${getMaxAnimals()}마리까지만 키울 수 있어요!\n동물을 인간으로 졸업시키거나 등급을 올려야 더 입양할 수 있습니다.`);
+    toast(`🔒 ${save.userRank} 등급은 ${getMaxAnimals()}마리까지!\n인간 졸업 또는 등급 상승으로 늘릴 수 있어요.`, 'warn');
     return;
   }
   save.gold -= sp.price;
@@ -5201,7 +5325,7 @@ function enterOrchard() {
   renderOrchard();
   $('orchard').classList.remove('hidden');
   if (earned > 0) {
-    setTimeout(() => alert(`💰 과수원 일꾼들이 +${earned}골드를 벌어왔어요!`), 200);
+    setTimeout(() => toast(`💰 과수원 일꾼들이 +${earned}골드를 벌어왔어요!`, 'good'), 200);
   }
 }
 
@@ -5286,7 +5410,7 @@ function renderSlot(role, animal, label, hint, statKey, statKo) {
 
 function openWorkerPicker(role) {
   if (!save.animals.length) {
-    alert('보호소에서 먼저 동물을 입양하세요!');
+    toast('보호소에서 먼저 동물을 입양하세요!', 'warn');
     return;
   }
   const overlay = $('confirm-overlay');
@@ -5366,15 +5490,15 @@ function previewCoat(animalId, colorIdx) {
   if (!a) return;
   const c = COAT_COLORS[colorIdx];
   if (c.dogOnly && a.species !== 'dog') {
-    alert('🐕 얼룩빛은 강아지에게만 어울려요!');
+    toast('🐕 얼룩빛은 강아지에게만 어울려요!', 'warn');
     return;
   }
   if ((a.color || 0) === colorIdx) {
-    alert('💁 이미 이 색깔이에요!');
+    toast('💁 이미 이 색깔이에요!', 'info');
     return;
   }
   if (save.gold < SALON_COST) {
-    alert(`💰 골드가 부족해요! (${SALON_COST}골드 필요)`);
+    toast(`💰 골드가 부족해요! (${SALON_COST}골드 필요)`, 'warn');
     return;
   }
   // 미리보기용 임시 객체
@@ -5432,7 +5556,7 @@ function renderSalon() {
       <div class="chip-wrap">
         <div class="color-chip ${isCur ? 'current' : ''}${blocked ? ' chip-blocked' : ''}"
              style="background:${chipBackground(c.chip)}"
-             onclick="${blocked ? `alert('🐕 얼룩빛은 강아지 전용이에요!')` : `previewCoat(${a.id}, ${i})`}">
+             onclick="${blocked ? `toast('🐕 얼룩빛은 강아지 전용이에요!','warn')` : `previewCoat(${a.id}, ${i})`}">
           ${blocked ? '🔒' : (isCur ? '✓' : '')}
         </div>
         <div class="color-chip-name${blocked ? ' chip-blocked-text' : ''}">${c.name}${blocked ? ' (🐕)' : ''}</div>
@@ -5496,6 +5620,43 @@ function setActiveAnimalAndStay(id) {
   renderMyAnimals();
 }
 
+// ============= 인게임 토스트 / 진화 셀러브레이션 =============
+function toast(msg, type = '') {
+  const stack = document.getElementById('toast-stack');
+  if (!stack) return;
+  const div = document.createElement('div');
+  div.className = 'toast' + (type ? ' toast-' + type : '');
+  div.textContent = msg;
+  stack.appendChild(div);
+  // 3.2초 후 제거 (in 0.35s + display 2.45s + out 0.4s)
+  setTimeout(() => div.remove(), 3300);
+}
+
+function celebrateEvolution(animal, newStage) {
+  const overlay = document.getElementById('evolve-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('hidden');
+  // 진화 후 단계로 표시
+  const tmp = { ...animal, stats: { ...animal.stats } };
+  // animalSvgInner는 현재 stage 기반이라 이미 새 단계 svg가 정상
+  overlay.innerHTML = `
+    <div class="evolve-card">
+      <div class="evolve-title">✨ 진화! ✨</div>
+      <svg class="evolve-portrait" viewBox="0 0 100 100" style="${animalCoatStyle(animal)}">${animalSvgInner(animal)}</svg>
+      <div class="evolve-msg"><b>${escapeHTML(animal.name)}</b>이(가)<br/><b>${newStage}단계</b>로 진화했어요!</div>
+      <button class="evolve-btn" onclick="closeEvolveOverlay()">멋져요!</button>
+    </div>
+  `;
+}
+
+function closeEvolveOverlay() {
+  const overlay = document.getElementById('evolve-overlay');
+  if (overlay) {
+    overlay.classList.add('hidden');
+    overlay.innerHTML = '';
+  }
+}
+
 function escapeHTML(s) {
   return String(s).replace(/[&<>"']/g, c => (
     { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]
@@ -5509,15 +5670,15 @@ function renameAnimal(id) {
   if (input === null) return; // 취소
   const newName = input.trim();
   if (!newName) {
-    alert('이름을 입력해주세요!');
+    toast('이름을 입력해주세요!', 'warn');
     return;
   }
   if (newName.length > 8) {
-    alert('이름은 최대 8자까지 가능해요!');
+    toast('이름은 최대 8자까지 가능해요!', 'warn');
     return;
   }
   if (/[<>&"']/.test(newName)) {
-    alert('특수문자(< > & " \')는 사용할 수 없어요!');
+    toast('특수문자(< > & " \')는 사용할 수 없어요!', 'warn');
     return;
   }
   a.name = newName;
@@ -5536,10 +5697,7 @@ function bumpStat(animal, stat, amount) {
   animal.stats[stat] = (animal.stats[stat] || 0) + amount;
   const afterStage = getStage(animal);
   if (afterStage > beforeStage) {
-    // 진화! 알림
-    setTimeout(() => {
-      alert(`✨ ${animal.name}이(가) ${afterStage}단계로 진화했어요! ✨`);
-    }, 200);
+    setTimeout(() => celebrateEvolution(animal, afterStage), 200);
   }
 }
 
@@ -5553,7 +5711,7 @@ function playWithAnimal(id) {
   a.lastPlayedAt = Date.now();
   saveSave();
   renderMyAnimals();
-  alert(`🎾 ${a.name}와(과) 즐겁게 놀았어요!\n체력+3 · 지능+3 · 매력+5 · 기술+3`);
+  toast(`🎾 ${a.name}와(과) 즐겁게 놀았어요!\n체력+3 · 지능+3 · 매력+5 · 기술+3`, 'good');
 }
 
 function batheAnimal(id) {
@@ -5564,7 +5722,7 @@ function batheAnimal(id) {
   a.lastBathedAt = Date.now();
   saveSave();
   renderMyAnimals();
-  alert(`🛁 ${a.name}이(가) 깨끗해졌어요!\n매력+8 · 지능+2`);
+  toast(`🛁 ${a.name}이(가) 깨끗해졌어요!\n매력+8 · 지능+2`, 'good');
 }
 
 function openItemShop(id) {
@@ -5661,7 +5819,7 @@ function releaseAnimal(id) {
   closeConfirm();
   // 작별 메시지
   setTimeout(() => {
-    alert(`💝 ${a.name}이(가) 보호소로 돌아갔어요.\n좋은 가족을 만나길 바랄게요...`);
+    toast(`💝 ${a.name}이(가) 보호소로 돌아갔어요.\n좋은 가족을 만나길 바랄게요...`, 'info');
   }, 100);
   renderMyAnimals();
 }
