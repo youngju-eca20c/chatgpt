@@ -2239,6 +2239,71 @@
     font-size: 0.85rem;
   }
 
+  /* 검은 기사 (20층 보스 등장) */
+  .scene-knight {
+    position: absolute;
+    width: 32%;
+    aspect-ratio: 1/1;
+    bottom: 14%;
+    right: 12%;
+    z-index: 5;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.85)) drop-shadow(0 0 22px rgba(192,16,32,0.55));
+    animation: knightEnter 0.9s cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+  .scene-knight svg { width: 100%; height: 100%; }
+  @keyframes knightEnter {
+    0% { opacity: 0; transform: translateY(-60px) scale(0.4) rotate(-8deg); }
+    55% { opacity: 1; transform: translateY(12px) scale(1.12) rotate(2deg); }
+    100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+  }
+  /* 빨강 플래시 (보스 등장) */
+  .knight-flash {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255,40,40,0.85) 0%, rgba(120,0,0,0.7) 50%, transparent 100%);
+    z-index: 50;
+    pointer-events: none;
+    animation: knFlash 1s ease-out forwards;
+  }
+  @keyframes knFlash {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  /* 보스 등장 타이틀 */
+  .knight-title {
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 51;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 2.4rem;
+    color: #ff2030;
+    text-shadow: 2px 2px 0 #000, 0 0 18px #ff0010, 0 0 36px #ff0010;
+    letter-spacing: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    animation: knTitle 1.8s ease-out forwards;
+  }
+  @keyframes knTitle {
+    0%   { opacity: 0; transform: translateX(-50%) scale(0.3); }
+    25%  { opacity: 1; transform: translateX(-50%) scale(1.4); }
+    50%  { opacity: 1; transform: translateX(-50%) scale(1); }
+    85%  { opacity: 1; transform: translateX(-50%) scale(1); }
+    100% { opacity: 0; transform: translateX(-50%) scale(0.9); }
+  }
+  /* 보스 등장 시 강한 흔들림 */
+  .scene-box.knight-shake {
+    animation: knShake 0.06s linear 12;
+  }
+  @keyframes knShake {
+    0%, 100% { transform: translate(0,0); }
+    25% { transform: translate(-6px, 3px); }
+    50% { transform: translate(6px, -3px); }
+    75% { transform: translate(-4px, 2px); }
+  }
+
   /* 두꺼비 상인 (씬 내) */
   .scene-toad {
     position: absolute;
@@ -4282,6 +4347,48 @@
       </g>
     </symbol>
 
+    <!-- 검은 기사 (20층 보스 연출) -->
+    <symbol id="char-knight" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="93" rx="30" ry="4" fill="#000" opacity="0.55"/>
+      <!-- 망토 검은+빨강 안감 -->
+      <path d="M22 50 L8 92 L92 92 L78 50 Q60 60 50 60 Q40 60 22 50 Z" fill="#1a1a2a" stroke="#0a0a18" stroke-width="1.5"/>
+      <path d="M22 50 L26 56 L10 92 L20 92 Z" fill="#a01020" opacity="0.85"/>
+      <path d="M78 50 L74 56 L90 92 L80 92 Z" fill="#a01020" opacity="0.85"/>
+      <!-- 어깨 갑주 (가시) -->
+      <path d="M22 50 L18 38 L30 46 Z" fill="#3a3a48" stroke="#1a1a28" stroke-width="0.8"/>
+      <path d="M78 50 L82 38 L70 46 Z" fill="#3a3a48" stroke="#1a1a28" stroke-width="0.8"/>
+      <!-- 흉갑 -->
+      <path d="M28 48 L72 48 L70 72 L30 72 Z" fill="#2a2a3a" stroke="#0a0a18" stroke-width="1.2"/>
+      <line x1="30" y1="56" x2="70" y2="56" stroke="#0a0a18" stroke-width="0.8"/>
+      <line x1="32" y1="64" x2="68" y2="64" stroke="#0a0a18" stroke-width="0.8"/>
+      <!-- 가슴 빨강 십자 -->
+      <line x1="50" y1="52" x2="50" y2="70" stroke="#c01020" stroke-width="2.5"/>
+      <line x1="42" y1="60" x2="58" y2="60" stroke="#c01020" stroke-width="2.5"/>
+      <!-- 투구 -->
+      <path d="M30 40 Q30 12 50 10 Q70 12 70 40 L70 48 L30 48 Z" fill="#3a3a48" stroke="#0a0a18" stroke-width="1.5"/>
+      <path d="M30 40 Q30 28 50 26 Q70 28 70 40" stroke="#1a1a28" stroke-width="0.6" fill="none"/>
+      <!-- 빨강 깃털 장식 -->
+      <path d="M50 10 Q40 -2 34 6 Q44 2 50 12 Z" fill="#c01020" stroke="#7a0810" stroke-width="0.6"/>
+      <path d="M50 10 Q60 -2 66 6 Q56 2 50 12 Z" fill="#c01020" stroke="#7a0810" stroke-width="0.6"/>
+      <path d="M50 10 L50 0" stroke="#7a0810" stroke-width="1"/>
+      <!-- 바이저 -->
+      <rect x="32" y="30" width="36" height="8" fill="#0a0a14"/>
+      <!-- 빨강 빛나는 눈 -->
+      <rect x="38" y="33" width="7" height="2.5" fill="#ff2030"/>
+      <rect x="55" y="33" width="7" height="2.5" fill="#ff2030"/>
+      <circle cx="41.5" cy="34" r="3" fill="#ff2030" opacity="0.35"/>
+      <circle cx="58.5" cy="34" r="3" fill="#ff2030" opacity="0.35"/>
+      <!-- 입 보호대 -->
+      <path d="M40 42 L60 42 L58 46 L42 46 Z" fill="#1a1a28" stroke="#0a0a14" stroke-width="0.5"/>
+      <line x1="46" y1="44" x2="54" y2="44" stroke="#3a3a48" stroke-width="0.5"/>
+      <!-- 검 (옆에 들고있음) -->
+      <line x1="20" y1="58" x2="6" y2="88" stroke="#444" stroke-width="4"/>
+      <line x1="20" y1="58" x2="6" y2="88" stroke="#aaa" stroke-width="1.5"/>
+      <rect x="17" y="56" width="8" height="5" fill="#5a3010" stroke="#2a1808" stroke-width="0.5"/>
+      <line x1="14" y1="57" x2="28" y2="57" stroke="#7a4010" stroke-width="2.5"/>
+      <circle cx="6" cy="88" r="1.2" fill="#fff" opacity="0.7"/>
+    </symbol>
+
     <!-- 두꺼비 상인 -->
     <symbol id="char-toad" viewBox="0 0 100 100">
       <ellipse cx="50" cy="93" rx="36" ry="4" fill="#000" opacity="0.4"/>
@@ -4478,7 +4585,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-32</div>
+    <div class="version-tag" style="color:#a06030;">260507-33</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -6447,7 +6554,7 @@ function spawnPuff(box, leftPct, bottomPct) {
 
 function cleanupFountain(delay = 0) {
   setTimeout(() => {
-    ['cs-dialog', 'scene-hag', 'scene-toad'].forEach(id => {
+    ['cs-dialog', 'scene-hag', 'scene-toad', 'scene-knight'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.remove();
     });
@@ -6575,6 +6682,133 @@ async function fountainGive() {
   }
 
   cleanupFountain(800);
+  setSceneActions(`<button class="btn success" onclick="nextFloor()">▲ 다음 층으로</button>`);
+  updateUI();
+}
+
+// ============= 검은 기사 (20층) =============
+const KNIGHT_OPTIONS = [
+  '도전자의 피로 검을 씻어내는 시간',
+  '주군에게 충성을 맹세하는 아침 조회 시간',
+  '명상으로 투기를 끌어올리는 자정',
+  '금요일 오후 6시 정각 (퇴근 시간)'
+];
+const KNIGHT_CORRECT = 3;
+
+async function blackKnight() {
+  // 씬 초기화
+  $('scene-bg-use').setAttribute('href', '#bg-room');
+  $('door-overlay').classList.add('hidden');
+  $('scene-player').classList.remove('hidden');
+  $('scene-enemy').classList.add('hidden');
+  $('mini-game').classList.add('hidden');
+  setSceneActions('');
+  log('━━ 20층 — 검은 기사 ━━', 'system');
+
+  ['cs-dialog', 'scene-hag', 'scene-toad', 'scene-knight'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  });
+
+  const sp = $('scene-player');
+  sp.style.transition = 'none';
+  sp.style.left = '10%';
+  void sp.offsetWidth;
+
+  const box = $('scene-box');
+  const dlg = document.createElement('div');
+  dlg.className = 'cs-dialog';
+  dlg.id = 'cs-dialog';
+  box.appendChild(dlg);
+
+  // 1막: 도착
+  await wait(500);
+  await showCSDialog(player.name, `"...드디어 20층!"`);
+  await wait(700);
+
+  // 2막: 빨강 플래시 + 화면 흔들림 + 보스 타이틀
+  const flash = document.createElement('div');
+  flash.className = 'knight-flash';
+  box.appendChild(flash);
+  box.classList.add('knight-shake');
+  setTimeout(() => box.classList.remove('knight-shake'), 800);
+  setTimeout(() => flash.remove(), 1000);
+
+  const title = document.createElement('div');
+  title.className = 'knight-title';
+  title.textContent = '⚔ 검은 기사 ⚔';
+  box.appendChild(title);
+  setTimeout(() => title.remove(), 1800);
+
+  await wait(600);
+
+  // 3막: 검은 기사 등장
+  const knight = document.createElement('div');
+  knight.className = 'scene-knight';
+  knight.id = 'scene-knight';
+  knight.innerHTML = '<svg viewBox="0 0 100 100"><use href="#char-knight"/></svg>';
+  box.appendChild(knight);
+
+  await wait(1200);
+
+  // 4막: 도전자 반응
+  await showCSDialog(player.name, `"...!"`);
+  await wait(500);
+
+  // 5막: 기사 질문
+  await showCSDialog('검은 기사', `"크큭… 20층까지 올라오다니 제법이군."`);
+  await wait(500);
+  await showCSDialog('검은 기사', `"그렇다면 묻겠다. 이 탑을 굳건히 지키는 본 기사가, 하루 중 가장 기다리고 가슴 설레어하는 '성스러운 시간'은 언제인가?"`);
+  await wait(400);
+
+  showKnightChoices();
+}
+
+function showKnightChoices() {
+  const dlg = document.getElementById('cs-dialog');
+  if (!dlg) return;
+  dlg.innerHTML = `
+    <div class="speaker">▼ 답하라</div>
+    <div class="cs-choices" style="display:grid;grid-template-columns:1fr;gap:5px">
+      ${KNIGHT_OPTIONS.map((opt, i) => `
+        <button class="btn" onclick="answerKnight(${i})" style="font-size:0.78rem;padding:8px 10px;text-align:left;line-height:1.3">${i+1}. ${opt}</button>
+      `).join('')}
+    </div>
+  `;
+}
+
+async function answerKnight(idx) {
+  if (idx !== KNIGHT_CORRECT) {
+    log(`✗ ${KNIGHT_OPTIONS[idx]}`, 'danger');
+    await showCSDialog('검은 기사', `"흥… 그건 아니다. 본 기사를 더 잘 살펴보아라. 다시 골라보거라."`);
+    await wait(1400);
+    showKnightChoices();
+    return;
+  }
+  // 정답
+  log(`✓ 정답! ${KNIGHT_OPTIONS[idx]}`, 'gain');
+  await showCSDialog('검은 기사', `"크흑… 너, 말이 좀 통하는 녀석이구나."`);
+  await wait(900);
+  await showCSDialog('검은 기사', `"얼른 지나가라. 나도 칼퇴해야 하니까."`);
+  await wait(1300);
+
+  // 풀회복
+  const hpHeal = player.maxHp - player.hp;
+  const mpHeal = player.maxMp - player.mp;
+  player.hp = player.maxHp;
+  player.mp = player.maxMp;
+  log(`✨ 검은 기사가 길을 비켜주었다. HP+${hpHeal} · MP+${mpHeal} (풀회복)`, 'gain');
+  showRewardPopup('⚔', `풀회복!`);
+
+  // 기사 떠남 (오른쪽으로 사라짐)
+  const knight = document.getElementById('scene-knight');
+  if (knight) {
+    knight.style.transition = 'all 1.1s ease-in';
+    knight.style.transform = 'translateX(120px) scale(0.65)';
+    knight.style.opacity = '0';
+  }
+
+  cleanupFountain(1100);
   setSceneActions(`<button class="btn success" onclick="nextFloor()">▲ 다음 층으로</button>`);
   updateUI();
 }
@@ -7090,7 +7324,8 @@ function nextFloor() {
   if (floor > 30) { triumph(); return; }
   log(`━ 제 ${floor} 층 ━`, 'system');
   if (floor === 30) { finalBoss(); return; }
-  if (floor === 10 || floor === 20) { fountain(); return; }
+  if (floor === 10) { fountain(); return; }
+  if (floor === 20) { blackKnight(); return; }
   if (floor === 15 || floor === 25) { shop(); return; }
   showDoorScene();
   updateUI();
