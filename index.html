@@ -4226,7 +4226,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-27</div>
+    <div class="version-tag" style="color:#a06030;">260507-28</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -5082,16 +5082,37 @@ function canPlay(a) { return !isToday(a.lastPlayedAt); }
 function canBathe(a) { return !isToday(a.lastBathedAt); }
 
 // 백화점 아이템 (구매 → 인벤토리 → 농장에서 사용)
+// effects 배열로 단일/다중 스탯 통합 표현
 const SHOP_ITEMS = [
-  { id:'food',     name:'사과',       icon:'🍎', stat:'fit',   amount:2,  price:10  },
-  { id:'book',     name:'그림책',     icon:'📚', stat:'intel', amount:2,  price:10  },
-  { id:'mirror',   name:'거울',       icon:'🪞', stat:'charm', amount:2,  price:10  },
-  { id:'toy',      name:'장난감',     icon:'🧸', stat:'skill', amount:2,  price:10  },
-  { id:'goldfood', name:'황금 사과',  icon:'🌟', stat:'fit',   amount:20, price:100 },
-  { id:'encyc',    name:'백과사전',   icon:'📕', stat:'intel', amount:20, price:100 },
-  { id:'gemmirror',name:'보석 거울',  icon:'💎', stat:'charm', amount:20, price:100 },
-  { id:'gamepad',  name:'고급 게임기', icon:'🎮', stat:'skill', amount:20, price:100 }
+  // 기본 (효율 최고)
+  { id:'food',      name:'사과',        icon:'🍎', effects:[{stat:'fit',amount:2}],   price:10  },
+  { id:'book',      name:'그림책',      icon:'📚', effects:[{stat:'intel',amount:2}], price:10  },
+  { id:'mirror',    name:'거울',        icon:'🪞', effects:[{stat:'charm',amount:2}], price:10  },
+  { id:'toy',       name:'장난감',      icon:'🧸', effects:[{stat:'skill',amount:2}], price:10  },
+  // 고급 (10배 효과·가격, 효율 동일)
+  { id:'goldfood',  name:'황금 사과',    icon:'🌟', effects:[{stat:'fit',amount:20}],  price:100 },
+  { id:'encyc',     name:'백과사전',     icon:'📕', effects:[{stat:'intel',amount:20}],price:100 },
+  { id:'gemmirror', name:'보석 거울',    icon:'💎', effects:[{stat:'charm',amount:20}],price:100 },
+  { id:'gamepad',   name:'고급 게임기',   icon:'🎮', effects:[{stat:'skill',amount:20}],price:100 },
+  // 세계관 특이 상품 (다중 스탯, 효율 살짝 낮음)
+  { id:'witchpot',  name:'마녀의 물약',   icon:'🧪', effects:[{stat:'fit',amount:3},{stat:'intel',amount:4}], price:55 },
+  { id:'oldrose',   name:'노파의 장미',   icon:'🌹', effects:[{stat:'charm',amount:5},{stat:'intel',amount:3}], price:55 },
+  { id:'dagger',    name:'무사의 단검',   icon:'🗡', effects:[{stat:'fit',amount:4},{stat:'skill',amount:4}], price:55 },
+  { id:'magicarrot',name:'마법 당근',     icon:'🥕', effects:[{stat:'fit',amount:6},{stat:'charm',amount:2}], price:55 },
+  { id:'honey',     name:'꿀단지',       icon:'🍯', effects:[{stat:'fit',amount:3},{stat:'charm',amount:4}], price:50 },
+  { id:'scroll',    name:'고대 두루마리', icon:'📜', effects:[{stat:'intel',amount:6},{stat:'skill',amount:3}], price:65 },
+  { id:'violin',    name:'음유 바이올린', icon:'🎻', effects:[{stat:'charm',amount:5},{stat:'skill',amount:4}], price:65 },
+  { id:'cloak',     name:'달빛 망토',     icon:'🌙', effects:[{stat:'fit',amount:4},{stat:'charm',amount:5}], price:65 },
+  { id:'toadgift',  name:'두꺼비 선물',   icon:'🎁', effects:[{stat:'fit',amount:2},{stat:'intel',amount:2},{stat:'charm',amount:2},{stat:'skill',amount:2}], price:55 },
+  { id:'orb',       name:'수정 구슬',     icon:'🔮', effects:[{stat:'intel',amount:6},{stat:'charm',amount:4}], price:70 }
 ];
+
+function itemEffectText(it) {
+  if (Array.isArray(it.effects)) {
+    return it.effects.map(e => `${STAT_KO[e.stat]}+${e.amount}`).join(' · ');
+  }
+  return `${STAT_KO[it.stat]} +${it.amount}`;
+}
 const STAT_KO = { fit:'체력', intel:'지능', charm:'매력', skill:'기술' };
 
 // ============= 백화점 =============
@@ -5114,7 +5135,7 @@ function renderDept() {
     card.innerHTML = `
       <span class="it-icon">${it.icon}</span>
       <div class="it-name">${it.name}</div>
-      <div class="it-effect">${STAT_KO[it.stat]} +${it.amount}</div>
+      <div class="it-effect">${itemEffectText(it)}</div>
       <div class="it-price">💰 ${it.price}</div>
       <div style="font-size:0.7rem;color:#7a4020;margin-top:2px;">보유: <b>${owned}</b></div>
     `;
@@ -5572,7 +5593,7 @@ function openItemShop(id) {
                        ${can ? `onclick="giveItem(${id}, '${it.id}')"` : ''}>
             <span class="it-icon">${it.icon}</span>
             <div class="it-name">${it.name}</div>
-            <div class="it-effect">${STAT_KO[it.stat]} +${it.amount}</div>
+            <div class="it-effect">${itemEffectText(it)}</div>
             <div class="it-price" style="color:${can?'#5aa030':'#a08868'}">보유: <b>${owned}</b></div>
           </div>`;
         }).join('')}
@@ -5594,7 +5615,11 @@ function giveItem(animalId, itemId) {
   const owned = (save.inventory && save.inventory[itemId]) || 0;
   if (owned <= 0) return;
   save.inventory[itemId] = owned - 1;
-  bumpStat(a, it.stat, it.amount);
+  if (Array.isArray(it.effects)) {
+    it.effects.forEach(e => bumpStat(a, e.stat, e.amount));
+  } else if (it.stat) {
+    bumpStat(a, it.stat, it.amount);
+  }
   saveSave();
   renderMyAnimals();
   openItemShop(animalId);
