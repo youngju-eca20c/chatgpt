@@ -964,9 +964,9 @@
   /* === 인게임 토스트 알림 === */
   .toast-stack {
     position: fixed;
-    top: max(16px, env(safe-area-inset-top));
+    top: 35%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     z-index: 9999;
     display: flex;
     flex-direction: column;
@@ -974,7 +974,7 @@
     gap: 6px;
     pointer-events: none;
     width: calc(100% - 32px);
-    max-width: 480px;
+    max-width: 460px;
   }
   .toast {
     pointer-events: auto;
@@ -985,7 +985,7 @@
     color: #5a3010;
     font-family: 'Gowun Dodum', sans-serif;
     font-size: 0.92rem;
-    box-shadow: 0 8px 20px rgba(80, 40, 10, 0.5);
+    box-shadow: 0 8px 24px rgba(80, 40, 10, 0.55);
     animation: toastIn 0.35s cubic-bezier(0.2, 1.5, 0.4, 1) backwards,
                toastOut 0.4s 2.8s ease-in forwards;
     text-align: center;
@@ -999,85 +999,217 @@
     background: linear-gradient(180deg, #fff5a0, #ffcc44);
     border-color: #c08020;
     color: #5a3010;
-    box-shadow: 0 8px 24px rgba(255, 204, 68, 0.6), 0 0 24px rgba(255, 204, 68, 0.5);
+    box-shadow: 0 8px 28px rgba(255, 204, 68, 0.6), 0 0 28px rgba(255, 204, 68, 0.55);
   }
   @keyframes toastIn {
-    from { opacity: 0; transform: translateY(-20px) scale(0.85); }
+    from { opacity: 0; transform: translateY(12px) scale(0.85); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
   }
   @keyframes toastOut {
-    to { opacity: 0; transform: translateY(-12px) scale(0.95); }
+    to { opacity: 0; transform: translateY(-8px) scale(0.95); }
   }
-  .toast.persist { animation: toastIn 0.35s cubic-bezier(0.2, 1.5, 0.4, 1); }
 
-  /* 진화 축하 오버레이 */
+  /* ═════ 화려한 진화 연출 ═════ */
   .evolve-overlay {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle, rgba(255, 204, 68, 0.35), rgba(0, 0, 0, 0.7));
+    background: radial-gradient(ellipse at center, rgba(40, 80, 140, 0.92) 0%, rgba(5, 10, 25, 0.98) 80%);
     z-index: 10000;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 14px;
-    animation: evolveBgIn 0.5s ease-out;
-    backdrop-filter: blur(2px);
+    overflow: hidden;
+    animation: evOverlayIn 0.5s ease-out;
   }
-  @keyframes evolveBgIn {
+  @keyframes evOverlayIn {
     from { opacity: 0; }
     to   { opacity: 1; }
   }
-  .evolve-card {
-    background: linear-gradient(180deg, #fff5dc, #fff8e0);
-    border: 3px solid #ffcc44;
-    border-radius: 18px;
-    padding: 24px 28px;
-    text-align: center;
-    box-shadow: 0 0 40px rgba(255, 204, 68, 0.7), 0 8px 32px rgba(0,0,0,0.5);
-    animation: evolveCardIn 0.6s cubic-bezier(0.2, 1.5, 0.4, 1);
+  .evolve-overlay.shaking {
+    animation: evOverlayIn 0.5s ease-out, evShake 0.1s linear infinite 0.5s;
   }
-  @keyframes evolveCardIn {
-    from { transform: scale(0.3) rotate(-10deg); opacity: 0; }
-    to   { transform: scale(1) rotate(0); opacity: 1; }
+  @keyframes evShake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-5px, 3px); }
+    40% { transform: translate(5px, -3px); }
+    60% { transform: translate(-4px, 2px); }
+    80% { transform: translate(4px, -2px); }
   }
-  .evolve-title {
+
+  /* 회전하는 빛줄기 */
+  .ev-rays {
+    position: absolute;
+    width: 200vw;
+    height: 200vh;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0%,   rgba(255,255,255,0.18) 4%, transparent 8%,
+      transparent 20%,  rgba(255,255,255,0.18) 24%, transparent 28%,
+      transparent 40%,  rgba(255,255,255,0.18) 44%, transparent 48%,
+      transparent 60%,  rgba(255,255,255,0.18) 64%, transparent 68%,
+      transparent 80%,  rgba(255,255,255,0.18) 84%, transparent 88%,
+      transparent 100%
+    );
+    animation: evRays 8s linear infinite;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+  @keyframes evRays {
+    to { transform: rotate(360deg); }
+  }
+
+  /* 중앙 빛 후광 */
+  .ev-glow {
+    position: absolute;
+    width: 70vw;
+    height: 70vw;
+    max-width: 600px;
+    max-height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      rgba(255,255,255,0.95) 0%,
+      rgba(180,220,255,0.6) 30%,
+      rgba(100,160,255,0.25) 60%,
+      transparent 75%);
+    animation: evGlow 2.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes evGlow {
+    0%, 100% { opacity: 0.7; transform: scale(0.95); }
+    50% { opacity: 1; transform: scale(1.08); }
+  }
+
+  /* 캐릭터 스테이지 */
+  .ev-stage {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    z-index: 3;
+  }
+  .ev-char {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .ev-before {
+    animation: evBefore 2.2s ease-in forwards;
+    filter: drop-shadow(0 0 20px rgba(255,255,255,0.9));
+  }
+  @keyframes evBefore {
+    0%   { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 12px rgba(255,255,255,0.6)) brightness(1); }
+    50%  { opacity: 0.6; transform: scale(0.8); filter: drop-shadow(0 0 50px white) brightness(2.5); }
+    100% { opacity: 0; transform: scale(0.3); filter: brightness(8); }
+  }
+  .ev-after {
+    opacity: 0;
+    animation: evAfter 1.5s 2s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+  }
+  @keyframes evAfter {
+    0%   { opacity: 0; transform: scale(0.2) rotate(-360deg); filter: brightness(8) drop-shadow(0 0 0 transparent); }
+    40%  { opacity: 1; transform: scale(1.25) rotate(0); filter: brightness(2) drop-shadow(0 0 30px gold); }
+    100% { opacity: 1; transform: scale(1) rotate(0); filter: brightness(1) drop-shadow(0 0 22px rgba(255,204,68,0.9)); }
+  }
+
+  /* 빛 폭발 (중앙에서 확장) */
+  .ev-burst {
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle, white 0%, transparent 55%);
+    opacity: 0;
+    animation: evBurst 1.2s 1.2s ease-out forwards;
+    pointer-events: none;
+  }
+  @keyframes evBurst {
+    0%   { opacity: 0; transform: scale(0.1); }
+    35%  { opacity: 1; transform: scale(3); }
+    100% { opacity: 0; transform: scale(8); }
+  }
+
+  /* 흩어지는 반짝이들 */
+  .ev-sparkle {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    top: 50%;
+    left: 50%;
+    margin: -7px 0 0 -7px;
+    background: radial-gradient(circle, #fff 0%, #ffe070 40%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 0 12px #ffe070;
+    animation: evSparkle 1.8s ease-out forwards;
+  }
+  @keyframes evSparkle {
+    0%   { opacity: 0; transform: translate(0, 0) scale(0.3); }
+    25%  { opacity: 1; }
+    100% { opacity: 0; transform: var(--sp-end) scale(2); }
+  }
+
+  /* 타이틀 */
+  .ev-title {
+    position: absolute;
+    top: 18vh;
+    z-index: 5;
     font-family: 'Black Han Sans', sans-serif;
-    color: #c08020;
-    font-size: 1.4rem;
-    margin-bottom: 8px;
-    text-shadow: 2px 2px 0 #fff, 4px 4px 10px rgba(255,204,68,0.5);
+    font-size: 3rem;
+    color: #ffe070;
+    letter-spacing: 6px;
+    text-shadow: 0 0 20px #ff8030, 0 0 40px #ff8030, 2px 2px 0 #7a4010;
+    opacity: 0;
+    animation: evTitle 0.8s 2.8s cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
   }
-  .evolve-portrait {
-    width: 130px;
-    height: 130px;
-    margin: 4px auto 10px;
-    filter: drop-shadow(0 0 20px rgba(255, 204, 68, 0.9));
-    animation: evolveSpin 1.2s ease-out;
+  @keyframes evTitle {
+    0%   { opacity: 0; transform: scale(0.2); }
+    60%  { opacity: 1; transform: scale(1.3); }
+    100% { opacity: 1; transform: scale(1); }
   }
-  @keyframes evolveSpin {
-    0%   { transform: rotate(-90deg) scale(0.3); }
-    100% { transform: rotate(0) scale(1); }
+  /* 메시지 */
+  .ev-msg {
+    position: absolute;
+    bottom: 28vh;
+    z-index: 5;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.25rem;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 0 12px rgba(255,204,68,0.5);
+    opacity: 0;
+    text-align: center;
+    line-height: 1.5;
+    padding: 0 20px;
+    animation: evMsg 0.6s 3.4s ease-out forwards;
   }
-  .evolve-msg {
-    color: #5a3010;
-    font-size: 1rem;
-    margin-bottom: 14px;
+  @keyframes evMsg {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
-  .evolve-msg b { color: #c04040; font-size: 1.2rem; }
-  .evolve-btn {
+  .ev-msg b { color: #ffcc44; font-size: 1.45rem; }
+  /* 버튼 */
+  .ev-btn {
+    position: absolute;
+    bottom: 14vh;
+    z-index: 5;
     background: linear-gradient(180deg, #ffcc44, #c08020);
-    border: 2px solid #fff;
+    border: 2.5px solid #fff;
     border-radius: 999px;
-    padding: 10px 24px;
+    padding: 12px 32px;
     color: #fff;
     font-family: 'Black Han Sans', sans-serif;
-    font-size: 1rem;
+    font-size: 1.05rem;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.5), 0 0 22px rgba(255,204,68,0.6);
     text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    opacity: 0;
+    letter-spacing: 1px;
+    animation: evBtn 0.5s 4s ease-out forwards;
   }
-  .evolve-btn:hover { transform: translateY(-2px); }
+  @keyframes evBtn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .ev-btn:active { transform: scale(0.95); }
 
   /* === 보호소 / 내 농장 (따뜻한 톤) === */
   .farm-panel {
@@ -4346,7 +4478,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-30</div>
+    <div class="version-tag" style="color:#a06030;">260507-31</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -5632,27 +5764,50 @@ function toast(msg, type = '') {
   setTimeout(() => div.remove(), 3300);
 }
 
-function celebrateEvolution(animal, newStage) {
+function celebrateEvolution(animal, beforeStage, afterStage) {
   const overlay = document.getElementById('evolve-overlay');
   if (!overlay) return;
   overlay.classList.remove('hidden');
-  // 진화 후 단계로 표시
-  const tmp = { ...animal, stats: { ...animal.stats } };
-  // animalSvgInner는 현재 stage 기반이라 이미 새 단계 svg가 정상
+  overlay.classList.remove('shaking');
+
+  const base = animalBaseSvg(animal);
+  const beforeSvgId = beforeStage > 1 ? `${base}-${beforeStage}` : base;
+  const afterSvgId  = afterStage > 1  ? `${base}-${afterStage}`  : base;
+  const filter = animalCoatStyle(animal);
+
+  // 반짝이 14개 (다양한 방향)
+  const sparkles = Array.from({ length: 14 }, (_, i) => {
+    const angle = (i / 14) * Math.PI * 2 + Math.random() * 0.3;
+    const dist = 140 + Math.random() * 120;
+    const x = Math.cos(angle) * dist;
+    const y = Math.sin(angle) * dist;
+    const delay = 1.4 + Math.random() * 0.7;
+    return `<div class="ev-sparkle" style="--sp-end: translate(${x.toFixed(0)}px, ${y.toFixed(0)}px); animation-delay: ${delay.toFixed(2)}s"></div>`;
+  }).join('');
+
   overlay.innerHTML = `
-    <div class="evolve-card">
-      <div class="evolve-title">✨ 진화! ✨</div>
-      <svg class="evolve-portrait" viewBox="0 0 100 100" style="${animalCoatStyle(animal)}">${animalSvgInner(animal)}</svg>
-      <div class="evolve-msg"><b>${escapeHTML(animal.name)}</b>이(가)<br/><b>${newStage}단계</b>로 진화했어요!</div>
-      <button class="evolve-btn" onclick="closeEvolveOverlay()">멋져요!</button>
+    <div class="ev-rays"></div>
+    <div class="ev-glow"></div>
+    <div class="ev-stage">
+      <svg class="ev-char ev-before" viewBox="0 0 100 100" style="${filter}"><use href="#${beforeSvgId}"/></svg>
+      <div class="ev-burst"></div>
+      <svg class="ev-char ev-after" viewBox="0 0 100 100" style="${filter}"><use href="#${afterSvgId}"/></svg>
+      ${sparkles}
     </div>
+    <div class="ev-title">✨ 진화! ✨</div>
+    <div class="ev-msg"><b>${escapeHTML(animal.name)}</b>이(가)<br/><b>${afterStage}단계</b>가 되었어요!</div>
+    <button class="ev-btn" onclick="closeEvolveOverlay()">멋져요!</button>
   `;
+  // 화면 흔들림 (1.2초 ~ 2.2초)
+  setTimeout(() => overlay.classList.add('shaking'), 1100);
+  setTimeout(() => overlay.classList.remove('shaking'), 2300);
 }
 
 function closeEvolveOverlay() {
   const overlay = document.getElementById('evolve-overlay');
   if (overlay) {
     overlay.classList.add('hidden');
+    overlay.classList.remove('shaking');
     overlay.innerHTML = '';
   }
 }
@@ -5697,7 +5852,7 @@ function bumpStat(animal, stat, amount) {
   animal.stats[stat] = (animal.stats[stat] || 0) + amount;
   const afterStage = getStage(animal);
   if (afterStage > beforeStage) {
-    setTimeout(() => celebrateEvolution(animal, afterStage), 200);
+    setTimeout(() => celebrateEvolution(animal, beforeStage, afterStage), 250);
   }
 }
 
