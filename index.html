@@ -4226,7 +4226,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260507-26</div>
+    <div class="version-tag" style="color:#a06030;">260507-27</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -5083,10 +5083,14 @@ function canBathe(a) { return !isToday(a.lastBathedAt); }
 
 // 백화점 아이템 (구매 → 인벤토리 → 농장에서 사용)
 const SHOP_ITEMS = [
-  { id:'food',  name:'사과',     icon:'🍎', stat:'fit',   amount:2, price:10 },
-  { id:'book',  name:'그림책',   icon:'📚', stat:'intel', amount:2, price:10 },
-  { id:'mirror',name:'거울',     icon:'🪞', stat:'charm', amount:2, price:10 },
-  { id:'toy',   name:'장난감',   icon:'🧸', stat:'skill', amount:2, price:10 }
+  { id:'food',     name:'사과',       icon:'🍎', stat:'fit',   amount:2,  price:10  },
+  { id:'book',     name:'그림책',     icon:'📚', stat:'intel', amount:2,  price:10  },
+  { id:'mirror',   name:'거울',       icon:'🪞', stat:'charm', amount:2,  price:10  },
+  { id:'toy',      name:'장난감',     icon:'🧸', stat:'skill', amount:2,  price:10  },
+  { id:'goldfood', name:'황금 사과',  icon:'🌟', stat:'fit',   amount:20, price:100 },
+  { id:'encyc',    name:'백과사전',   icon:'📕', stat:'intel', amount:20, price:100 },
+  { id:'gemmirror',name:'보석 거울',  icon:'💎', stat:'charm', amount:20, price:100 },
+  { id:'gamepad',  name:'고급 게임기', icon:'🎮', stat:'skill', amount:20, price:100 }
 ];
 const STAT_KO = { fit:'체력', intel:'지능', charm:'매력', skill:'기술' };
 
