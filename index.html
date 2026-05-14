@@ -886,6 +886,226 @@
     width: 100%;
     height: 100%;
   }
+  /* 스토리 진입 버튼 */
+  .story-section {
+    margin: 16px auto 4px;
+    display: flex;
+    justify-content: center;
+  }
+  .story-btn {
+    background: linear-gradient(135deg, #ff8040 0%, #c040c0 50%, #4080ff 100%);
+    background-size: 220% 220%;
+    border: 3px solid #ffe080;
+    color: #fff;
+    padding: 10px 26px;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.02rem;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow:
+      0 4px 0 #4a2080,
+      0 6px 18px rgba(120,40,200,0.5),
+      0 0 22px rgba(255,200,80,0.45);
+    text-shadow: 1px 2px 3px rgba(0,0,0,0.5);
+    animation: storyShimmer 4s ease-in-out infinite;
+    letter-spacing: 1.5px;
+    transition: transform 0.18s, filter 0.18s, box-shadow 0.18s;
+    position: relative;
+  }
+  @keyframes storyShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+  .story-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    filter: brightness(1.12);
+    box-shadow:
+      0 6px 0 #4a2080,
+      0 9px 22px rgba(120,40,200,0.6),
+      0 0 32px rgba(255,200,80,0.85);
+  }
+  .story-btn:active { transform: translateY(0); }
+  .story-btn::before, .story-btn::after {
+    content: '✨';
+    position: absolute;
+    top: -10px;
+    font-size: 1.1rem;
+    animation: storySpark 1.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .story-btn::before { left: -2px; }
+  .story-btn::after { right: -2px; animation-delay: -0.8s; }
+  @keyframes storySpark {
+    0%, 100% { opacity: 0.4; transform: scale(0.85) rotate(-10deg); }
+    50%      { opacity: 1;   transform: scale(1.15) rotate(15deg); }
+  }
+
+  /* 진입 이펙트 — 화면 플래시 */
+  .story-flash {
+    position: fixed;
+    inset: 0;
+    z-index: 99998;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 50% 50%, #fff 0%, #ffe080 20%, rgba(255,160,80,0.5) 50%, transparent 75%);
+    animation: storyFlashAnim 0.85s ease forwards;
+  }
+  @keyframes storyFlashAnim {
+    0%   { opacity: 0; transform: scale(0.2); }
+    35%  { opacity: 1; transform: scale(1.5); }
+    100% { opacity: 0; transform: scale(3); }
+  }
+  .story-rays {
+    position: fixed;
+    inset: 0;
+    z-index: 99997;
+    pointer-events: none;
+    background:
+      conic-gradient(from 0deg, transparent 0deg, rgba(255,220,160,0.35) 6deg, transparent 12deg,
+                     transparent 30deg, rgba(255,220,160,0.35) 36deg, transparent 42deg,
+                     transparent 60deg, rgba(255,220,160,0.35) 66deg, transparent 72deg,
+                     transparent 90deg, rgba(255,220,160,0.35) 96deg, transparent 102deg,
+                     transparent 120deg, rgba(255,220,160,0.35) 126deg, transparent 132deg,
+                     transparent 150deg, rgba(255,220,160,0.35) 156deg, transparent 162deg,
+                     transparent 180deg, rgba(255,220,160,0.35) 186deg, transparent 192deg,
+                     transparent 210deg, rgba(255,220,160,0.35) 216deg, transparent 222deg,
+                     transparent 240deg, rgba(255,220,160,0.35) 246deg, transparent 252deg,
+                     transparent 270deg, rgba(255,220,160,0.35) 276deg, transparent 282deg,
+                     transparent 300deg, rgba(255,220,160,0.35) 306deg, transparent 312deg,
+                     transparent 330deg, rgba(255,220,160,0.35) 336deg, transparent 342deg);
+    animation: storyRays 0.85s ease forwards;
+  }
+  @keyframes storyRays {
+    0%   { opacity: 0; transform: scale(0.3) rotate(0deg); }
+    40%  { opacity: 0.8; transform: scale(1.5) rotate(80deg); }
+    100% { opacity: 0; transform: scale(2.5) rotate(180deg); }
+  }
+
+  /* 스토리 리더 모달 */
+  .story-reader {
+    position: fixed;
+    inset: 0;
+    z-index: 99990;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(80,40,140,0.4), transparent 60%),
+      rgba(8, 5, 25, 0.96);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 10px;
+    animation: storyEnter 0.6s cubic-bezier(.2,.6,.3,1.1);
+    overflow: hidden;
+  }
+  @keyframes storyEnter {
+    0%   { opacity: 0; transform: scale(0.85) rotate(-2deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+  .story-reader.closing { animation: storyExit 0.4s ease forwards; }
+  @keyframes storyExit {
+    to { opacity: 0; transform: scale(0.88); }
+  }
+  .story-header {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #fff;
+    font-family: 'Black Han Sans', sans-serif;
+    margin-bottom: 8px;
+    padding: 0 4px;
+    gap: 8px;
+  }
+  .story-title {
+    font-size: 1.05rem;
+    flex: 1;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.7);
+    color: #fff5d8;
+  }
+  .story-pages {
+    font-size: 0.88rem;
+    color: #ffd060;
+    min-width: 50px;
+    text-align: right;
+  }
+  .story-close {
+    background: rgba(255,255,255,0.14);
+    border: 2px solid rgba(255,255,255,0.4);
+    color: #fff;
+    width: 36px; height: 36px;
+    border-radius: 999px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.18s;
+    flex: 0 0 auto;
+  }
+  .story-close:hover {
+    background: rgba(255,80,80,0.45);
+    border-color: #ff8080;
+    transform: rotate(90deg);
+  }
+  .story-image-wrap {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+  }
+  .story-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow:
+      0 8px 28px rgba(0,0,0,0.55),
+      0 0 40px rgba(160,80,220,0.3);
+  }
+  .story-image.flip-right { animation: pageInR 0.45s ease; }
+  .story-image.flip-left  { animation: pageInL 0.45s ease; }
+  @keyframes pageInR {
+    0%   { opacity: 0; transform: translateX(60px) rotateY(-10deg); }
+    100% { opacity: 1; transform: translateX(0) rotateY(0deg); }
+  }
+  @keyframes pageInL {
+    0%   { opacity: 0; transform: translateX(-60px) rotateY(10deg); }
+    100% { opacity: 1; transform: translateX(0) rotateY(0deg); }
+  }
+  .story-nav {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+  .story-nav-btn {
+    background: linear-gradient(180deg, #6a40c0, #3a1880);
+    border: 2px solid #a060e0;
+    border-radius: 999px;
+    color: #fff;
+    padding: 9px 22px;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    min-width: 100px;
+    transition: filter 0.15s, transform 0.15s;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  }
+  .story-nav-btn:hover:not(:disabled) {
+    filter: brightness(1.18);
+    transform: translateY(-2px);
+  }
+  .story-nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
   /* 건물 그림 클릭 오버레이 (투명, 호버 시 노란 글로우) */
   .bldg-click {
     position: absolute;
@@ -5620,7 +5840,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-13</div>
+    <div class="version-tag" style="color:#a06030;">260514-14</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -6127,6 +6347,10 @@
       <button class="map-building available" style="top:84.7%;left:69.8%" onclick="enterOrchard()" aria-label="과수원">
         <div class="bldg-label">🍎 과수원</div>
       </button>
+    </div>
+    <!-- 스토리 진입 -->
+    <div class="story-section">
+      <button class="story-btn" onclick="openStory(1)">📖 스토리 1화 — 동물보호소</button>
     </div>
   </div>
 
@@ -8586,6 +8810,121 @@ function parkRunExit() {
   document.removeEventListener('keydown', parkRunKeyHandler);
   parkRunState = null;
   parkLobby();
+}
+
+// ============= 스토리 리더 =============
+const STORY_CHAPTERS = {
+  1: {
+    title: '동물농장 — 1화',
+    pages: [
+      'story/001/1%7E4.png',
+      'story/001/5%7E8.png',
+      'story/001/9%7E12.png'
+    ]
+  }
+};
+let storyState = null;
+
+function openStory(chapter) {
+  const data = STORY_CHAPTERS[chapter];
+  if (!data) return;
+  // 진입 이펙트 (플래시 + 광선)
+  const flash = document.createElement('div');
+  flash.className = 'story-flash';
+  document.body.appendChild(flash);
+  const rays = document.createElement('div');
+  rays.className = 'story-rays';
+  document.body.appendChild(rays);
+  setTimeout(() => { flash.remove(); rays.remove(); }, 900);
+  // 리더 오픈
+  setTimeout(() => showStoryReader(chapter, data), 400);
+}
+
+function showStoryReader(chapter, data) {
+  if (storyState && storyState.el) storyState.el.remove();
+  storyState = { chapter, data, idx: 0, el: null };
+  const reader = document.createElement('div');
+  reader.className = 'story-reader';
+  reader.id = 'story-reader';
+  reader.innerHTML = `
+    <div class="story-header">
+      <button class="story-close" onclick="closeStory()" aria-label="닫기">✕</button>
+      <div class="story-title">📖 ${data.title}</div>
+      <div class="story-pages" id="story-pages">1 / ${data.pages.length}</div>
+    </div>
+    <div class="story-image-wrap" id="story-image-wrap">
+      <img class="story-image flip-right" id="story-image" src="${data.pages[0]}" alt="페이지 1" draggable="false">
+    </div>
+    <div class="story-nav">
+      <button class="story-nav-btn" id="story-prev" onclick="storyPrev()" disabled>◀ 이전</button>
+      <button class="story-nav-btn" id="story-next" onclick="storyNext()">다음 ▶</button>
+    </div>
+  `;
+  document.body.appendChild(reader);
+  storyState.el = reader;
+  document.addEventListener('keydown', storyKeyHandler);
+  // 이미지 클릭으로 다음 페이지
+  const wrap = $('story-image-wrap');
+  if (wrap) wrap.addEventListener('click', storyNext);
+}
+
+function storyNext() {
+  const s = storyState;
+  if (!s) return;
+  if (s.idx >= s.data.pages.length - 1) {
+    // 마지막 페이지에서 다음 누르면 닫음
+    closeStory();
+    return;
+  }
+  s.idx++;
+  storyApplyPage('right');
+}
+
+function storyPrev() {
+  const s = storyState;
+  if (!s || s.idx <= 0) return;
+  s.idx--;
+  storyApplyPage('left');
+}
+
+function storyApplyPage(direction) {
+  const s = storyState;
+  if (!s) return;
+  const img = $('story-image');
+  const src = s.data.pages[s.idx];
+  // 애니메이션 재시작
+  img.classList.remove('flip-left', 'flip-right');
+  void img.offsetWidth;
+  img.src = src;
+  img.alt = `페이지 ${s.idx + 1}`;
+  img.classList.add(direction === 'left' ? 'flip-left' : 'flip-right');
+  $('story-pages').textContent = `${s.idx + 1} / ${s.data.pages.length}`;
+  $('story-prev').disabled = s.idx === 0;
+  const nextBtn = $('story-next');
+  if (nextBtn) nextBtn.textContent = (s.idx === s.data.pages.length - 1) ? '✓ 끝내기' : '다음 ▶';
+}
+
+function storyKeyHandler(e) {
+  if (e.code === 'ArrowRight' || e.code === 'Space') {
+    e.preventDefault();
+    storyNext();
+  } else if (e.code === 'ArrowLeft') {
+    e.preventDefault();
+    storyPrev();
+  } else if (e.code === 'Escape') {
+    closeStory();
+  }
+}
+
+function closeStory() {
+  if (!storyState || !storyState.el) return;
+  storyState.el.classList.add('closing');
+  document.removeEventListener('keydown', storyKeyHandler);
+  const el = storyState.el;
+  setTimeout(() => {
+    if (el) el.remove();
+    storyState = null;
+  }, 420);
 }
 
 function lockedLoc(name) {
