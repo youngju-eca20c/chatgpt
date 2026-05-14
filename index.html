@@ -886,29 +886,30 @@
     width: 100%;
     height: 100%;
   }
-  /* 스토리 진입 버튼 */
+  /* 스토리 진입 버튼 (작게, 좌측 정렬) */
   .story-section {
-    margin: 16px auto 4px;
+    margin: 10px 0 2px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+    padding: 0 2px;
   }
   .story-btn {
     background: linear-gradient(135deg, #ff8040 0%, #c040c0 50%, #4080ff 100%);
     background-size: 220% 220%;
-    border: 3px solid #ffe080;
+    border: 2px solid #ffe080;
     color: #fff;
-    padding: 10px 26px;
+    padding: 4px 12px;
     font-family: 'Black Han Sans', sans-serif;
-    font-size: 1.02rem;
+    font-size: 0.74rem;
     border-radius: 999px;
     cursor: pointer;
     box-shadow:
-      0 4px 0 #4a2080,
-      0 6px 18px rgba(120,40,200,0.5),
-      0 0 22px rgba(255,200,80,0.45);
-    text-shadow: 1px 2px 3px rgba(0,0,0,0.5);
+      0 3px 0 #4a2080,
+      0 4px 10px rgba(120,40,200,0.4),
+      0 0 14px rgba(255,200,80,0.4);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
     animation: storyShimmer 4s ease-in-out infinite;
-    letter-spacing: 1.5px;
+    letter-spacing: 0.5px;
     transition: transform 0.18s, filter 0.18s, box-shadow 0.18s;
     position: relative;
   }
@@ -917,24 +918,24 @@
     50%      { background-position: 100% 50%; }
   }
   .story-btn:hover {
-    transform: translateY(-3px) scale(1.05);
-    filter: brightness(1.12);
+    transform: translateY(-2px) scale(1.06);
+    filter: brightness(1.15);
     box-shadow:
-      0 6px 0 #4a2080,
-      0 9px 22px rgba(120,40,200,0.6),
-      0 0 32px rgba(255,200,80,0.85);
+      0 5px 0 #4a2080,
+      0 7px 14px rgba(120,40,200,0.55),
+      0 0 22px rgba(255,200,80,0.8);
   }
   .story-btn:active { transform: translateY(0); }
   .story-btn::before, .story-btn::after {
     content: '✨';
     position: absolute;
-    top: -10px;
-    font-size: 1.1rem;
+    top: -7px;
+    font-size: 0.72rem;
     animation: storySpark 1.6s ease-in-out infinite;
     pointer-events: none;
   }
-  .story-btn::before { left: -2px; }
-  .story-btn::after { right: -2px; animation-delay: -0.8s; }
+  .story-btn::before { left: -3px; }
+  .story-btn::after { right: -3px; animation-delay: -0.8s; }
   @keyframes storySpark {
     0%, 100% { opacity: 0.4; transform: scale(0.85) rotate(-10deg); }
     50%      { opacity: 1;   transform: scale(1.15) rotate(15deg); }
@@ -1066,16 +1067,7 @@
     box-shadow:
       0 8px 28px rgba(0,0,0,0.55),
       0 0 40px rgba(160,80,220,0.3);
-  }
-  .story-image.flip-right { animation: pageInR 0.45s ease; }
-  .story-image.flip-left  { animation: pageInL 0.45s ease; }
-  @keyframes pageInR {
-    0%   { opacity: 0; transform: translateX(60px) rotateY(-10deg); }
-    100% { opacity: 1; transform: translateX(0) rotateY(0deg); }
-  }
-  @keyframes pageInL {
-    0%   { opacity: 0; transform: translateX(-60px) rotateY(10deg); }
-    100% { opacity: 1; transform: translateX(0) rotateY(0deg); }
+    will-change: transform, opacity;
   }
   .story-nav {
     display: flex;
@@ -5840,7 +5832,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-14</div>
+    <div class="version-tag" style="color:#a06030;">260514-15</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -8842,7 +8834,9 @@ function openStory(chapter) {
 
 function showStoryReader(chapter, data) {
   if (storyState && storyState.el) storyState.el.remove();
-  storyState = { chapter, data, idx: 0, el: null };
+  storyState = { chapter, data, idx: 0, el: null, transitioning: false };
+  // 모든 페이지 미리 로딩 (전환 시 빈 깜빡임 방지)
+  data.pages.forEach(src => { const im = new Image(); im.src = src; });
   const reader = document.createElement('div');
   reader.className = 'story-reader';
   reader.id = 'story-reader';
@@ -8853,7 +8847,7 @@ function showStoryReader(chapter, data) {
       <div class="story-pages" id="story-pages">1 / ${data.pages.length}</div>
     </div>
     <div class="story-image-wrap" id="story-image-wrap">
-      <img class="story-image flip-right" id="story-image" src="${data.pages[0]}" alt="페이지 1" draggable="false">
+      <img class="story-image" id="story-image" src="${data.pages[0]}" alt="페이지 1" draggable="false">
     </div>
     <div class="story-nav">
       <button class="story-nav-btn" id="story-prev" onclick="storyPrev()" disabled>◀ 이전</button>
@@ -8870,9 +8864,8 @@ function showStoryReader(chapter, data) {
 
 function storyNext() {
   const s = storyState;
-  if (!s) return;
+  if (!s || s.transitioning) return;
   if (s.idx >= s.data.pages.length - 1) {
-    // 마지막 페이지에서 다음 누르면 닫음
     closeStory();
     return;
   }
@@ -8882,7 +8875,7 @@ function storyNext() {
 
 function storyPrev() {
   const s = storyState;
-  if (!s || s.idx <= 0) return;
+  if (!s || s.transitioning || s.idx <= 0) return;
   s.idx--;
   storyApplyPage('left');
 }
@@ -8891,17 +8884,44 @@ function storyApplyPage(direction) {
   const s = storyState;
   if (!s) return;
   const img = $('story-image');
-  const src = s.data.pages[s.idx];
-  // 애니메이션 재시작
-  img.classList.remove('flip-left', 'flip-right');
-  void img.offsetWidth;
-  img.src = src;
-  img.alt = `페이지 ${s.idx + 1}`;
-  img.classList.add(direction === 'left' ? 'flip-left' : 'flip-right');
+  if (!img) return;
+  s.transitioning = true;
+  // 메타데이터는 즉시 반영
   $('story-pages').textContent = `${s.idx + 1} / ${s.data.pages.length}`;
   $('story-prev').disabled = s.idx === 0;
   const nextBtn = $('story-next');
   if (nextBtn) nextBtn.textContent = (s.idx === s.data.pages.length - 1) ? '✓ 끝내기' : '다음 ▶';
+
+  const outX = direction === 'right' ? -22 : 22;   // 현재 페이지 빠져나가는 방향
+  const inX  = direction === 'right' ? 22 : -22;   // 새 페이지 들어오는 방향
+  const src = s.data.pages[s.idx];
+
+  // 1단계: 현재 페이지 슬쩍 빠져나감 (180ms)
+  img.style.transition = 'transform 0.18s cubic-bezier(.4,0,.7,.4), opacity 0.18s ease-in, filter 0.18s';
+  img.style.transform = `translate3d(${outX}%, 0, 0) scale(0.94)`;
+  img.style.opacity = '0';
+  img.style.filter = 'blur(2px)';
+
+  setTimeout(() => {
+    if (!storyState) return;
+    // 새 페이지 로드 + 반대쪽에서 시작
+    img.src = src;
+    img.alt = `페이지 ${s.idx + 1}`;
+    img.style.transition = 'none';
+    img.style.transform = `translate3d(${inX}%, 0, 0) scale(0.94)`;
+    img.style.opacity = '0';
+    img.style.filter = 'blur(2px)';
+    // reflow 강제
+    void img.offsetWidth;
+    // 2단계: 새 페이지 부드럽게 슉 들어옴 (320ms)
+    img.style.transition = 'transform 0.32s cubic-bezier(.2,.65,.25,1), opacity 0.28s ease-out, filter 0.28s ease-out';
+    img.style.transform = 'translate3d(0, 0, 0) scale(1)';
+    img.style.opacity = '1';
+    img.style.filter = 'blur(0)';
+    setTimeout(() => {
+      if (storyState) storyState.transitioning = false;
+    }, 340);
+  }, 190);
 }
 
 function storyKeyHandler(e) {
