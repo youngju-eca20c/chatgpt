@@ -821,6 +821,17 @@
     text-shadow: none;
   }
 
+  .btn.danger {
+    background: linear-gradient(180deg, #ff6040, #c02020);
+    border-color: #ff9070;
+    box-shadow: 0 4px 0 #701010, 0 5px 12px rgba(0,0,0,0.4);
+    animation: dangerPulse 0.9s ease-in-out infinite;
+  }
+  @keyframes dangerPulse {
+    0%, 100% { box-shadow: 0 4px 0 #701010, 0 5px 12px rgba(0,0,0,0.4), 0 0 0 0 rgba(255,80,40,0.5); }
+    50% { box-shadow: 0 4px 0 #701010, 0 5px 12px rgba(0,0,0,0.4), 0 0 0 8px rgba(255,80,40,0); }
+  }
+
   /* 패치 버전 */
   .version-tag {
     text-align: center;
@@ -1903,94 +1914,219 @@
   .shell-result.win { color: #20a040; }
   .shell-result.lose { color: #c03030; }
 
-  /* 인형뽑기 */
+  /* 인형뽑기 — 실제 클로 머신 */
   .claw-stage {
     background: linear-gradient(180deg, #ffe0f0 0%, #ffc8e0 60%, #f0a8d0 100%);
     border: 3px solid #d05080;
     border-radius: 14px;
-    padding: 12px 8px 16px;
+    padding: 10px 8px 14px;
     margin-bottom: 10px;
     box-shadow: inset 0 0 22px rgba(180, 40, 100, 0.18);
     position: relative;
     overflow: hidden;
   }
   .claw-cabinet {
-    background: linear-gradient(180deg, #e0eaf8, #b8c8e8);
-    border: 3px solid #5070a8;
-    border-radius: 10px;
-    height: 200px;
+    background:
+      linear-gradient(180deg, rgba(220,235,250,0.45), rgba(200,220,250,0.6) 70%, rgba(180,200,240,0.7)),
+      linear-gradient(180deg, #d8e6f8, #b0c4e8);
+    border: 4px solid #4060a0;
+    border-radius: 12px 12px 8px 8px;
+    height: 280px;
     position: relative;
     overflow: hidden;
     margin-bottom: 10px;
+    box-shadow:
+      inset 0 4px 12px rgba(255,255,255,0.6),
+      inset 0 -6px 12px rgba(60,80,140,0.3),
+      0 4px 8px rgba(0,0,0,0.2);
+  }
+  /* 유리창 반사 */
+  .claw-cabinet::before {
+    content: '';
+    position: absolute;
+    top: 4px; left: 4px;
+    width: 30%;
+    height: 70%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0));
+    pointer-events: none;
+    border-radius: 8px;
   }
   .claw-rail {
     position: absolute;
-    top: 8px; left: 8px; right: 8px;
-    height: 4px;
-    background: linear-gradient(90deg, #888, #ccc, #888);
-    border-radius: 2px;
+    top: 8px; left: 4%; right: 4%;
+    height: 6px;
+    background: linear-gradient(180deg, #666, #aaa 50%, #444);
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    z-index: 2;
   }
+  .claw-floor {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 12px;
+    background: linear-gradient(180deg, #6080b0, #405080);
+    border-top: 2px solid #2a3a6a;
+  }
+  /* 클로 (집게) */
   .claw-arm {
     position: absolute;
     top: 12px;
     left: 50%;
-    width: 4px;
-    height: 30px;
-    background: #5a5a5a;
-    transform: translateX(-50%);
-    transition: top 0.6s, left 0.4s;
+    width: 50px;
+    height: 60px;
+    margin-left: -25px;
+    transition: left 0s, top 0.7s ease-in-out;
+    z-index: 6;
+    pointer-events: none;
   }
-  .claw-arm::after {
+  .claw-arm.smooth-x { transition: left 0.3s, top 0.7s ease-in-out; }
+  .claw-arm-shaft {
+    position: absolute;
+    top: 0; left: 50%;
+    width: 4px;
+    height: 26px;
+    background: linear-gradient(180deg, #555, #333);
+    transform: translateX(-50%);
+  }
+  .claw-arm-hub {
+    position: absolute;
+    top: 22px; left: 50%;
+    width: 18px;
+    height: 10px;
+    background: linear-gradient(180deg, #888, #555);
+    border: 1.5px solid #2a2a2a;
+    border-radius: 4px;
+    transform: translateX(-50%);
+  }
+  .claw-arm-claw {
+    position: absolute;
+    top: 30px;
+    width: 24px;
+    height: 28px;
+    background: linear-gradient(180deg, #aaa, #555);
+    border: 1.5px solid #2a2a2a;
+    transition: transform 0.25s;
+    transform-origin: top center;
+  }
+  .claw-arm-claw.left {
+    left: 1px;
+    border-radius: 0 0 12px 14px;
+    transform: rotate(20deg);
+  }
+  .claw-arm-claw.right {
+    right: 1px;
+    border-radius: 0 0 14px 12px;
+    transform: rotate(-20deg);
+  }
+  .claw-arm.closed .claw-arm-claw.left { transform: rotate(0deg) translateX(4px); }
+  .claw-arm.closed .claw-arm-claw.right { transform: rotate(0deg) translateX(-4px); }
+  /* 인형 슬롯 (바닥 위에 진열) */
+  .claw-doll-slot {
+    position: absolute;
+    bottom: 14px;
+    width: 46px;
+    height: 56px;
+    transform: translateX(-50%);
+    z-index: 3;
+    transition: transform 0.4s, opacity 0.4s;
+  }
+  .claw-doll-slot svg { width: 100%; height: 100%; }
+  .claw-doll-slot.common svg { filter: drop-shadow(0 2px 3px rgba(40,80,30,0.5)); }
+  .claw-doll-slot.rare svg { filter: drop-shadow(0 0 6px rgba(80,140,220,0.85)) drop-shadow(0 2px 3px rgba(40,60,90,0.5)); }
+  .claw-doll-slot.legendary svg {
+    filter: drop-shadow(0 0 10px rgba(220,120,220,1)) drop-shadow(0 2px 3px rgba(80,40,80,0.5));
+    animation: legendPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes legendPulse {
+    0%, 100% { filter: drop-shadow(0 0 8px rgba(220,120,220,0.95)) drop-shadow(0 2px 3px rgba(80,40,80,0.5)); }
+    50% { filter: drop-shadow(0 0 16px rgba(255,160,255,1)) drop-shadow(0 2px 3px rgba(80,40,80,0.5)); }
+  }
+  .claw-doll-slot.grabbed {
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* 등급 받침대 */
+  .claw-doll-slot::after {
     content: '';
     position: absolute;
-    bottom: -10px;
-    left: -16px;
-    width: 36px;
-    height: 18px;
-    background: #888;
-    border: 2px solid #444;
-    border-radius: 0 0 18px 18px;
+    bottom: -6px;
+    left: 50%;
+    width: 38px;
+    height: 5px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    filter: blur(2px);
   }
-  .claw-pile {
-    position: absolute;
-    bottom: 4px;
-    left: 0;
-    right: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 4px;
-    padding: 0 8px;
-  }
-  .claw-doll {
-    width: 36px;
-    height: 36px;
-    transition: transform 0.4s;
-  }
-  .claw-doll svg { width: 100%; height: 100%; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+  /* 슈트 (상품 배출구) */
   .claw-chute {
     position: absolute;
-    bottom: 0;
-    right: 6px;
-    width: 36px;
-    height: 30px;
-    background: #5a3010;
-    border-radius: 4px 4px 0 0;
+    bottom: 12px;
+    right: 4px;
+    width: 38px;
+    height: 50px;
+    background: linear-gradient(180deg, #2a1a08, #5a3010);
+    border: 2px solid #1a0a04;
+    border-radius: 5px 5px 0 0;
+    z-index: 1;
   }
+  .claw-chute::before {
+    content: '🎁';
+    position: absolute;
+    top: 4px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+  }
+  /* 잡은 상품 */
   .claw-prize {
     position: absolute;
-    top: 50px;
+    top: 70px;
     left: 50%;
-    width: 50px;
-    height: 50px;
-    transform: translateX(-50%);
+    width: 46px;
+    height: 56px;
+    margin-left: -23px;
     opacity: 0;
-    transition: top 0.7s, opacity 0.3s;
+    transition: top 0.7s ease-in-out, left 0.5s, opacity 0.3s;
     pointer-events: none;
-    z-index: 5;
+    z-index: 7;
   }
   .claw-prize.show { opacity: 1; }
-  .claw-prize svg { width: 100%; height: 100%; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.4)); }
+  .claw-prize.falling { transition: top 0.5s cubic-bezier(.55,.05,.7,.5), opacity 0.3s; }
+  .claw-prize svg { width: 100%; height: 100%; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5)); }
+  /* 클로 표시기 (어디로 떨어질지 미리보기) */
+  .claw-aim {
+    position: absolute;
+    top: 70px;
+    width: 2px;
+    height: 200px;
+    background: rgba(255, 100, 100, 0);
+    z-index: 2;
+    pointer-events: none;
+    transform: translateX(-50%);
+    transition: left 0s;
+  }
+  .claw-status {
+    text-align: center;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.92rem;
+    color: #6a2050;
+    background: rgba(255,255,255,0.7);
+    border-radius: 8px;
+    padding: 6px 8px;
+    margin-top: 6px;
+    min-height: 1.3em;
+  }
+  .claw-status.win { color: #1a8030; background: rgba(220,255,220,0.85); }
+  .claw-status.lose { color: #a02030; background: rgba(255,220,220,0.85); }
+  .claw-controls {
+    text-align: center;
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .claw-controls .btn { flex: 0 0 auto; min-width: 110px; }
 
   .mini-collection {
     background: rgba(255, 248, 224, 0.85);
@@ -5099,7 +5235,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-04</div>
+    <div class="version-tag" style="color:#a06030;">260514-05</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -7198,7 +7334,7 @@ function parkLobby() {
   $('park-gold').textContent = save.gold;
   $('park-actions').innerHTML = '<button class="btn" onclick="showWorldMap()">← 월드맵</button>';
   const games = [
-    { icon:'🐧', name:'펭귄 야바위', cost:`${PARK_SHELL_COST}골드 · 기술+`, fn:'parkShellStart()' },
+    { icon:'🐧', name:'펭귄 야바위', cost:`${PARK_SHELL_COST}골드`, fn:'parkShellStart()' },
     { icon:'🪆', name:'인형뽑기',     cost:`${PARK_CLAW_COST}골드 · 매력+`, fn:'parkClawStart()' },
     { icon:'🎢', name:'롤러코스터',  cost:'🚧 공사중', disabled:true },
     { icon:'🎯', name:'사격장',       cost:'🚧 공사중', disabled:true },
@@ -7284,20 +7420,13 @@ function parkShellPick(blockIdx) {
   parkShellRender();
   setTimeout(() => {
     if (win) {
-      const skillGain = 5 + Math.floor(Math.random() * 6);
-      const charmGain = 1 + Math.floor(Math.random() * 3);
-      const goldGain = 5 + Math.floor(Math.random() * 11);
-      const a = getActiveAnimal();
-      if (a) {
-        bumpStat(a, 'skill', skillGain);
-        bumpStat(a, 'charm', charmGain);
-      }
+      const goldGain = 25 + Math.floor(Math.random() * 26); // 25~50
       save.gold += goldGain;
       saveSave();
       const res = $('shell-result');
       if (res) {
         res.className = 'shell-result win';
-        res.innerHTML = `🎉 정답! 기술 +${skillGain} · 매력 +${charmGain} · +${goldGain}골드`;
+        res.innerHTML = `🎉 정답! +${goldGain}골드 획득`;
       }
       $('park-gold').textContent = save.gold;
     } else {
@@ -7362,21 +7491,55 @@ function parkShellRender() {
   `;
 }
 
-// ----- 인형뽑기 -----
+// ----- 인형뽑기 (실제 클로 머신) -----
+let parkClawState = null;
+const CLAW_DOLL_POSITIONS = [16, 30, 46, 62, 78]; // 5칸 (% of cabinet width)
+
 function parkClawStart() {
   if (!save.miniatures) save.miniatures = {};
   saveSave();
-  $('park-sub').textContent = '🪆 인형뽑기 — 동물 미니어처 모으기';
+  parkClawSetup();
+  $('park-sub').textContent = '🪆 인형뽑기 — 타이밍 맞춰 DROP!';
   $('park-gold').textContent = save.gold;
-  $('park-actions').innerHTML = `<button class="btn" onclick="parkLobby()">← 게임 선택</button>`;
+  $('park-actions').innerHTML = `<button class="btn" onclick="parkClawExit()">← 게임 선택</button>`;
   parkClawRender();
 }
 
+function parkClawExit() {
+  if (parkClawState && parkClawState.rafId) cancelAnimationFrame(parkClawState.rafId);
+  parkClawState = null;
+  parkLobby();
+}
+
+function parkClawSetup() {
+  // 5개 인형 배치: 3 common + 1 rare + 1 legendary
+  const species = Object.keys(ANIMAL_SPECIES);
+  const commons   = species.filter(s => ANIMAL_SPECIES[s].rarity === 'common');
+  const rares     = species.filter(s => ANIMAL_SPECIES[s].rarity === 'rare');
+  const legends   = species.filter(s => ANIMAL_SPECIES[s].rarity === 'legendary');
+  const shuffle = arr => arr.slice().sort(() => Math.random() - 0.5);
+  const lineup = shuffle([
+    ...shuffle(commons).slice(0, 3),
+    ...shuffle(rares).slice(0, 1),
+    ...shuffle(legends).slice(0, 1)
+  ]);
+  parkClawState = {
+    dolls: lineup.map((species, i) => ({
+      species, left: CLAW_DOLL_POSITIONS[i], grabbed: false
+    })),
+    armX: 50,
+    direction: 1,
+    speed: 0.55,
+    phase: 'ready',
+    rafId: null
+  };
+}
+
 function parkClawRender() {
+  const st = parkClawState;
   const species = Object.keys(ANIMAL_SPECIES);
   const minis = save.miniatures || {};
   const ownedCount = species.filter(sp => (minis[sp] || 0) > 0).length;
-  const pileSpecies = species.slice(0, 6);
   const collGrid = species.map(sp => {
     const owned = (minis[sp] || 0) > 0;
     const count = minis[sp] || 0;
@@ -7387,19 +7550,35 @@ function parkClawRender() {
       </div>
     `;
   }).join('');
+  const dollsHtml = st.dolls.map((d, i) => `
+    <div class="claw-doll-slot ${ANIMAL_SPECIES[d.species].rarity}${d.grabbed ? ' grabbed' : ''}"
+         id="claw-slot-${i}"
+         style="left:${d.left}%">
+      <svg viewBox="0 0 100 100"><use href="#${ANIMAL_SPECIES[d.species].svg}"/></svg>
+    </div>
+  `).join('');
+  const canStart = st.phase === 'ready' || st.phase === 'done';
+  const moving = st.phase === 'moving';
   $('park-content').innerHTML = `
     <div class="claw-stage">
-      <div class="claw-cabinet">
+      <div class="claw-cabinet" id="claw-cabinet">
         <div class="claw-rail"></div>
-        <div class="claw-arm" id="claw-arm"></div>
-        <div class="claw-pile">
-          ${pileSpecies.map(sp => `<div class="claw-doll"><svg viewBox="0 0 100 100"><use href="#${ANIMAL_SPECIES[sp].svg}"/></svg></div>`).join('')}
+        <div class="claw-arm" id="claw-arm" style="left:${st.armX}%">
+          <div class="claw-arm-shaft"></div>
+          <div class="claw-arm-hub"></div>
+          <div class="claw-arm-claw left"></div>
+          <div class="claw-arm-claw right"></div>
         </div>
+        ${dollsHtml}
         <div class="claw-chute"></div>
         <div class="claw-prize" id="claw-prize"></div>
+        <div class="claw-floor"></div>
       </div>
-      <div class="shell-actions">
-        <button class="btn success" id="claw-go" onclick="parkClawPull()">🪆 뽑기 (${PARK_CLAW_COST}골드)</button>
+      <div class="claw-status" id="claw-status">${canStart ? `🪙 동전 ${PARK_CLAW_COST}골드를 넣고 시작하세요` : '🦾 가동 중...'}</div>
+      <div class="claw-controls">
+        ${canStart ? `<button class="btn success" onclick="parkClawBegin()">🪙 ${PARK_CLAW_COST}골드 넣기</button>` : ''}
+        ${moving ? `<button class="btn danger" id="claw-drop-btn" onclick="parkClawDrop()">🦾 DROP!</button>` : ''}
+        <button class="btn" onclick="parkClawReshuffle()">🔄 진열 새로</button>
       </div>
       <div class="mini-collection">
         <div class="mini-coll-title">📚 미니어처 컬렉션 (${ownedCount} / ${species.length})</div>
@@ -7409,68 +7588,242 @@ function parkClawRender() {
   `;
 }
 
-function parkClawPull() {
+function parkClawReshuffle() {
+  if (parkClawState && parkClawState.phase !== 'ready' && parkClawState.phase !== 'done') {
+    toast('🚫 가동 중에는 진열을 바꿀 수 없어요', 'warn');
+    return;
+  }
+  parkClawSetup();
+  parkClawRender();
+}
+
+function parkClawBegin() {
   if (save.gold < PARK_CLAW_COST) {
     toast(`💰 골드가 부족해요! (${PARK_CLAW_COST}골드 필요)`, 'warn');
     return;
   }
   save.gold -= PARK_CLAW_COST;
-  $('park-gold').textContent = save.gold;
-  const goBtn = $('claw-go');
-  if (goBtn) goBtn.disabled = true;
-
-  const species = Object.keys(ANIMAL_SPECIES);
-  const r = Math.random();
-  let pool;
-  if (r < 0.60) pool = species.filter(sp => ANIMAL_SPECIES[sp].rarity === 'common');
-  else if (r < 0.92) pool = species.filter(sp => ANIMAL_SPECIES[sp].rarity === 'rare');
-  else pool = species.filter(sp => ANIMAL_SPECIES[sp].rarity === 'legendary');
-  if (!pool || pool.length === 0) pool = species;
-  const won = pool[Math.floor(Math.random() * pool.length)];
-  if (!save.miniatures) save.miniatures = {};
-  const isNew = !save.miniatures[won];
-  save.miniatures[won] = (save.miniatures[won] || 0) + 1;
-  const charmGain = isNew ? 5 : 2;
-  const goldBonus = isNew ? 0 : 10;
-  const a = getActiveAnimal();
-  if (a) bumpStat(a, 'charm', charmGain);
-  if (goldBonus) save.gold += goldBonus;
   saveSave();
+  $('park-gold').textContent = save.gold;
+  const st = parkClawState;
+  st.phase = 'moving';
+  st.direction = Math.random() < 0.5 ? 1 : -1;
+  // 클로 위치는 그대로 두고 움직이기 시작
+  parkClawRender();
+  parkClawTick();
+}
 
-  // 애니메이션 시퀀스
+function parkClawTick() {
+  const st = parkClawState;
+  if (!st || st.phase !== 'moving') return;
+  st.armX += st.direction * st.speed;
+  if (st.armX > 88) { st.armX = 88; st.direction = -1; }
+  if (st.armX < 12) { st.armX = 12; st.direction = 1; }
+  const arm = $('claw-arm');
+  if (arm) arm.style.left = `${st.armX}%`;
+  st.rafId = requestAnimationFrame(parkClawTick);
+}
+
+function parkClawDrop() {
+  const st = parkClawState;
+  if (!st || st.phase !== 'moving') return;
+  cancelAnimationFrame(st.rafId);
+  st.phase = 'dropping';
+  // DROP 버튼 즉시 숨김
+  const dropBtn = $('claw-drop-btn');
+  if (dropBtn) dropBtn.remove();
+  // 어느 인형이 클로 아래에 있는가
+  const tolerance = 7; // ±7% 이내면 그 인형 잡으려 시도
+  let targetIdx = -1;
+  let bestDist = Infinity;
+  st.dolls.forEach((d, i) => {
+    if (d.grabbed) return;
+    const dist = Math.abs(d.left - st.armX);
+    if (dist < tolerance && dist < bestDist) {
+      bestDist = dist;
+      targetIdx = i;
+    }
+  });
+  st.targetIdx = targetIdx;
+  setClawStatus(targetIdx >= 0
+    ? `🎯 ${ANIMAL_SPECIES[st.dolls[targetIdx].species].name} 조준!`
+    : '😬 빈 공간을 노리고 있어요...');
+  // 내려가기
+  const arm = $('claw-arm');
+  arm.style.transition = 'top 0.85s ease-in';
+  arm.style.top = '200px';
+  setTimeout(() => parkClawGrab(), 900);
+}
+
+function parkClawGrab() {
+  const st = parkClawState;
+  if (!st) return;
+  st.phase = 'grabbing';
+  const arm = $('claw-arm');
+  if (arm) arm.classList.add('closed');
+  setClawStatus('🤏 잡는 중...');
+  // 잡기 성공 판정
+  let grabSuccess = false;
+  if (st.targetIdx >= 0) {
+    const target = st.dolls[st.targetIdx];
+    const rarity = ANIMAL_SPECIES[target.species].rarity;
+    const grabRate = rarity === 'legendary' ? 0.30 : rarity === 'rare' ? 0.55 : 0.80;
+    grabSuccess = Math.random() < grabRate;
+  }
+  st.grabSuccess = grabSuccess;
+  setTimeout(() => parkClawAscend(), 550);
+}
+
+function parkClawAscend() {
+  const st = parkClawState;
+  if (!st) return;
+  st.phase = 'rising';
   const arm = $('claw-arm');
   const prize = $('claw-prize');
-  const targetLeft = 25 + Math.random() * 50;
-  if (arm) arm.style.left = `${targetLeft}%`;
-  if (prize) prize.style.left = `${targetLeft}%`;
-
-  setTimeout(() => { if (arm) arm.style.top = '130px'; }, 450);
-  setTimeout(() => {
+  if (st.grabSuccess) {
+    const target = st.dolls[st.targetIdx];
+    // 인형 슬롯 숨김
+    const slot = document.getElementById(`claw-slot-${st.targetIdx}`);
+    if (slot) slot.classList.add('grabbed');
+    // 상품을 클로 위치에 표시
     if (prize) {
-      prize.innerHTML = `<svg viewBox="0 0 100 100"><use href="#${ANIMAL_SPECIES[won].svg}"/></svg>`;
-      prize.style.top = '120px';
+      prize.innerHTML = `<svg viewBox="0 0 100 100"><use href="#${ANIMAL_SPECIES[target.species].svg}"/></svg>`;
+      prize.style.transition = 'top 0s, left 0s';
+      prize.style.left = `${st.armX}%`;
+      prize.style.top = '200px';
       prize.classList.add('show');
+      // 클로와 함께 올라옴
+      requestAnimationFrame(() => {
+        prize.style.transition = 'top 0.7s ease-in-out, left 0.5s';
+        prize.style.top = '34px';
+      });
     }
-    if (arm) arm.style.top = '12px';
-    if (prize) prize.style.top = '40px';
-  }, 1100);
+    if (arm) {
+      arm.style.transition = 'top 0.7s ease-in-out';
+      arm.style.top = '12px';
+    }
+    // 미끄러질 확률 (희귀도 비례)
+    const rarity = ANIMAL_SPECIES[target.species].rarity;
+    const slipRate = rarity === 'legendary' ? 0.35 : rarity === 'rare' ? 0.18 : 0.08;
+    const willSlip = Math.random() < slipRate;
+    if (willSlip) {
+      const slipAt = 220 + Math.random() * 360;
+      setTimeout(() => parkClawSlip(), slipAt);
+    } else {
+      setTimeout(() => parkClawDeliver(), 780);
+    }
+    setClawStatus('⬆️ 올라가는 중...');
+  } else {
+    if (arm) {
+      arm.style.transition = 'top 0.7s ease-in-out';
+      arm.style.top = '12px';
+    }
+    setClawStatus('💨 헛스윙... 빈손이에요');
+    setTimeout(() => parkClawEnd(false, null), 850);
+  }
+}
+
+function parkClawSlip() {
+  const st = parkClawState;
+  if (!st || st.phase !== 'rising') return;
+  setClawStatus('💢 손에서 미끄러졌어요!');
+  const arm = $('claw-arm');
+  const prize = $('claw-prize');
+  if (arm) arm.classList.remove('closed');
+  if (prize) {
+    prize.classList.add('falling');
+    prize.style.top = '210px';
+    setTimeout(() => {
+      prize.classList.remove('show');
+      prize.classList.remove('falling');
+    }, 520);
+  }
+  // 떨어진 인형은 다시 진열 (살짝 옆자리에 떨어진다고 가정)
+  if (st.targetIdx >= 0) {
+    const slot = document.getElementById(`claw-slot-${st.targetIdx}`);
+    if (slot) {
+      setTimeout(() => slot.classList.remove('grabbed'), 540);
+      st.dolls[st.targetIdx].grabbed = false;
+    }
+  }
+  setTimeout(() => parkClawEnd(false, null), 1100);
+}
+
+function parkClawDeliver() {
+  const st = parkClawState;
+  if (!st) return;
+  st.phase = 'delivering';
+  setClawStatus('🎁 슈트로 운반 중!');
+  const arm = $('claw-arm');
+  const prize = $('claw-prize');
+  // 슈트로 이동
+  if (arm) {
+    arm.style.transition = 'left 0.55s ease-in-out';
+    arm.style.left = '92%';
+  }
+  if (prize) {
+    prize.style.transition = 'left 0.55s ease-in-out, top 0.55s ease-in-out';
+    prize.style.left = '92%';
+  }
+  setTimeout(() => {
+    if (arm) arm.classList.remove('closed');
+    if (prize) {
+      prize.classList.add('falling');
+      prize.style.top = '210px';
+    }
+  }, 620);
   setTimeout(() => {
     if (prize) {
-      prize.style.left = 'calc(100% - 28px)';
-      prize.style.top = '160px';
+      prize.classList.remove('show');
+      prize.classList.remove('falling');
     }
-  }, 1800);
-  setTimeout(() => {
-    const rarity = ANIMAL_SPECIES[won].rarity;
+    parkClawEnd(true, st.dolls[st.targetIdx].species);
+  }, 1180);
+}
+
+function parkClawEnd(success, species) {
+  const st = parkClawState;
+  if (!st) return;
+  st.phase = 'done';
+  if (success && species) {
+    if (!save.miniatures) save.miniatures = {};
+    const isNew = !save.miniatures[species];
+    save.miniatures[species] = (save.miniatures[species] || 0) + 1;
+    const charmGain = isNew ? 5 : 2;
+    const goldBonus = isNew ? 0 : 10;
+    const a = getActiveAnimal();
+    if (a) bumpStat(a, 'charm', charmGain);
+    if (goldBonus) save.gold += goldBonus;
+    saveSave();
+    const rarity = ANIMAL_SPECIES[species].rarity;
     const rIcon = rarity === 'legendary' ? '🌟' : rarity === 'rare' ? '✨' : '🎁';
     const tType = rarity === 'legendary' ? 'magic' : (isNew ? 'good' : 'info');
     const msg = isNew
-      ? `${rIcon} 신규! <b>${ANIMAL_SPECIES[won].name}</b> 미니어처 — 매력 +${charmGain}`
-      : `${rIcon} <b>${ANIMAL_SPECIES[won].name}</b> 미니어처 (중복) — 매력 +${charmGain}, +${goldBonus}골드`;
+      ? `${rIcon} 신규! <b>${ANIMAL_SPECIES[species].name}</b> 미니어처! 매력 +${charmGain}`
+      : `${rIcon} <b>${ANIMAL_SPECIES[species].name}</b> (중복) — 매력 +${charmGain}, +${goldBonus}골드`;
     toast(msg, tType);
-    $('park-gold').textContent = save.gold;
-    parkClawRender();
-  }, 2700);
+    setClawStatus(`🎉 ${ANIMAL_SPECIES[species].name} 획득!`, 'win');
+  } else {
+    setClawStatus('😢 다음 기회에...', 'lose');
+  }
+  // 클로 원위치
+  const arm = $('claw-arm');
+  if (arm) {
+    arm.style.transition = 'top 0.5s, left 0.7s';
+    arm.style.top = '12px';
+    arm.style.left = '50%';
+    st.armX = 50;
+    arm.classList.remove('closed');
+  }
+  $('park-gold').textContent = save.gold;
+  setTimeout(() => parkClawRender(), 1000);
+}
+
+function setClawStatus(txt, kind) {
+  const el = $('claw-status');
+  if (!el) return;
+  el.innerHTML = txt;
+  el.className = 'claw-status' + (kind ? ' ' + kind : '');
 }
 
 function lockedLoc(name) {
