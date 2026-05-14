@@ -5601,7 +5601,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-11</div>
+    <div class="version-tag" style="color:#a06030;">260514-12</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -8324,10 +8324,10 @@ function parkRunTick() {
     st.dolphinY = 4;
     st.velocity = Math.max(0, st.velocity);
   }
-  // 물에 빠짐 → 게임 오버
-  if (st.dolphinY > 96) {
-    st.dolphinY = 96;
-    parkRunSplash(22, st.dolphinY);
+  // 게임창 맨 아래에 닿으면 게임 오버
+  if (st.dolphinY > 100) {
+    st.dolphinY = 100;
+    parkRunSplash(22, 98);
     parkRunGameOver('drown');
     return;
   }
