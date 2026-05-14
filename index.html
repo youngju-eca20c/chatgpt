@@ -2087,6 +2087,35 @@
     50%  { transform: scale(1.5); filter: brightness(1.8); }
     100% { transform: scale(1.7); opacity: 0; }
   }
+  /* 청새치 */
+  .run-sf {
+    position: absolute;
+    width: 92px;
+    height: 44px;
+    margin-left: -46px;
+    margin-top: -22px;
+    z-index: 4;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 5px rgba(0,30,60,0.45));
+    animation: sfSwim 0.5s ease-in-out infinite;
+  }
+  .run-sf svg { width: 100%; height: 100%; }
+  @keyframes sfSwim {
+    0%, 100% { transform: translateY(-1px); }
+    50%      { transform: translateY(2px); }
+  }
+  .run-flash {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,60,60,0.6);
+    z-index: 15;
+    animation: flashFade 0.55s forwards;
+    pointer-events: none;
+  }
+  @keyframes flashFade {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+  }
   .run-hud {
     position: absolute;
     top: 8px; left: 10px; right: 10px;
@@ -5572,7 +5601,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-08</div>
+    <div class="version-tag" style="color:#a06030;">260514-09</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -8234,14 +8263,15 @@ function parkRunStart() {
     dolphinY: 50,
     velocity: 0,
     rings: [],
-    scrollSpeed: 0.45,
-    ringSpawnInterval: 90,
+    swordfish: [],
+    scrollSpeed: 0.42,
+    spawnInterval: 95,
     spawnCounter: 30,
     rafId: null,
     frames: 0,
     goldEarned: 0,
     passedRings: 0,
-    nextRingId: 0
+    nextObsId: 0
   };
   parkRunRender();
   document.addEventListener('keydown', parkRunKeyHandler);
@@ -8256,11 +8286,12 @@ function parkRunRender() {
         <svg viewBox="0 0 100 100"><use href="#char-dolphin"/></svg>
       </div>
       <div id="run-rings-layer"></div>
+      <div id="run-sf-layer"></div>
       <div class="run-hud">
         <span>🪙 +<b id="run-gold">0</b></span>
         <span>🎯 <b id="run-rings-count">0</b></span>
       </div>
-      <div class="run-tip">탭 / SPACE — 점프!</div>
+      <div class="run-tip">탭 / SPACE — 점프! · ⚔️ 청새치 조심</div>
     </div>
   `;
 }
@@ -8285,7 +8316,7 @@ function parkRunTick() {
 
   // 중력
   st.velocity += 0.045;
-  if (st.velocity > 1.8) st.velocity = 1.8;
+  if (st.velocity > 1.9) st.velocity = 1.9;
   st.dolphinY += st.velocity;
 
   // 상단 캡
@@ -8297,11 +8328,11 @@ function parkRunTick() {
   if (st.dolphinY > 88) {
     st.dolphinY = 88;
     parkRunSplash(22, st.dolphinY);
-    parkRunGameOver();
+    parkRunGameOver('drown');
     return;
   }
 
-  // 링 이동
+  // 링 이동 + 통과 판정
   for (let i = st.rings.length - 1; i >= 0; i--) {
     const ring = st.rings[i];
     const prevX = ring.x;
@@ -8317,22 +8348,47 @@ function parkRunTick() {
     if (ring.x < -10) st.rings.splice(i, 1);
   }
 
-  // 링 스폰
+  // 청새치 이동 + 충돌 판정
+  for (let i = st.swordfish.length - 1; i >= 0; i--) {
+    const sf = st.swordfish[i];
+    sf.x -= st.scrollSpeed * 1.05; // 약간 더 빠름
+    const dx = sf.x - 22;
+    const dy = sf.y - st.dolphinY;
+    // 청새치 몸체 hitbox (가로 길고 세로 좁음): x ±12%, y ±6%
+    if (Math.abs(dx) < 12 && Math.abs(dy) < 6.5) {
+      parkRunHit(sf);
+      return;
+    }
+    if (sf.x < -15) st.swordfish.splice(i, 1);
+  }
+
+  // 스폰 (링 또는 청새치)
   st.spawnCounter++;
-  if (st.spawnCounter >= st.ringSpawnInterval) {
-    st.rings.push({
-      id: st.nextRingId++,
-      x: 108,
-      y: 18 + Math.random() * 64,
-      passed: false
-    });
+  if (st.spawnCounter >= st.spawnInterval) {
+    const timeSec = st.frames / 60;
+    // 시간 흐를수록 청새치 비율 ↑ (15% → 50%)
+    const sfChance = Math.min(0.50, 0.15 + timeSec * 0.012);
+    if (Math.random() < sfChance) {
+      st.swordfish.push({
+        id: st.nextObsId++,
+        x: 110,
+        y: 20 + Math.random() * 60
+      });
+    } else {
+      st.rings.push({
+        id: st.nextObsId++,
+        x: 108,
+        y: 18 + Math.random() * 64,
+        passed: false
+      });
+    }
     st.spawnCounter = 0;
   }
 
-  // 난이도 증가
-  if (st.frames > 300 && st.frames % 240 === 0) {
-    st.ringSpawnInterval = Math.max(55, st.ringSpawnInterval - 4);
-    st.scrollSpeed = Math.min(0.75, st.scrollSpeed + 0.04);
+  // 난이도 증가 — 2.5초마다 빠르게
+  if (st.frames > 150 && st.frames % 150 === 0) {
+    st.spawnInterval = Math.max(40, st.spawnInterval - 6);
+    st.scrollSpeed = Math.min(1.05, st.scrollSpeed + 0.055);
   }
 
   parkRunUpdateDom();
@@ -8381,6 +8437,43 @@ function parkRunUpdateDom() {
   Object.keys(existing).forEach(id => {
     if (!currentIds.has(id)) existing[id].remove();
   });
+  // 청새치 렌더
+  const sfLayer = $('run-sf-layer');
+  if (sfLayer) {
+    const sfExisting = {};
+    sfLayer.querySelectorAll('.run-sf').forEach(el => { sfExisting[el.dataset.id] = el; });
+    const sfIds = new Set();
+    st.swordfish.forEach(sf => {
+      sfIds.add(String(sf.id));
+      let el = sfExisting[sf.id];
+      if (!el) {
+        el = document.createElement('div');
+        el.className = 'run-sf';
+        el.dataset.id = sf.id;
+        el.innerHTML = `
+          <svg viewBox="0 0 100 50">
+            <ellipse cx="58" cy="26" rx="32" ry="9" fill="#3a6a90" stroke="#1a3a5a" stroke-width="1.6"/>
+            <ellipse cx="58" cy="22" rx="28" ry="5" fill="#5a8ab0" opacity="0.7"/>
+            <path d="M26 26 L2 24.5 L0 26 L2 27.5 L26 28 Z" fill="#bbb" stroke="#444" stroke-width="1.2"/>
+            <line x1="14" y1="25.8" x2="22" y2="26.2" stroke="#666" stroke-width="0.5"/>
+            <path d="M88 26 L100 14 L94 26 L100 38 Z" fill="#1a3a5a" stroke="#0a1a2a" stroke-width="1"/>
+            <path d="M52 16 L58 4 L66 16 Z" fill="#1a3a5a" stroke="#0a1a2a" stroke-width="1"/>
+            <path d="M50 36 L54 45 L60 36 Z" fill="#1a3a5a" stroke="#0a1a2a" stroke-width="1"/>
+            <circle cx="36" cy="22" r="3" fill="#fff"/>
+            <circle cx="36" cy="22" r="1.7" fill="#1a0a0a"/>
+            <path d="M44 22 Q46 25 44 28" stroke="#1a3a5a" stroke-width="1.2" fill="none"/>
+            <path d="M70 24 L82 24" stroke="#1a3a5a" stroke-width="0.8" opacity="0.6"/>
+          </svg>
+        `;
+        sfLayer.appendChild(el);
+      }
+      el.style.left = `${sf.x}%`;
+      el.style.top = `${sf.y}%`;
+    });
+    Object.keys(sfExisting).forEach(id => {
+      if (!sfIds.has(id)) sfExisting[id].remove();
+    });
+  }
   $('run-gold').textContent = st.goldEarned;
   $('run-rings-count').textContent = st.passedRings;
 }
@@ -8406,7 +8499,24 @@ function parkRunSplash(xPct, yPct) {
   setTimeout(() => splash.remove(), 600);
 }
 
-function parkRunGameOver() {
+function parkRunHit(sf) {
+  const st = parkRunState;
+  if (!st || !st.running) return;
+  // 빨강 플래시
+  const stage = $('run-stage');
+  if (stage) {
+    const flash = document.createElement('div');
+    flash.className = 'run-flash';
+    stage.appendChild(flash);
+    setTimeout(() => flash.remove(), 560);
+  }
+  // 돌고래 회전 (당함)
+  const dolphin = $('run-dolphin');
+  if (dolphin) dolphin.style.transform = 'translateY(-50%) rotate(170deg) scale(0.85)';
+  parkRunGameOver('hit');
+}
+
+function parkRunGameOver(reason) {
   const st = parkRunState;
   if (!st) return;
   st.running = false;
@@ -8415,12 +8525,14 @@ function parkRunGameOver() {
   save.gold += st.goldEarned;
   saveSave();
   $('park-gold').textContent = save.gold;
+  const reasonText = reason === 'hit' ? '⚔️ 청새치에 부딪혔어요!' : '💦 물에 빠졌어요!';
   const stage = $('run-stage');
   if (stage) {
     const overlay = document.createElement('div');
     overlay.className = 'run-go-overlay';
     overlay.innerHTML = `
       <h2>🐬 GAME OVER</h2>
+      <div class="row">${reasonText}</div>
       <div class="row">🎯 통과 링: <b>${st.passedRings}</b></div>
       <div class="row">🪙 획득 골드: <b>+${st.goldEarned}</b></div>
       <div class="run-go-actions">
