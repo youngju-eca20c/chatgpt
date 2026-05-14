@@ -3118,6 +3118,96 @@
     border-radius: 999px;
   }
 
+  /* 졸업 동물 추억 섹션 */
+  .cp-memorial {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 2px dashed #c08040;
+  }
+  .cp-mem-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    color: #5a3010;
+    text-align: center;
+    margin-bottom: 4px;
+    text-shadow: 0 1px 0 #fff5dc;
+  }
+  .cp-mem-sub {
+    text-align: center;
+    color: #a06030;
+    font-size: 0.72rem;
+    margin-bottom: 10px;
+  }
+  .cp-mem-empty {
+    text-align: center;
+    color: #806030;
+    font-size: 0.78rem;
+    padding: 16px 10px;
+    background: rgba(255,245,220,0.55);
+    border: 1.5px dashed #c0a070;
+    border-radius: 10px;
+    line-height: 1.6;
+  }
+  .cp-mem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 8px;
+  }
+  .memorial-card {
+    background: linear-gradient(180deg, #fff7df, #ffd8a0);
+    border: 2px solid #c08040;
+    border-radius: 12px;
+    padding: 8px 4px 6px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 3px 6px rgba(120,60,20,0.25), inset 0 -2px 0 rgba(180,120,60,0.18);
+  }
+  .memorial-card::before {
+    content: '';
+    position: absolute;
+    top: 6px; left: 6px;
+    width: 12px; height: 12px;
+    background: radial-gradient(circle, #ffd060 0%, #ff8030 80%);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255, 180, 80, 0.85);
+    animation: memorialGlow 2.2s ease-in-out infinite;
+  }
+  @keyframes memorialGlow {
+    0%, 100% { opacity: 0.55; transform: scale(0.85); }
+    50%      { opacity: 1;    transform: scale(1.15); }
+  }
+  .mc-portrait {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    margin: 2px auto 4px;
+    filter: sepia(0.35) brightness(0.95) drop-shadow(0 2px 3px rgba(0,0,0,0.25));
+  }
+  .mc-portrait svg { width: 100%; height: 100%; }
+  .mc-cap {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    font-size: 1.1rem;
+    filter: none;
+  }
+  .mc-name {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.78rem;
+    color: #5a3010;
+    line-height: 1.1;
+  }
+  .mc-species {
+    font-size: 0.62rem;
+    color: #806040;
+    margin-top: 1px;
+  }
+  .mc-date {
+    font-size: 0.6rem;
+    color: #a06030;
+    margin-top: 3px;
+  }
+
   /* 입양 확인 다이얼로그 */
   .confirm-overlay {
     position: fixed;
@@ -5882,7 +5972,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-17</div>
+    <div class="version-tag" style="color:#a06030;">260514-18</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -7046,6 +7136,33 @@ function openCompendium() {
       </div>
     `;
   }).join('');
+  // 졸업한 동물 (추억 섹션)
+  const humans = Array.isArray(save.humans) ? save.humans.slice().sort((a, b) => (b.graduatedAt || 0) - (a.graduatedAt || 0)) : [];
+  const memorialCards = humans.map(h => {
+    const ghost = { svg: h.svg, species: h.species, color: h.color || 0, stats: h.finalStats || { fit: 400, intel: 400, charm: 400, skill: 400 } };
+    const speciesName = ANIMAL_SPECIES[h.species]?.name || h.species;
+    const date = h.graduatedAt ? new Date(h.graduatedAt).toLocaleDateString('ko-KR', { year: 'numeric', month: 'numeric', day: 'numeric' }) : '';
+    return `
+      <div class="memorial-card">
+        <div class="mc-portrait">
+          <svg viewBox="0 0 100 100" style="${animalCoatStyle(ghost)}">${animalSvgInner(ghost)}</svg>
+          <span class="mc-cap">🎓</span>
+        </div>
+        <div class="mc-name">${escapeHTML(h.name)}</div>
+        <div class="mc-species">원래는 ${speciesName}</div>
+        <div class="mc-date">${date}</div>
+      </div>
+    `;
+  }).join('');
+  const memorialSection = `
+    <div class="cp-memorial">
+      <div class="cp-mem-title">🌟 졸업한 친구들</div>
+      <div class="cp-mem-sub">인간이 되어 떠난 동물 ${humans.length}명</div>
+      ${humans.length
+        ? `<div class="cp-mem-grid">${memorialCards}</div>`
+        : `<div class="cp-mem-empty">아직 졸업한 친구가 없어요.<br/>모든 4스탯이 <b>400</b>이 되면 인간이 되어 떠납니다.</div>`}
+    </div>
+  `;
   overlay.innerHTML = `
     <div class="confirm-box compendium">
       <div class="cb-title">📖 동물도감</div>
@@ -7053,6 +7170,7 @@ function openCompendium() {
         <span style="font-size:0.78rem;color:#a06030">모든 4스탯 100 → 2단계, 200 → 3단계 진화</span>
       </div>
       <div class="cp-list">${rows}</div>
+      ${memorialSection}
       <div class="cb-actions"><button class="btn" onclick="closeConfirm()">닫기</button></div>
     </div>
   `;
@@ -7624,6 +7742,7 @@ function renderAnimalDetail(a) {
       <button class="btn" onclick="playWithAnimal(${a.id})" ${playOk ? '' : 'disabled'}>🎾 놀아주기${playOk ? '' : ' (오늘 완료)'}</button>
       <button class="btn" onclick="batheAnimal(${a.id})" ${batheOk ? '' : 'disabled'}>🛁 씻기기${batheOk ? '' : ' (오늘 완료)'}</button>
       <button class="btn" onclick="openItemShop(${a.id})">🎁 물건 주기</button>
+      ${canGraduate(a) ? `<button class="btn gold" onclick="confirmGraduate(${a.id})">🎓 인간으로 졸업</button>` : ''}
       <button class="btn attack" onclick="confirmRelease(${a.id})">🏠 보호소에 맡기기</button>
     </div>
     <div id="item-shop-area"></div>
@@ -7861,6 +7980,63 @@ function releaseAnimal(id) {
     toast(`💝 ${a.name}이(가) 보호소로 돌아갔어요.\n좋은 가족을 만나길 바랄게요...`, 'info');
   }, 100);
   renderMyAnimals();
+}
+
+function canGraduate(a) {
+  if (!a || !a.stats) return false;
+  const s = a.stats;
+  return s.fit >= 400 && s.intel >= 400 && s.charm >= 400 && s.skill >= 400;
+}
+
+function confirmGraduate(id) {
+  const a = save.animals.find(x => x.id === id);
+  if (!a || !canGraduate(a)) return;
+  const overlay = $('confirm-overlay');
+  overlay.classList.remove('hidden');
+  overlay.innerHTML = `
+    <div class="confirm-box">
+      <div class="cb-title">🎓 인간으로 졸업</div>
+      <svg viewBox="0 0 100 100" style="${animalCoatStyle(a)};width:120px;height:120px;display:block;margin:6px auto;">${animalSvgInner(a)}</svg>
+      <div class="cb-msg">
+        <b>${escapeHTML(a.name)}</b>이(가) 4스탯 모두 400을 달성했어요!<br/>
+        인간이 되어 떠나면 다시 만날 수 없지만,<br/>
+        <span style="color:#a06030">동물도감의 추억 코너에서 기억할 수 있어요.</span>
+      </div>
+      <div class="cb-actions">
+        <button class="btn" onclick="closeConfirm()">아직요</button>
+        <button class="btn gold" onclick="graduateAnimal(${id})">🎓 졸업!</button>
+      </div>
+    </div>
+  `;
+}
+
+function graduateAnimal(id) {
+  const idx = save.animals.findIndex(a => a.id === id);
+  if (idx < 0) { closeConfirm(); return; }
+  const a = save.animals[idx];
+  if (!canGraduate(a)) { closeConfirm(); return; }
+  if (!Array.isArray(save.humans)) save.humans = [];
+  save.humans.push({
+    id: a.id,
+    species: a.species,
+    svg: a.svg,
+    name: a.name,
+    color: a.color || 0,
+    finalStats: { ...a.stats },
+    adoptedAt: a.adoptedAt,
+    graduatedAt: Date.now()
+  });
+  save.animals.splice(idx, 1);
+  if (save.activeAnimalId === id) {
+    save.activeAnimalId = save.animals.length > 0 ? save.animals[0].id : null;
+  }
+  saveSave();
+  closeConfirm();
+  closeAnimalDetail();
+  renderMyAnimals();
+  setTimeout(() => {
+    toast(`🎓 ${a.name}이(가) 인간이 되어 졸업했어요!\n동물도감 추억 코너에서 만날 수 있어요.`, 'magic');
+  }, 100);
 }
 
 function renderStatBars(s) {
