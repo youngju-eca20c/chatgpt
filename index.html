@@ -3510,6 +3510,25 @@
     text-align: center;
     position: relative;
     box-shadow: 0 3px 6px rgba(120,60,20,0.25), inset 0 -2px 0 rgba(180,120,60,0.18);
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
+  }
+  .memorial-card:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 8px 16px rgba(120,60,20,0.4), 0 0 18px rgba(255,200,80,0.55);
+    filter: brightness(1.06);
+  }
+  .memorial-card .mc-letter-hint {
+    position: absolute;
+    bottom: 4px;
+    right: 5px;
+    font-size: 0.78rem;
+    opacity: 0.65;
+    transition: opacity 0.18s, transform 0.18s;
+  }
+  .memorial-card:hover .mc-letter-hint {
+    opacity: 1;
+    transform: scale(1.2) rotate(-8deg);
   }
   .memorial-card::before {
     content: '';
@@ -6365,7 +6384,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-19</div>
+    <div class="version-tag" style="color:#a06030;">260514-20</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -7538,7 +7557,7 @@ function openCompendium() {
     const speciesName = ANIMAL_SPECIES[h.species]?.name || h.species;
     const date = h.graduatedAt ? new Date(h.graduatedAt).toLocaleDateString('ko-KR', { year: 'numeric', month: 'numeric', day: 'numeric' }) : '';
     return `
-      <div class="memorial-card">
+      <div class="memorial-card" onclick="showLetterFromMemorial(${h.id})" title="편지 다시 읽기">
         <div class="mc-portrait">
           <svg viewBox="0 0 100 100" style="${animalCoatStyle(ghost)}">${animalSvgInner(ghost)}</svg>
           <span class="mc-cap">🎓</span>
@@ -7546,6 +7565,7 @@ function openCompendium() {
         <div class="mc-name">${escapeHTML(h.name)}</div>
         <div class="mc-species">원래는 ${speciesName}</div>
         <div class="mc-date">${date}</div>
+        <span class="mc-letter-hint">💌</span>
       </div>
     `;
   }).join('');
@@ -8598,6 +8618,45 @@ function finalizeGraduation(id, letterIdx) {
   setTimeout(() => {
     toast(`🌟 ${a.name}을(를) 영원히 기억할게요...\n동물도감의 추억 코너에서 만나요.`, 'magic');
   }, 200);
+}
+
+// 추억 코너에서 편지 다시 보기
+function showLetterFromMemorial(humanId) {
+  const h = (save.humans || []).find(x => x.id === humanId);
+  if (!h) return;
+  // 레거시 (letterIdx 없는 경우) 즉시 부여
+  if (h.letterIdx === undefined || h.letterIdx === null) {
+    h.letterIdx = Math.floor(Math.random() * HUMAN_LETTERS.length);
+    saveSave();
+  }
+  const tpl = HUMAN_LETTERS[h.letterIdx];
+  const name = escapeHTML(h.name);
+  const replaceName = (s) => s.replace(/\{name\}/g, name);
+  const overlay = $('grad-letter-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('hidden');
+  const date = h.graduatedAt ? new Date(h.graduatedAt).toLocaleDateString('ko-KR') : '';
+  overlay.innerHTML = `
+    <div class="grad-letter">
+      <div class="grad-letter-greeting">${replaceName(tpl.greeting)}</div>
+      <div class="grad-letter-portrait">
+        <svg viewBox="0 0 100 100"><use href="#char-human"/></svg>
+      </div>
+      <div class="grad-letter-body">${replaceName(tpl.body)}</div>
+      <div class="grad-letter-closing">${replaceName(tpl.closing)}</div>
+      <div style="text-align:center;font-size:0.72rem;color:#a06030;margin-top:6px;font-family:'Nanum Pen Script',cursive;">${date} 도착</div>
+      <div class="grad-letter-actions">
+        <button class="grad-letter-btn" onclick="closeMemorialLetter()">편지 덮기</button>
+      </div>
+    </div>
+  `;
+}
+
+function closeMemorialLetter() {
+  const overlay = $('grad-letter-overlay');
+  if (!overlay) return;
+  overlay.classList.add('hidden');
+  overlay.innerHTML = '';
 }
 
 function renderStatBars(s) {
