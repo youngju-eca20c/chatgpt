@@ -1782,6 +1782,260 @@
   }
   .chip-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 
+  /* === 놀이공원 === */
+  .park-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .park-card {
+    background: linear-gradient(180deg, #fff8e0, #ffe8b8);
+    border: 2.5px solid #c08040;
+    border-radius: 14px;
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 3px 8px rgba(120, 60, 20, 0.25);
+  }
+  .park-card:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 14px rgba(120, 60, 20, 0.4);
+  }
+  .park-card.disabled {
+    background: linear-gradient(180deg, #ddd, #b8b0a0);
+    border-color: #888;
+    cursor: not-allowed;
+    color: #6a5848;
+    opacity: 0.85;
+  }
+  .park-card.disabled:hover { transform: none; }
+  .park-card .pc-icon {
+    font-size: 2.4rem;
+    line-height: 1.1;
+    margin-bottom: 2px;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+  }
+  .park-card .pc-name {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.92rem;
+    color: #5a3010;
+  }
+  .park-card .pc-cost {
+    font-size: 0.72rem;
+    color: #b06030;
+    margin-top: 2px;
+  }
+  .park-card.disabled .pc-cost { color: #6a5848; }
+
+  /* 펭귄 야바위 */
+  .shell-stage {
+    background: linear-gradient(180deg, #a8d4f0 0%, #c8e4f8 50%, #e0f0e8 100%);
+    border: 3px solid #4080c0;
+    border-radius: 14px;
+    padding: 14px 8px 18px;
+    margin-bottom: 10px;
+    box-shadow: inset 0 0 22px rgba(40, 80, 140, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .shell-msg {
+    text-align: center;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.05rem;
+    color: #20406a;
+    margin-bottom: 10px;
+    min-height: 1.4em;
+  }
+  .shell-row {
+    position: relative;
+    height: 130px;
+    margin: 0 auto;
+    max-width: 360px;
+  }
+  .shell-block {
+    position: absolute;
+    top: 0;
+    width: 90px;
+    height: 110px;
+    transition: transform 0.45s cubic-bezier(.6,-0.25,.35,1.4);
+    cursor: pointer;
+  }
+  .shell-block.locked { cursor: default; }
+  .shell-block svg { width: 100%; height: 100%; filter: drop-shadow(0 4px 6px rgba(40,80,140,0.4)); }
+  .shell-block.lifted { animation: shellLift 0.6s ease; }
+  @keyframes shellLift {
+    0% { transform: translate(var(--tx), 0); }
+    50% { transform: translate(var(--tx), -34px); }
+    100% { transform: translate(var(--tx), 0); }
+  }
+  .shell-pengu {
+    position: absolute;
+    top: 38px;
+    width: 60px;
+    height: 60px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1;
+  }
+  .shell-pengu.shown { opacity: 1; }
+  .shell-actions {
+    text-align: center;
+    margin-top: 8px;
+  }
+  .shell-bet-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .shell-bet-row .btn { flex: 0 0 auto; min-width: 80px; }
+  .shell-result {
+    text-align: center;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.2rem;
+    margin-top: 6px;
+    min-height: 1.4em;
+  }
+  .shell-result.win { color: #20a040; }
+  .shell-result.lose { color: #c03030; }
+
+  /* 인형뽑기 */
+  .claw-stage {
+    background: linear-gradient(180deg, #ffe0f0 0%, #ffc8e0 60%, #f0a8d0 100%);
+    border: 3px solid #d05080;
+    border-radius: 14px;
+    padding: 12px 8px 16px;
+    margin-bottom: 10px;
+    box-shadow: inset 0 0 22px rgba(180, 40, 100, 0.18);
+    position: relative;
+    overflow: hidden;
+  }
+  .claw-cabinet {
+    background: linear-gradient(180deg, #e0eaf8, #b8c8e8);
+    border: 3px solid #5070a8;
+    border-radius: 10px;
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .claw-rail {
+    position: absolute;
+    top: 8px; left: 8px; right: 8px;
+    height: 4px;
+    background: linear-gradient(90deg, #888, #ccc, #888);
+    border-radius: 2px;
+  }
+  .claw-arm {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    width: 4px;
+    height: 30px;
+    background: #5a5a5a;
+    transform: translateX(-50%);
+    transition: top 0.6s, left 0.4s;
+  }
+  .claw-arm::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: -16px;
+    width: 36px;
+    height: 18px;
+    background: #888;
+    border: 2px solid #444;
+    border-radius: 0 0 18px 18px;
+  }
+  .claw-pile {
+    position: absolute;
+    bottom: 4px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 8px;
+  }
+  .claw-doll {
+    width: 36px;
+    height: 36px;
+    transition: transform 0.4s;
+  }
+  .claw-doll svg { width: 100%; height: 100%; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+  .claw-chute {
+    position: absolute;
+    bottom: 0;
+    right: 6px;
+    width: 36px;
+    height: 30px;
+    background: #5a3010;
+    border-radius: 4px 4px 0 0;
+  }
+  .claw-prize {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: top 0.7s, opacity 0.3s;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .claw-prize.show { opacity: 1; }
+  .claw-prize svg { width: 100%; height: 100%; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.4)); }
+
+  .mini-collection {
+    background: rgba(255, 248, 224, 0.85);
+    border: 2px solid #c08040;
+    border-radius: 10px;
+    padding: 8px;
+    margin-top: 6px;
+  }
+  .mini-coll-title {
+    text-align: center;
+    font-size: 0.78rem;
+    color: #5a3010;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .mini-coll-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+  }
+  .mini-coll-cell {
+    background: #fff5e0;
+    border: 1.5px solid #c0a070;
+    border-radius: 8px;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .mini-coll-cell.owned { background: linear-gradient(180deg, #fff8d0, #ffd860); border-color: #c07030; }
+  .mini-coll-cell svg { width: 78%; height: 78%; }
+  .mini-coll-cell.locked svg { filter: grayscale(1) brightness(0.6); opacity: 0.4; }
+  .mini-coll-cell .mini-count {
+    position: absolute;
+    bottom: -2px;
+    right: 0;
+    font-size: 0.62rem;
+    background: #c03030;
+    color: #fff;
+    border-radius: 999px;
+    padding: 0 5px;
+    line-height: 1.2;
+  }
+
   /* === 과수원 작업장 === */
   .orchard-scene {
     position: relative;
@@ -4845,7 +5099,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-03</div>
+    <div class="version-tag" style="color:#a06030;">260514-04</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -5334,7 +5588,7 @@
       <button class="map-building available" style="top:53.4%;left:19.8%" onclick="enterMyAnimals()" aria-label="내 농장">
         <div class="bldg-label">🐾 내 농장</div>
       </button>
-      <button class="map-building locked" style="top:58.8%;left:65.4%" onclick="lockedLoc('놀이공원')" aria-label="놀이공원">
+      <button class="map-building available" style="top:58.8%;left:65.4%" onclick="enterPark()" aria-label="놀이공원">
         <div class="bldg-label">🎈 놀이공원</div>
       </button>
       <button class="map-building available" style="top:83.7%;left:31.6%" onclick="enterSalon()" aria-label="미용실">
@@ -5376,6 +5630,17 @@
     <div id="orchard-slots"></div>
     <div class="farm-actions">
       <button class="btn" onclick="enterMyAnimals()">🐾 내 농장</button>
+      <button class="btn" onclick="showWorldMap()">← 월드맵</button>
+    </div>
+  </div>
+
+  <!-- 놀이공원 -->
+  <div id="park" class="farm-panel hidden">
+    <div class="farm-title">🎡 놀이공원</div>
+    <div class="farm-sub" id="park-sub">미니게임 5개로 동물과 즐겨보세요</div>
+    <div class="gold-bar" id="park-gold">200</div>
+    <div id="park-content"></div>
+    <div class="farm-actions" id="park-actions">
       <button class="btn" onclick="showWorldMap()">← 월드맵</button>
     </div>
   </div>
@@ -5676,6 +5941,7 @@ function migrateSave(data) {
   if (typeof data.nextAnimalId !== 'number') data.nextAnimalId = 1;
   if (!data.inventory) data.inventory = { food: 0, book: 0, mirror: 0, toy: 0 };
   if (!data.orchard) data.orchard = { picker: null, carrier: null, lastEarnAt: Date.now() };
+  if (!data.miniatures) data.miniatures = {};
   // 동물에 color 필드 보장 + 얼룩빛은 강아지만
   data.animals.forEach(a => {
     if (typeof a.color !== 'number') a.color = 0;
@@ -5833,7 +6099,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function hideAllPanels() {
-  ['world-map','char-select','main-game','shelter','my-animals','dept-shop','orchard','salon'].forEach(id => {
+  ['world-map','char-select','main-game','shelter','my-animals','dept-shop','orchard','salon','park'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.add('hidden');
   });
@@ -6913,6 +7179,298 @@ function enterTower() {
   log('첫 번째 층, 문이 너를 응시한다.', 'system');
   showDoorScene();
   updateUI();
+}
+
+// ============= 놀이공원 =============
+const PARK_SHELL_COST = 20;
+const PARK_CLAW_COST = 50;
+
+function enterPark() {
+  if (!save) save = loadSave();
+  if (!save.miniatures) save.miniatures = {};
+  hideAllPanels();
+  parkLobby();
+  $('park').classList.remove('hidden');
+}
+
+function parkLobby() {
+  $('park-sub').textContent = '미니게임 5개로 동물과 즐겨보세요';
+  $('park-gold').textContent = save.gold;
+  $('park-actions').innerHTML = '<button class="btn" onclick="showWorldMap()">← 월드맵</button>';
+  const games = [
+    { icon:'🐧', name:'펭귄 야바위', cost:`${PARK_SHELL_COST}골드 · 기술+`, fn:'parkShellStart()' },
+    { icon:'🪆', name:'인형뽑기',     cost:`${PARK_CLAW_COST}골드 · 매력+`, fn:'parkClawStart()' },
+    { icon:'🎢', name:'롤러코스터',  cost:'🚧 공사중', disabled:true },
+    { icon:'🎯', name:'사격장',       cost:'🚧 공사중', disabled:true },
+    { icon:'🎤', name:'노래방',       cost:'🚧 공사중', disabled:true }
+  ];
+  $('park-content').innerHTML = `
+    <div class="park-grid">
+      ${games.map(g => `
+        <div class="park-card ${g.disabled ? 'disabled' : ''}"
+             onclick="${g.disabled ? `toast('🚧 ${g.name} — 곧 추가됩니다!','info')` : g.fn}">
+          <div class="pc-icon">${g.icon}</div>
+          <div class="pc-name">${g.name}</div>
+          <div class="pc-cost">${g.cost}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ----- 펭귄 야바위 -----
+let parkShellState = null;
+
+function parkShellStart() {
+  if (save.gold < PARK_SHELL_COST) {
+    toast(`💰 골드가 부족해요! (${PARK_SHELL_COST}골드 필요)`, 'warn');
+    return;
+  }
+  save.gold -= PARK_SHELL_COST;
+  saveSave();
+  parkShellState = {
+    positions: [0, 1, 2],   // 블록 i가 현재 있는 slot
+    penguinBlock: 0,        // 블록 0에 펭귄 숨김
+    phase: 'reveal',
+    revealed: false
+  };
+  parkShellRender();
+  setTimeout(() => {
+    if (!parkShellState) return;
+    parkShellState.phase = 'shuffling';
+    const peng = document.querySelector('.shell-pengu');
+    if (peng) peng.classList.remove('shown');
+    const msg = $('shell-msg');
+    if (msg) msg.textContent = '...섞는 중...';
+    parkShellShuffleStep(0, 5 + Math.floor(Math.random()*2));
+  }, 1600);
+}
+
+function parkShellShuffleStep(n, total) {
+  if (!parkShellState || parkShellState.phase !== 'shuffling') return;
+  if (n >= total) {
+    parkShellState.phase = 'pick';
+    const msg = $('shell-msg');
+    if (msg) msg.textContent = '🤔 펭귄은 어디 있을까요?';
+    // 클릭 활성화
+    document.querySelectorAll('.shell-block').forEach(el => {
+      el.classList.remove('locked');
+      const bIdx = parseInt(el.dataset.block, 10);
+      el.setAttribute('onclick', `parkShellPick(${bIdx})`);
+    });
+    return;
+  }
+  const pos = parkShellState.positions;
+  let i = Math.floor(Math.random() * 3);
+  let j = Math.floor(Math.random() * 3);
+  while (j === i) j = Math.floor(Math.random() * 3);
+  [pos[i], pos[j]] = [pos[j], pos[i]];
+  document.querySelectorAll('.shell-block').forEach(el => {
+    const bIdx = parseInt(el.dataset.block, 10);
+    const slot = pos[bIdx];
+    const tx = (slot - 1) * 110;
+    el.style.setProperty('--tx', `${tx}px`);
+    el.style.transform = `translate(${tx}px, 0)`;
+  });
+  setTimeout(() => parkShellShuffleStep(n + 1, total), 480);
+}
+
+function parkShellPick(blockIdx) {
+  const st = parkShellState;
+  if (!st || st.phase !== 'pick') return;
+  const win = blockIdx === st.penguinBlock;
+  st.phase = 'reveal';
+  st.revealed = true;
+  parkShellRender();
+  setTimeout(() => {
+    if (win) {
+      const skillGain = 5 + Math.floor(Math.random() * 6);
+      const charmGain = 1 + Math.floor(Math.random() * 3);
+      const goldGain = 5 + Math.floor(Math.random() * 11);
+      const a = getActiveAnimal();
+      if (a) {
+        bumpStat(a, 'skill', skillGain);
+        bumpStat(a, 'charm', charmGain);
+      }
+      save.gold += goldGain;
+      saveSave();
+      const res = $('shell-result');
+      if (res) {
+        res.className = 'shell-result win';
+        res.innerHTML = `🎉 정답! 기술 +${skillGain} · 매력 +${charmGain} · +${goldGain}골드`;
+      }
+      $('park-gold').textContent = save.gold;
+    } else {
+      const res = $('shell-result');
+      if (res) {
+        res.className = 'shell-result lose';
+        res.textContent = '😢 아쉬워요! 다시 도전해보세요';
+      }
+    }
+    $('park-actions').innerHTML = `
+      <button class="btn success" onclick="parkShellStart()">🐧 한 번 더 (${PARK_SHELL_COST}골드)</button>
+      <button class="btn" onclick="parkLobby()">← 게임 선택</button>
+    `;
+  }, 700);
+}
+
+function parkShellRender() {
+  const st = parkShellState;
+  $('park-sub').textContent = '🐧 펭귄 야바위 — 펭귄을 찾아라!';
+  $('park-gold').textContent = save.gold;
+  $('park-actions').innerHTML = `<button class="btn" onclick="parkLobby()">← 게임 선택</button>`;
+  const blocks = [0, 1, 2].map(blockIdx => {
+    const slot = st.positions[blockIdx];
+    const tx = (slot - 1) * 110;
+    const isPenguin = blockIdx === st.penguinBlock;
+    const lifted = st.phase === 'reveal' && (st.revealed || isPenguin);
+    const clickable = st.phase === 'pick';
+    return `
+      <div class="shell-block${lifted ? ' lifted' : ''}${clickable ? '' : ' locked'}"
+           data-block="${blockIdx}"
+           style="left:50%;margin-left:-45px;--tx:${tx}px;transform:translate(${tx}px,0);"
+           ${clickable ? `onclick="parkShellPick(${blockIdx})"` : ''}>
+        <svg viewBox="0 0 100 100">
+          <ellipse cx="50" cy="95" rx="38" ry="3.5" fill="#000" opacity="0.28"/>
+          <path d="M22 80 L20 30 Q20 10 50 10 Q80 10 80 30 L78 80 Q70 86 50 86 Q30 86 22 80 Z" fill="#e0f4ff" stroke="#5090c0" stroke-width="2.2"/>
+          <path d="M28 28 Q40 12 60 14 Q42 22 32 36 Z" fill="#fff" opacity="0.7"/>
+          <line x1="36" y1="40" x2="44" y2="52" stroke="#a8d4ec" stroke-width="1.2"/>
+          <line x1="60" y1="34" x2="68" y2="46" stroke="#a8d4ec" stroke-width="1.2"/>
+          <line x1="48" y1="60" x2="56" y2="72" stroke="#a8d4ec" stroke-width="1.2"/>
+        </svg>
+      </div>
+    `;
+  }).join('');
+  const penguinSlot = st.positions[st.penguinBlock];
+  const pengTx = (penguinSlot - 1) * 110;
+  const pengShown = st.phase === 'reveal';
+  let msg = '잘 봐두세요!';
+  if (st.phase === 'shuffling') msg = '...섞는 중...';
+  else if (st.phase === 'pick') msg = '🤔 펭귄은 어디 있을까요?';
+  else if (st.phase === 'reveal' && st.revealed) msg = '결과!';
+  $('park-content').innerHTML = `
+    <div class="shell-stage">
+      <div class="shell-msg" id="shell-msg">${msg}</div>
+      <div class="shell-row">
+        ${blocks}
+        <svg class="shell-pengu${pengShown ? ' shown' : ''}"
+             style="left:50%;margin-left:-30px;transform:translateX(${pengTx}px);"
+             viewBox="0 0 100 100"><use href="#char-penguin"/></svg>
+      </div>
+      <div class="shell-result" id="shell-result"></div>
+    </div>
+  `;
+}
+
+// ----- 인형뽑기 -----
+function parkClawStart() {
+  if (!save.miniatures) save.miniatures = {};
+  saveSave();
+  $('park-sub').textContent = '🪆 인형뽑기 — 동물 미니어처 모으기';
+  $('park-gold').textContent = save.gold;
+  $('park-actions').innerHTML = `<button class="btn" onclick="parkLobby()">← 게임 선택</button>`;
+  parkClawRender();
+}
+
+function parkClawRender() {
+  const species = Object.keys(ANIMAL_SPECIES);
+  const minis = save.miniatures || {};
+  const ownedCount = species.filter(sp => (minis[sp] || 0) > 0).length;
+  const pileSpecies = species.slice(0, 6);
+  const collGrid = species.map(sp => {
+    const owned = (minis[sp] || 0) > 0;
+    const count = minis[sp] || 0;
+    return `
+      <div class="mini-coll-cell ${owned ? 'owned' : 'locked'}" title="${ANIMAL_SPECIES[sp].name}${owned ? ' ×' + count : ' (미수집)'}">
+        <svg viewBox="0 0 100 100"><use href="#${ANIMAL_SPECIES[sp].svg}"/></svg>
+        ${count > 1 ? `<span class="mini-count">×${count}</span>` : ''}
+      </div>
+    `;
+  }).join('');
+  $('park-content').innerHTML = `
+    <div class="claw-stage">
+      <div class="claw-cabinet">
+        <div class="claw-rail"></div>
+        <div class="claw-arm" id="claw-arm"></div>
+        <div class="claw-pile">
+          ${pileSpecies.map(sp => `<div class="claw-doll"><svg viewBox="0 0 100 100"><use href="#${ANIMAL_SPECIES[sp].svg}"/></svg></div>`).join('')}
+        </div>
+        <div class="claw-chute"></div>
+        <div class="claw-prize" id="claw-prize"></div>
+      </div>
+      <div class="shell-actions">
+        <button class="btn success" id="claw-go" onclick="parkClawPull()">🪆 뽑기 (${PARK_CLAW_COST}골드)</button>
+      </div>
+      <div class="mini-collection">
+        <div class="mini-coll-title">📚 미니어처 컬렉션 (${ownedCount} / ${species.length})</div>
+        <div class="mini-coll-grid">${collGrid}</div>
+      </div>
+    </div>
+  `;
+}
+
+function parkClawPull() {
+  if (save.gold < PARK_CLAW_COST) {
+    toast(`💰 골드가 부족해요! (${PARK_CLAW_COST}골드 필요)`, 'warn');
+    return;
+  }
+  save.gold -= PARK_CLAW_COST;
+  $('park-gold').textContent = save.gold;
+  const goBtn = $('claw-go');
+  if (goBtn) goBtn.disabled = true;
+
+  const species = Object.keys(ANIMAL_SPECIES);
+  const r = Math.random();
+  let pool;
+  if (r < 0.60) pool = species.filter(sp => ANIMAL_SPECIES[sp].rarity === 'common');
+  else if (r < 0.92) pool = species.filter(sp => ANIMAL_SPECIES[sp].rarity === 'rare');
+  else pool = species.filter(sp => ANIMAL_SPECIES[sp].rarity === 'legendary');
+  if (!pool || pool.length === 0) pool = species;
+  const won = pool[Math.floor(Math.random() * pool.length)];
+  if (!save.miniatures) save.miniatures = {};
+  const isNew = !save.miniatures[won];
+  save.miniatures[won] = (save.miniatures[won] || 0) + 1;
+  const charmGain = isNew ? 5 : 2;
+  const goldBonus = isNew ? 0 : 10;
+  const a = getActiveAnimal();
+  if (a) bumpStat(a, 'charm', charmGain);
+  if (goldBonus) save.gold += goldBonus;
+  saveSave();
+
+  // 애니메이션 시퀀스
+  const arm = $('claw-arm');
+  const prize = $('claw-prize');
+  const targetLeft = 25 + Math.random() * 50;
+  if (arm) arm.style.left = `${targetLeft}%`;
+  if (prize) prize.style.left = `${targetLeft}%`;
+
+  setTimeout(() => { if (arm) arm.style.top = '130px'; }, 450);
+  setTimeout(() => {
+    if (prize) {
+      prize.innerHTML = `<svg viewBox="0 0 100 100"><use href="#${ANIMAL_SPECIES[won].svg}"/></svg>`;
+      prize.style.top = '120px';
+      prize.classList.add('show');
+    }
+    if (arm) arm.style.top = '12px';
+    if (prize) prize.style.top = '40px';
+  }, 1100);
+  setTimeout(() => {
+    if (prize) {
+      prize.style.left = 'calc(100% - 28px)';
+      prize.style.top = '160px';
+    }
+  }, 1800);
+  setTimeout(() => {
+    const rarity = ANIMAL_SPECIES[won].rarity;
+    const rIcon = rarity === 'legendary' ? '🌟' : rarity === 'rare' ? '✨' : '🎁';
+    const tType = rarity === 'legendary' ? 'magic' : (isNew ? 'good' : 'info');
+    const msg = isNew
+      ? `${rIcon} 신규! <b>${ANIMAL_SPECIES[won].name}</b> 미니어처 — 매력 +${charmGain}`
+      : `${rIcon} <b>${ANIMAL_SPECIES[won].name}</b> 미니어처 (중복) — 매력 +${charmGain}, +${goldBonus}골드`;
+    toast(msg, tType);
+    $('park-gold').textContent = save.gold;
+    parkClawRender();
+  }, 2700);
 }
 
 function lockedLoc(name) {
