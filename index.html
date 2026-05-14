@@ -5601,7 +5601,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-09</div>
+    <div class="version-tag" style="color:#a06030;">260514-10</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -8366,14 +8366,23 @@ function parkRunTick() {
   st.spawnCounter++;
   if (st.spawnCounter >= st.spawnInterval) {
     const timeSec = st.frames / 60;
-    // 시간 흐를수록 청새치 비율 ↑ (15% → 50%)
-    const sfChance = Math.min(0.50, 0.15 + timeSec * 0.012);
+    // 청새치 확률 (시작 40% → 75% 까지)
+    const sfChance = Math.min(0.75, 0.40 + timeSec * 0.018);
     if (Math.random() < sfChance) {
       st.swordfish.push({
         id: st.nextObsId++,
         x: 110,
         y: 20 + Math.random() * 60
       });
+      // 가끔 더블 스폰 (시간 흐를수록 확률 증가)
+      const doubleChance = Math.min(0.30, timeSec * 0.012);
+      if (Math.random() < doubleChance) {
+        st.swordfish.push({
+          id: st.nextObsId++,
+          x: 130,
+          y: 20 + Math.random() * 60
+        });
+      }
     } else {
       st.rings.push({
         id: st.nextObsId++,
