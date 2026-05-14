@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#a06030" />
 <title>동물농장 - 저주받은 탑</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Black+Han+Sans&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Black+Han+Sans&family=Nanum+Pen+Script&family=Gaegu&display=swap');
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
@@ -1486,6 +1486,355 @@
     from { opacity: 0; transform: translateY(20px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+
+  /* === 졸업 시퀀스 (인간 변환) — 진화보다 더 화려하게 === */
+  .grad-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(120, 60, 180, 0.96) 0%, rgba(10, 5, 30, 0.99) 80%);
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    animation: gradOverlayIn 0.45s ease-out;
+  }
+  @keyframes gradOverlayIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .grad-overlay.shaking { animation: gradOverlayIn 0.45s ease-out, gradShake 0.08s linear infinite 0.6s; }
+  @keyframes gradShake {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-7px, 4px); }
+    40% { transform: translate(7px, -4px); }
+    60% { transform: translate(-5px, 3px); }
+    80% { transform: translate(5px, -3px); }
+  }
+
+  /* 두 방향으로 회전하는 무지개 광선 */
+  .grad-rays {
+    position: absolute;
+    width: 240vw;
+    height: 240vw;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0%,   rgba(255,200,80,0.32) 3%, transparent 7%,
+      transparent 12%,  rgba(180,80,255,0.32) 15%, transparent 19%,
+      transparent 24%,  rgba(80,200,255,0.32) 27%, transparent 31%,
+      transparent 36%,  rgba(255,120,200,0.32) 39%, transparent 43%,
+      transparent 48%,  rgba(120,255,160,0.32) 51%, transparent 55%,
+      transparent 60%,  rgba(255,200,80,0.32) 63%, transparent 67%,
+      transparent 72%,  rgba(180,80,255,0.32) 75%, transparent 79%,
+      transparent 84%,  rgba(80,200,255,0.32) 87%, transparent 91%,
+      transparent 100%
+    );
+    animation: gradRays 10s linear infinite;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+  .grad-rays.cw  { animation-direction: normal; }
+  .grad-rays.ccw { animation-direction: reverse; animation-duration: 14s; opacity: 0.7; }
+  @keyframes gradRays { to { transform: rotate(360deg); } }
+
+  /* 초강력 후광 (펄스) */
+  .grad-glow {
+    position: absolute;
+    width: 90vw;
+    height: 90vw;
+    max-width: 760px;
+    max-height: 760px;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      rgba(255,255,255,0.95) 0%,
+      rgba(255,220,160,0.7) 22%,
+      rgba(255,160,220,0.4) 45%,
+      rgba(160,80,220,0.2) 65%,
+      transparent 78%);
+    animation: gradGlow 2.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes gradGlow {
+    0%, 100% { opacity: 0.65; transform: scale(0.92); }
+    50%      { opacity: 1;    transform: scale(1.12); }
+  }
+
+  /* 초기 화이트 플래시 */
+  .grad-flash {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, #fff 0%, #ffe080 30%, transparent 70%);
+    z-index: 4;
+    pointer-events: none;
+    animation: gradFlash 0.9s ease-out forwards;
+  }
+  @keyframes gradFlash {
+    0%   { opacity: 0; transform: scale(0.2); }
+    25%  { opacity: 1; transform: scale(1.4); }
+    100% { opacity: 0; transform: scale(3); }
+  }
+
+  /* 캐릭터 스테이지 (동물 → 인간) */
+  .grad-stage {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    z-index: 3;
+  }
+  .grad-before {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    animation: gradBefore 3s 0.4s ease-in forwards;
+    filter: drop-shadow(0 0 26px rgba(255,255,255,0.9));
+  }
+  @keyframes gradBefore {
+    0%   { opacity: 0;   transform: scale(0.3) translateY(40px) rotate(0deg); filter: drop-shadow(0 0 12px rgba(255,255,255,0.6)) brightness(1); }
+    20%  { opacity: 1;   transform: scale(1) translateY(0) rotate(0deg); filter: drop-shadow(0 0 26px rgba(255,255,255,0.95)) brightness(1.1); }
+    60%  { opacity: 1;   transform: scale(1.08) translateY(-10px) rotate(360deg); filter: drop-shadow(0 0 60px white) brightness(2.6); }
+    85%  { opacity: 0.5; transform: scale(0.7) translateY(-20px) rotate(720deg); filter: brightness(6); }
+    100% { opacity: 0;   transform: scale(0.2) translateY(-30px) rotate(900deg); filter: brightness(10); }
+  }
+  .grad-after {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    animation: gradAfter 2.6s 3.2s cubic-bezier(0.2, 1.5, 0.4, 1) forwards;
+  }
+  @keyframes gradAfter {
+    0%   { opacity: 0; transform: scale(0.1) rotate(-540deg); filter: brightness(12) drop-shadow(0 0 0 transparent); }
+    30%  { opacity: 1; transform: scale(1.3) rotate(0deg); filter: brightness(2.5) drop-shadow(0 0 40px gold); }
+    60%  { opacity: 1; transform: scale(0.95) rotate(0deg) translateY(-6px); filter: brightness(1.4) drop-shadow(0 0 32px rgba(255,220,160,1)); }
+    80%  { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); filter: brightness(1.15) drop-shadow(0 0 28px rgba(255,220,160,0.95)); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); filter: brightness(1.1) drop-shadow(0 0 24px rgba(255,220,160,0.9)); }
+  }
+
+  /* 화이트 폭발 (변환 순간) */
+  .grad-burst {
+    position: absolute;
+    inset: -80%;
+    background: radial-gradient(circle, white 0%, rgba(255,220,180,0.8) 30%, transparent 60%);
+    opacity: 0;
+    animation: gradBurst 1.4s 2.6s ease-out forwards;
+    pointer-events: none;
+    z-index: 4;
+  }
+  @keyframes gradBurst {
+    0%   { opacity: 0; transform: scale(0.1); }
+    30%  { opacity: 1; transform: scale(3.2); }
+    100% { opacity: 0; transform: scale(9); }
+  }
+
+  /* 반짝이 24개 (다양한 색) */
+  .grad-sparkle {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    top: 50%;
+    left: 50%;
+    margin: -9px 0 0 -9px;
+    background: radial-gradient(circle, #fff 0%, var(--sp-color, #ffe070) 45%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 0 16px var(--sp-color, #ffe070);
+    animation: gradSparkle 2.4s ease-out forwards;
+  }
+  @keyframes gradSparkle {
+    0%   { opacity: 0; transform: translate(0, 0) scale(0.2); }
+    15%  { opacity: 1; }
+    100% { opacity: 0; transform: var(--sp-end) scale(2.4); }
+  }
+
+  /* 색종이 (confetti rain) */
+  .grad-confetti {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 5;
+  }
+  .grad-conf {
+    position: absolute;
+    width: 10px;
+    height: 14px;
+    top: -20px;
+    opacity: 0;
+    animation: confFall 3.6s linear forwards;
+  }
+  @keyframes confFall {
+    0%   { opacity: 0; transform: translateY(0) rotate(0deg); }
+    8%   { opacity: 1; }
+    100% { opacity: 1; transform: translateY(120vh) rotate(720deg); }
+  }
+
+  /* 타이틀 */
+  .grad-title {
+    position: absolute;
+    top: 14vh;
+    z-index: 6;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 2.5rem;
+    color: #fff5d8;
+    letter-spacing: 4px;
+    text-shadow: 0 0 22px #ff8030, 0 0 44px #ff80c0, 2px 3px 0 #5a1080;
+    opacity: 0;
+    text-align: center;
+    line-height: 1.15;
+    padding: 0 16px;
+    animation: gradTitle 0.85s 4s cubic-bezier(0.2, 1.6, 0.4, 1) forwards;
+  }
+  @keyframes gradTitle {
+    0%   { opacity: 0; transform: scale(0.1); filter: blur(8px); }
+    60%  { opacity: 1; transform: scale(1.18); filter: blur(0); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .grad-sub {
+    position: absolute;
+    top: 24vh;
+    z-index: 6;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.05rem;
+    color: #ffe0a0;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.85);
+    opacity: 0;
+    text-align: center;
+    padding: 0 20px;
+    animation: gradSub 0.6s 5s ease-out forwards;
+  }
+  @keyframes gradSub {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .grad-btn {
+    position: absolute;
+    bottom: 12vh;
+    z-index: 6;
+    background: linear-gradient(180deg, #ffe070, #c08020);
+    border: 3px solid #fff;
+    border-radius: 999px;
+    padding: 12px 32px;
+    color: #4a2010;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.55), 0 0 30px rgba(255,200,80,0.8);
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
+    opacity: 0;
+    letter-spacing: 1.5px;
+    animation: gradBtn 0.5s 5.7s ease-out forwards;
+  }
+  @keyframes gradBtn {
+    from { opacity: 0; transform: translateY(20px) scale(0.85); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* === 졸업 편지 === */
+  .grad-letter-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 10, 35, 0.9);
+    z-index: 10002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 12px;
+    animation: gradOverlayIn 0.5s ease-out;
+  }
+  .grad-letter {
+    background:
+      repeating-linear-gradient(180deg, transparent, transparent 28px, rgba(180,80,30,0.15) 28px, rgba(180,80,30,0.15) 29px),
+      linear-gradient(180deg, #fff7d8 0%, #ffe0a8 100%);
+    border: 3px solid #b07a3a;
+    border-radius: 14px;
+    box-shadow: inset 0 0 40px rgba(120,60,20,0.18), 0 12px 40px rgba(0,0,0,0.55);
+    padding: 24px 22px 18px;
+    max-width: 480px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: gradLetterIn 0.7s cubic-bezier(0.2, 1.3, 0.4, 1.05);
+  }
+  @keyframes gradLetterIn {
+    from { opacity: 0; transform: scale(0.85) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .grad-letter::before {
+    content: '✉';
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.7rem;
+    background: linear-gradient(180deg, #ffe070, #c08020);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+  }
+  .grad-letter-greeting {
+    font-family: 'Nanum Pen Script', 'Gaegu', 'Black Han Sans', cursive, sans-serif;
+    font-size: 1.45rem;
+    color: #5a2818;
+    margin-bottom: 14px;
+    text-align: center;
+    border-bottom: 1.5px dashed #c08040;
+    padding-bottom: 8px;
+  }
+  .grad-letter-body {
+    font-family: 'Nanum Pen Script', 'Gaegu', 'Black Han Sans', cursive, sans-serif;
+    font-size: 1.15rem;
+    line-height: 1.85;
+    color: #4a2810;
+    white-space: pre-line;
+    margin-bottom: 14px;
+    padding: 0 4px;
+  }
+  .grad-letter-closing {
+    font-family: 'Nanum Pen Script', 'Gaegu', 'Black Han Sans', cursive, sans-serif;
+    font-size: 1.2rem;
+    color: #5a2818;
+    text-align: right;
+    margin-top: 10px;
+    padding-right: 12px;
+  }
+  .grad-letter-portrait {
+    display: flex;
+    justify-content: center;
+    margin: 4px 0 10px;
+  }
+  .grad-letter-portrait svg {
+    width: 80px;
+    height: 80px;
+    filter: sepia(0.25) drop-shadow(0 3px 6px rgba(120,60,20,0.4));
+  }
+  .grad-letter-actions {
+    text-align: center;
+    margin-top: 10px;
+  }
+  .grad-letter-btn {
+    background: linear-gradient(180deg, #c08040, #7a4020);
+    border: 2px solid #fff5dc;
+    color: #fff;
+    padding: 10px 28px;
+    border-radius: 999px;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    letter-spacing: 1px;
+    transition: filter 0.18s, transform 0.18s;
+  }
+  .grad-letter-btn:hover { filter: brightness(1.12); transform: translateY(-2px); }
   .ev-btn:active { transform: scale(0.95); }
 
   /* === 보호소 / 내 농장 (따뜻한 톤) === */
@@ -5776,6 +6125,50 @@
       <circle cx="6" cy="88" r="1.2" fill="#fff" opacity="0.7"/>
     </symbol>
 
+    <!-- 인간 졸업 실루엣 (천사 같은 빛 인물) -->
+    <symbol id="char-human" viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="humAura" cx="50%" cy="55%" r="55%">
+          <stop offset="0%" stop-color="rgba(255,255,255,0.95)"/>
+          <stop offset="40%" stop-color="rgba(255,235,180,0.55)"/>
+          <stop offset="100%" stop-color="rgba(255,200,140,0)"/>
+        </radialGradient>
+        <linearGradient id="humBody" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="60%" stop-color="#fff5d8"/>
+          <stop offset="100%" stop-color="#ffd890"/>
+        </linearGradient>
+      </defs>
+      <!-- 후광 (가장 큰 빛) -->
+      <ellipse cx="50" cy="55" rx="46" ry="48" fill="url(#humAura)"/>
+      <!-- 후광 링 (머리 위 천사 헤일로) -->
+      <ellipse cx="50" cy="14" rx="16" ry="3.5" fill="none" stroke="#ffe070" stroke-width="2.5" opacity="0.95"/>
+      <ellipse cx="50" cy="14" rx="16" ry="3.5" fill="none" stroke="#fff" stroke-width="0.8" opacity="0.7"/>
+      <!-- 날개 (양쪽) -->
+      <path d="M22 38 Q4 36 6 56 Q12 60 24 56 Q30 50 28 42 Z" fill="url(#humBody)" opacity="0.85" stroke="#fff" stroke-width="0.6"/>
+      <path d="M78 38 Q96 36 94 56 Q88 60 76 56 Q70 50 72 42 Z" fill="url(#humBody)" opacity="0.85" stroke="#fff" stroke-width="0.6"/>
+      <!-- 머리 -->
+      <circle cx="50" cy="25" r="11" fill="url(#humBody)" stroke="#ffe070" stroke-width="0.8"/>
+      <!-- 목 -->
+      <rect x="46" y="34" width="8" height="6" fill="url(#humBody)"/>
+      <!-- 몸 (가운) -->
+      <path d="M32 88 L36 42 Q44 38 50 38 Q56 38 64 42 L68 88 Z" fill="url(#humBody)" stroke="#ffe070" stroke-width="0.8"/>
+      <!-- 가운 디테일 (세로 선) -->
+      <path d="M50 40 L50 88" stroke="#ffe070" stroke-width="0.6" opacity="0.7"/>
+      <!-- 팔 (펼쳐진) -->
+      <path d="M36 44 Q24 56 18 76 L22 78 Q30 64 40 50 Z" fill="url(#humBody)" stroke="#ffe070" stroke-width="0.6"/>
+      <path d="M64 44 Q76 56 82 76 L78 78 Q70 64 60 50 Z" fill="url(#humBody)" stroke="#ffe070" stroke-width="0.6"/>
+      <!-- 얼굴 (단순한 미소) -->
+      <circle cx="46" cy="24" r="1.2" fill="#9a6030"/>
+      <circle cx="54" cy="24" r="1.2" fill="#9a6030"/>
+      <path d="M46 29 Q50 31 54 29" stroke="#9a6030" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+      <!-- 작은 반짝임 4곳 -->
+      <circle cx="20" cy="22" r="1.5" fill="#fff"/>
+      <circle cx="82" cy="20" r="1.2" fill="#fff"/>
+      <circle cx="14" cy="76" r="1" fill="#fff"/>
+      <circle cx="86" cy="70" r="1.3" fill="#fff"/>
+    </symbol>
+
     <!-- 두꺼비 상인 -->
     <symbol id="char-toad" viewBox="0 0 100 100">
       <ellipse cx="50" cy="93" rx="36" ry="4" fill="#000" opacity="0.4"/>
@@ -5972,7 +6365,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-18</div>
+    <div class="version-tag" style="color:#a06030;">260514-19</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -6586,6 +6979,8 @@
 
   <!-- 진화 축하 오버레이 -->
   <div id="evolve-overlay" class="evolve-overlay hidden"></div>
+  <div id="grad-overlay" class="grad-overlay hidden"></div>
+  <div id="grad-letter-overlay" class="grad-letter-overlay hidden"></div>
 
   <!-- 게임 화면 -->
   <div id="main-game" class="hidden">
@@ -7852,10 +8247,23 @@ function setActiveAnimal(id) {
 
 function bumpStat(animal, stat, amount) {
   const beforeStage = getStage(animal);
+  const wasReady = canGraduate(animal);
   animal.stats[stat] = (animal.stats[stat] || 0) + amount;
   const afterStage = getStage(animal);
+  const isReady = canGraduate(animal);
   if (afterStage > beforeStage) {
     setTimeout(() => celebrateEvolution(animal, beforeStage, afterStage), 250);
+  }
+  // 4스탯 모두 400 달성 → 한 번만 자동 팝업
+  if (!wasReady && isReady && !animal.graduationPrompted) {
+    animal.graduationPrompted = true;
+    // 진화 직후면 진화 끝난 뒤에 띄움 (약 5.5초)
+    const delay = afterStage > beforeStage ? 5500 : 700;
+    setTimeout(() => {
+      if (save.animals.find(x => x.id === animal.id) && canGraduate(animal)) {
+        promptGraduate(animal.id);
+      }
+    }, delay);
   }
 }
 
@@ -7988,33 +8396,187 @@ function canGraduate(a) {
   return s.fit >= 400 && s.intel >= 400 && s.charm >= 400 && s.skill >= 400;
 }
 
-function confirmGraduate(id) {
+// 졸업 편지 템플릿 10종 — {name} 치환
+const HUMAN_LETTERS = [
+  {
+    greeting: '사랑하는 주인님께',
+    body: `안녕하세요. 저, {name}이에요.\n드디어 저도 사람이 됐어요!\n매일 저를 돌봐주시고, 함께 놀아주시고...\n그 따뜻한 시간들이 저를 여기까지 데려와줬어요.\n잊지 않을게요. 정말 고마웠어요.`,
+    closing: '— {name} 올림'
+  },
+  {
+    greeting: '주인님 안녕하세요',
+    body: `처음 보호소에서 우리가 만난 그 날을 기억해요.\n주인님이 저를 데리고 가는 순간,\n저는 새로운 가족을 얻었답니다.\n그동안 베풀어주신 사랑 덕분에\n저도 사람이 될 수 있었어요.\n늘 행복하시길 바랄게요.`,
+    closing: '— 영원히 감사하는, {name}'
+  },
+  {
+    greeting: '나의 첫 가족에게',
+    body: `{name}이에요. 이제 떠날 시간이에요.\n인간이 되어 새로운 세상으로 가지만,\n주인님과 함께한 순간순간을\n마음 깊이 간직할게요.\n다음에 어디선가 우연히 만나면,\n꼭 알아봐 주세요.`,
+    closing: '— 영원히 가족이었던 {name}'
+  },
+  {
+    greeting: '소중한 주인님',
+    body: `누가 그랬어요. 사랑받은 만큼 자라난다고요.\n저는 정말 많이 사랑받았나봐요.\n이렇게 사람이 됐으니까요.\n주인님이 주신 사랑이 저의 모든 것이었어요.\n부디 건강하시고, 늘 따뜻한 하루 보내세요.`,
+    closing: '— {name} 드림'
+  },
+  {
+    greeting: '안녕하세요 주인님!',
+    body: `드디어! 드디어!\n저 {name}이, 사람이 됐어요!\n믿어지세요? 저도 안 믿어져요!\n그래도 한 가지는 확실해요 —\n주인님이 없었다면 절대 못 했을 거예요.\n정말 정말 고마워요.`,
+    closing: '— 활짝 웃고 있는 {name}'
+  },
+  {
+    greeting: '내 인생의 첫 친구에게',
+    body: `편지지를 마주하니 눈물이 나려고 해요.\n주인님과 함께한 시간 동안,\n저는 단순히 동물이 아니었어요.\n가족이었고, 친구였고, 마음을 나눈 사람이었죠.\n이제 진짜 사람이 되어 살아갈게요.\n주인님 덕분이에요. 정말로요.`,
+    closing: '— 가족이었던 {name}'
+  },
+  {
+    greeting: '주인님께',
+    body: `4스탯 400이 무슨 의미일까 궁금했어요.\n이제 알 것 같아요.\n그건 주인님이 저에게 쏟은 사랑의 양이었어요.\n매일의 산책, 매일의 놀이,\n매일의 따뜻한 손길.\n그게 다 차곡차곡 쌓여서\n저를 사람으로 만들어줬어요.\n사랑해요, 주인님.`,
+    closing: '— {name} 올림'
+  },
+  {
+    greeting: '잘 지내요, 주인님',
+    body: `짧다면 짧고 길다면 긴 시간이었어요.\n주인님 손에서 자라며,\n저는 세상에 사랑이 가득하다는 걸 배웠어요.\n이제 그 사랑을 다른 사람에게도\n나눠줄 수 있는 사람이 되어 떠나요.\n주인님이 저에게 해주신 만큼,\n저도 누군가에게 해줄게요.`,
+    closing: '— {name}'
+  },
+  {
+    greeting: '나의 영원한 주인님께',
+    body: `{name}이에요. 마지막 인사를 드려요.\n동물의 몸으로는 다 표현할 수 없었던\n감사함을 이제 사람의 말로 전할 수 있게 됐어요.\n고맙습니다. 진심으로요.\n주인님이 제 첫 가족이라는 사실은\n영원히 변하지 않을 거예요.`,
+    closing: '— 영원한 가족, {name}'
+  },
+  {
+    greeting: '편지를 처음 써봐요',
+    body: `{name}이에요.\n인간이 된 지 얼마 안 됐는데,\n가장 먼저 하고 싶은 일이 이 편지였어요.\n주인님께 고맙다고 말하는 것.\n어쩌면 이게 제가 사람으로서 한\n첫 번째 일일지도 몰라요.\n그리고 그게 너무 행복해요.\n잘 지내세요, 주인님.`,
+    closing: '— {name} 씀'
+  }
+];
+
+// 4스탯 400 도달 시 자동 팝업
+function promptGraduate(id) {
   const a = save.animals.find(x => x.id === id);
   if (!a || !canGraduate(a)) return;
   const overlay = $('confirm-overlay');
   overlay.classList.remove('hidden');
   overlay.innerHTML = `
     <div class="confirm-box">
-      <div class="cb-title">🎓 인간으로 졸업</div>
-      <svg viewBox="0 0 100 100" style="${animalCoatStyle(a)};width:120px;height:120px;display:block;margin:6px auto;">${animalSvgInner(a)}</svg>
+      <div class="cb-title">🌟 졸업 준비 완료! 🌟</div>
+      <svg viewBox="0 0 100 100" style="${animalCoatStyle(a)};width:130px;height:130px;display:block;margin:6px auto;filter:drop-shadow(0 0 18px gold) ${animalCoatFilter(a)}">${animalSvgInner(a)}</svg>
       <div class="cb-msg">
-        <b>${escapeHTML(a.name)}</b>이(가) 4스탯 모두 400을 달성했어요!<br/>
-        인간이 되어 떠나면 다시 만날 수 없지만,<br/>
-        <span style="color:#a06030">동물도감의 추억 코너에서 기억할 수 있어요.</span>
+        <b>${escapeHTML(a.name)}</b>이(가) 4스탯을 모두 마스터했어요!<br/>
+        이제 인간이 될 시간이에요.<br/>
+        <span style="color:#a06030;font-size:0.85rem">지금 졸업할까요?</span>
       </div>
       <div class="cb-actions">
-        <button class="btn" onclick="closeConfirm()">아직요</button>
-        <button class="btn gold" onclick="graduateAnimal(${id})">🎓 졸업!</button>
+        <button class="btn" onclick="closeConfirm()">나중에</button>
+        <button class="btn gold" onclick="graduateAnimal(${id})">🎓 지금!</button>
       </div>
     </div>
   `;
 }
 
+// 기존 버튼용 (수동 호출)
+function confirmGraduate(id) {
+  promptGraduate(id);
+}
+
 function graduateAnimal(id) {
+  const a = save.animals.find(x => x.id === id);
+  if (!a || !canGraduate(a)) { closeConfirm(); return; }
+  closeConfirm();
+  closeAnimalDetail();
+  playGraduationCeremony(a);
+}
+
+function playGraduationCeremony(a) {
+  const overlay = $('grad-overlay');
+  if (!overlay) { finalizeGraduation(a.id, null); return; }
+  overlay.classList.remove('hidden');
+  overlay.classList.remove('shaking');
+
+  // 반짝이 24개 (다양한 색)
+  const sparkColors = ['#ffe070', '#ff80c0', '#80c8ff', '#c080ff', '#80ff80', '#ffb060'];
+  const sparkles = Array.from({ length: 24 }, (_, i) => {
+    const angle = (i / 24) * Math.PI * 2 + Math.random() * 0.4;
+    const dist = 180 + Math.random() * 180;
+    const x = Math.cos(angle) * dist;
+    const y = Math.sin(angle) * dist;
+    const delay = 2.4 + Math.random() * 1.4;
+    const color = sparkColors[i % sparkColors.length];
+    return `<div class="grad-sparkle" style="--sp-end: translate(${x.toFixed(0)}px, ${y.toFixed(0)}px); --sp-color: ${color}; animation-delay: ${delay.toFixed(2)}s"></div>`;
+  }).join('');
+
+  // 색종이 36개 (rain)
+  const confColors = ['#ff5050', '#ff9040', '#ffd040', '#80c060', '#40b0e0', '#a060e0', '#ff80b0'];
+  const confetti = Array.from({ length: 36 }, () => {
+    const left = Math.random() * 100;
+    const delay = 3.5 + Math.random() * 2;
+    const dur = 2.6 + Math.random() * 1.4;
+    const color = confColors[Math.floor(Math.random() * confColors.length)];
+    return `<div class="grad-conf" style="left:${left.toFixed(1)}%;background:${color};animation-delay:${delay.toFixed(2)}s;animation-duration:${dur.toFixed(2)}s"></div>`;
+  }).join('');
+
+  const filter = animalCoatStyle(a);
+  overlay.innerHTML = `
+    <div class="grad-flash"></div>
+    <div class="grad-rays cw"></div>
+    <div class="grad-rays ccw"></div>
+    <div class="grad-glow"></div>
+    <div class="grad-stage">
+      <svg class="grad-before" viewBox="0 0 100 100" style="${filter}">${animalSvgInner(a)}</svg>
+      <div class="grad-burst"></div>
+      <svg class="grad-after" viewBox="0 0 100 100"><use href="#char-human"/></svg>
+      ${sparkles}
+    </div>
+    <div class="grad-confetti">${confetti}</div>
+    <div class="grad-title">✨ ${escapeHTML(a.name)}, 인간이 되다! ✨</div>
+    <div class="grad-sub">이제 사람이 되어 새로운 세상으로 떠납니다</div>
+    <button class="grad-btn" onclick="onGraduationContinue(${a.id})">💌 편지 받기</button>
+  `;
+  // 흔들림: 변환 순간(2.6s~4.2s)
+  setTimeout(() => overlay.classList.add('shaking'), 2400);
+  setTimeout(() => overlay.classList.remove('shaking'), 4200);
+}
+
+function onGraduationContinue(id) {
+  const a = save.animals.find(x => x.id === id);
+  if (!a) return;
+  $('grad-overlay').classList.add('hidden');
+  $('grad-overlay').innerHTML = '';
+  showGraduationLetter(a);
+}
+
+function showGraduationLetter(a) {
+  const letterIdx = Math.floor(Math.random() * HUMAN_LETTERS.length);
+  const tpl = HUMAN_LETTERS[letterIdx];
+  const name = escapeHTML(a.name);
+  const replaceName = (s) => s.replace(/\{name\}/g, name);
+  const overlay = $('grad-letter-overlay');
+  if (!overlay) { finalizeGraduation(a.id, letterIdx); return; }
+  overlay.classList.remove('hidden');
+  overlay.innerHTML = `
+    <div class="grad-letter">
+      <div class="grad-letter-greeting">${replaceName(tpl.greeting)}</div>
+      <div class="grad-letter-portrait">
+        <svg viewBox="0 0 100 100"><use href="#char-human"/></svg>
+      </div>
+      <div class="grad-letter-body">${replaceName(tpl.body)}</div>
+      <div class="grad-letter-closing">${replaceName(tpl.closing)}</div>
+      <div class="grad-letter-actions">
+        <button class="grad-letter-btn" onclick="closeGraduationLetter(${a.id}, ${letterIdx})">잘 가, ${name}!</button>
+      </div>
+    </div>
+  `;
+}
+
+function closeGraduationLetter(id, letterIdx) {
+  $('grad-letter-overlay').classList.add('hidden');
+  $('grad-letter-overlay').innerHTML = '';
+  finalizeGraduation(id, letterIdx);
+}
+
+function finalizeGraduation(id, letterIdx) {
   const idx = save.animals.findIndex(a => a.id === id);
-  if (idx < 0) { closeConfirm(); return; }
+  if (idx < 0) return;
   const a = save.animals[idx];
-  if (!canGraduate(a)) { closeConfirm(); return; }
   if (!Array.isArray(save.humans)) save.humans = [];
   save.humans.push({
     id: a.id,
@@ -8024,19 +8586,18 @@ function graduateAnimal(id) {
     color: a.color || 0,
     finalStats: { ...a.stats },
     adoptedAt: a.adoptedAt,
-    graduatedAt: Date.now()
+    graduatedAt: Date.now(),
+    letterIdx: (letterIdx === null || letterIdx === undefined) ? Math.floor(Math.random() * HUMAN_LETTERS.length) : letterIdx
   });
   save.animals.splice(idx, 1);
   if (save.activeAnimalId === id) {
     save.activeAnimalId = save.animals.length > 0 ? save.animals[0].id : null;
   }
   saveSave();
-  closeConfirm();
-  closeAnimalDetail();
   renderMyAnimals();
   setTimeout(() => {
-    toast(`🎓 ${a.name}이(가) 인간이 되어 졸업했어요!\n동물도감 추억 코너에서 만날 수 있어요.`, 'magic');
-  }, 100);
+    toast(`🌟 ${a.name}을(를) 영원히 기억할게요...\n동물도감의 추억 코너에서 만나요.`, 'magic');
+  }, 200);
 }
 
 function renderStatBars(s) {
