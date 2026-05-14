@@ -886,6 +886,25 @@
     width: 100%;
     height: 100%;
   }
+  /* 건물 그림 클릭 오버레이 (투명, 호버 시 노란 글로우) */
+  .bldg-click {
+    position: absolute;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    z-index: 4;
+    border-radius: 14px;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .bldg-click:hover {
+    background: radial-gradient(circle, rgba(255,220,120,0.32) 0%, rgba(255,220,120,0) 65%);
+    box-shadow: 0 0 16px rgba(255,200,80,0.25);
+  }
+  .bldg-click:active {
+    background: radial-gradient(circle, rgba(255,200,80,0.45) 0%, rgba(255,200,80,0) 65%);
+  }
+
   /* 건물 라벨 버튼 (그림은 SVG 배경에 박혀있음) */
   .map-building {
     position: absolute;
@@ -5601,7 +5620,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-12</div>
+    <div class="version-tag" style="color:#a06030;">260514-13</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -6077,6 +6096,15 @@
         <rect x="43" y="240" width="994" height="1160" rx="31" fill="none" stroke="#9e5b2c" stroke-width="6"/>
         <rect x="53" y="250" width="974" height="1140" rx="24" fill="none" stroke="#d99647" stroke-width="2" opacity=".35"/>
       </svg>
+      <!-- 건물 그림 클릭 오버레이 (투명) -->
+      <button class="bldg-click" style="top:10%;left:9%;width:18%;height:14%" onclick="enterShelter()" aria-label="동물보호소"></button>
+      <button class="bldg-click" style="top:2%;left:41%;width:22%;height:23%" onclick="goCharSelect()" aria-label="저주받은 탑"></button>
+      <button class="bldg-click" style="top:11%;left:73%;width:18%;height:16%" onclick="enterDept()" aria-label="백화점"></button>
+      <button class="bldg-click" style="top:35%;left:8%;width:22%;height:15%" onclick="enterMyAnimals()" aria-label="내 농장"></button>
+      <button class="bldg-click" style="top:39%;left:48%;width:42%;height:16%" onclick="enterPark()" aria-label="놀이공원"></button>
+      <button class="bldg-click" style="top:65%;left:24%;width:15%;height:13%" onclick="enterSalon()" aria-label="미용실"></button>
+      <button class="bldg-click" style="top:63%;left:60%;width:28%;height:18%" onclick="enterOrchard()" aria-label="과수원"></button>
+
       <!-- 라벨 버튼 (건물 그림은 배경 SVG에 박혀있음) -->
       <button class="map-building available" style="top:26.4%;left:17.8%" onclick="enterShelter()" aria-label="동물보호소">
         <div class="bldg-label">🏠 보호소</div>
