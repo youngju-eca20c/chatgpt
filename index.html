@@ -1971,7 +1971,7 @@
   /* 테마별 색 */
   .park-card.themed-shell    { background: linear-gradient(180deg, #d8eef8, #88c0e8); border-color: #4080c0; }
   .park-card.themed-claw     { background: linear-gradient(180deg, #ffd8e8, #ff90b8); border-color: #d04080; }
-  .park-card.themed-coaster  { background: linear-gradient(180deg, #ead0ff, #a880e0); border-color: #6040a0; }
+  .park-card.themed-run      { background: linear-gradient(180deg, #b8e8f8, #4a98c8); border-color: #1a5a8c; }
   .park-card.themed-shoot    { background: linear-gradient(180deg, #ffd8a0, #f08840); border-color: #b05010; }
   .park-card.themed-sing     { background: linear-gradient(180deg, #d8ffd8, #70d080); border-color: #1a8030; }
   .park-card:hover {
@@ -2012,6 +2012,159 @@
     font-weight: 700;
   }
   .park-card.disabled .pc-cost { color: #4a3a30; }
+  /* 돌핀런 */
+  .run-stage {
+    position: relative;
+    height: 360px;
+    background: linear-gradient(180deg, #a8d8f8 0%, #6cb8e8 35%, #4090c8 60%, #1a608a 100%);
+    border: 3px solid #1a4a78;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: inset 0 0 30px rgba(0,30,60,0.35);
+  }
+  .run-stage::before {
+    /* 구름 패턴 (반복 스크롤) */
+    content: '';
+    position: absolute;
+    top: 8%;
+    left: 0; right: -100%;
+    height: 30%;
+    background-image:
+      radial-gradient(ellipse 30px 12px at 50px 30px, rgba(255,255,255,0.7), transparent 65%),
+      radial-gradient(ellipse 45px 15px at 220px 60px, rgba(255,255,255,0.55), transparent 65%),
+      radial-gradient(ellipse 36px 14px at 380px 40px, rgba(255,255,255,0.6), transparent 65%);
+    background-repeat: repeat-x;
+    background-size: 480px 100px;
+    animation: cloudScroll 14s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes cloudScroll { to { background-position: -480px 0; } }
+  .run-water {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 12%;
+    background: linear-gradient(180deg, rgba(40,90,140,0.4) 0%, #1a4878 100%);
+    pointer-events: none;
+  }
+  .run-water::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: repeating-linear-gradient(90deg, transparent 0, transparent 18px, rgba(255,255,255,0.35) 18px, rgba(255,255,255,0.35) 24px);
+    animation: waterScroll 1.4s linear infinite;
+  }
+  @keyframes waterScroll { to { background-position: -42px 0; } }
+  .run-dolphin {
+    position: absolute;
+    left: 22%;
+    width: 64px;
+    height: 64px;
+    margin-left: -32px;
+    margin-top: -32px;
+    z-index: 5;
+    filter: drop-shadow(0 5px 6px rgba(0,30,60,0.4));
+    pointer-events: none;
+    transition: transform 0.08s linear;
+  }
+  .run-dolphin svg { width: 100%; height: 100%; }
+  .run-ring {
+    position: absolute;
+    width: 64px; height: 64px;
+    margin-left: -32px;
+    margin-top: -32px;
+    z-index: 3;
+    pointer-events: none;
+    filter: drop-shadow(0 0 6px rgba(255,210,80,0.6));
+  }
+  .run-ring svg { width: 100%; height: 100%; }
+  .run-ring.passed { animation: ringPop 0.45s forwards; }
+  @keyframes ringPop {
+    0%   { transform: scale(1); opacity: 1; }
+    50%  { transform: scale(1.5); filter: brightness(1.8); }
+    100% { transform: scale(1.7); opacity: 0; }
+  }
+  .run-hud {
+    position: absolute;
+    top: 8px; left: 10px; right: 10px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 10;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    color: #fff;
+    text-shadow: 1px 2px 3px rgba(0,0,0,0.7);
+    pointer-events: none;
+  }
+  .run-hud span { background: rgba(0,0,0,0.32); padding: 3px 10px; border-radius: 999px; }
+  .run-tip {
+    position: absolute;
+    bottom: 14%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    z-index: 10;
+    font-family: 'Black Han Sans', sans-serif;
+    animation: tipPulse 4.5s forwards;
+    pointer-events: none;
+  }
+  @keyframes tipPulse {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(8px); }
+    10%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+    70%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  .run-go-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    color: #fff;
+    text-align: center;
+    animation: goFade 0.5s ease;
+  }
+  @keyframes goFade { from { opacity: 0; } to { opacity: 1; } }
+  .run-go-overlay h2 {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 2rem;
+    margin: 0 0 12px;
+    text-shadow: 0 3px 6px rgba(0,0,0,0.6);
+  }
+  .run-go-overlay .row {
+    font-size: 1.05rem;
+    margin: 3px 0;
+    text-shadow: 0 2px 3px rgba(0,0,0,0.5);
+  }
+  .run-go-overlay .row b { color: #ffe070; }
+  .run-go-actions {
+    margin-top: 14px;
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+  }
+  .run-go-actions .btn { min-width: 140px; }
+  .run-splash {
+    position: absolute;
+    width: 80px; height: 40px;
+    margin-left: -40px;
+    z-index: 4;
+    pointer-events: none;
+    animation: splash 0.55s forwards;
+  }
+  @keyframes splash {
+    0%   { transform: scale(0.4); opacity: 0.9; }
+    100% { transform: scale(1.6); opacity: 0; }
+  }
+
   /* 카드 들어오는 애니메이션 */
   .park-card { animation: cardDrop 0.5s ease backwards; }
   .park-card:nth-child(1) { animation-delay: 0.05s; }
@@ -5419,7 +5572,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-07</div>
+    <div class="version-tag" style="color:#a06030;">260514-08</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -7504,6 +7657,8 @@ function enterTower() {
 // ============= 놀이공원 =============
 const PARK_SHELL_COST = 20;
 const PARK_CLAW_COST = 50;
+const PARK_RUN_COST = 30;
+const PARK_RUN_RING_GOLD = 2;
 
 function enterPark() {
   if (!save) save = loadSave();
@@ -7520,7 +7675,7 @@ function parkLobby() {
   const games = [
     { icon:'🐧', name:'펭귄 야바위', cost:`${PARK_SHELL_COST}골드`, fn:'parkShellStart()', theme:'shell' },
     { icon:'🪆', name:'인형뽑기',     cost:`${PARK_CLAW_COST}골드`, fn:'parkClawStart()', theme:'claw' },
-    { icon:'🎢', name:'롤러코스터',  cost:'🚧 공사중', disabled:true, theme:'coaster' },
+    { icon:'🐬', name:'돌핀런',       cost:`${PARK_RUN_COST}골드`, fn:'parkRunStart()', theme:'run' },
     { icon:'🎯', name:'사격장',       cost:'🚧 공사중', disabled:true, theme:'shoot' },
     { icon:'🎤', name:'노래방',       cost:'🚧 공사중', disabled:true, theme:'sing' }
   ];
@@ -8059,6 +8214,229 @@ function setClawStatus(txt, kind) {
   if (!el) return;
   el.innerHTML = txt;
   el.className = 'claw-status' + (kind ? ' ' + kind : '');
+}
+
+// ----- 돌핀런 -----
+let parkRunState = null;
+
+function parkRunStart() {
+  if (save.gold < PARK_RUN_COST) {
+    toast(`💰 골드가 부족해요! (${PARK_RUN_COST}골드 필요)`, 'warn');
+    return;
+  }
+  save.gold -= PARK_RUN_COST;
+  saveSave();
+  $('park-sub').textContent = '🐬 돌핀런 — 링을 통과하세요!';
+  $('park-gold').textContent = save.gold;
+  $('park-actions').innerHTML = `<button class="btn" onclick="parkRunExit()">← 게임 선택</button>`;
+  parkRunState = {
+    running: true,
+    dolphinY: 50,
+    velocity: 0,
+    rings: [],
+    scrollSpeed: 0.45,
+    ringSpawnInterval: 90,
+    spawnCounter: 30,
+    rafId: null,
+    frames: 0,
+    goldEarned: 0,
+    passedRings: 0,
+    nextRingId: 0
+  };
+  parkRunRender();
+  document.addEventListener('keydown', parkRunKeyHandler);
+  parkRunState.rafId = requestAnimationFrame(parkRunTick);
+}
+
+function parkRunRender() {
+  $('park-content').innerHTML = `
+    <div class="run-stage" id="run-stage" onpointerdown="parkRunJump()">
+      <div class="run-water"></div>
+      <div class="run-dolphin" id="run-dolphin" style="top:50%;transform:translateY(-50%)">
+        <svg viewBox="0 0 100 100"><use href="#char-dolphin"/></svg>
+      </div>
+      <div id="run-rings-layer"></div>
+      <div class="run-hud">
+        <span>🪙 +<b id="run-gold">0</b></span>
+        <span>🎯 <b id="run-rings-count">0</b></span>
+      </div>
+      <div class="run-tip">탭 / SPACE — 점프!</div>
+    </div>
+  `;
+}
+
+function parkRunKeyHandler(e) {
+  if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+    e.preventDefault();
+    parkRunJump();
+  }
+}
+
+function parkRunJump() {
+  const st = parkRunState;
+  if (!st || !st.running) return;
+  st.velocity = -1.1; // 위로 튀어오름
+}
+
+function parkRunTick() {
+  const st = parkRunState;
+  if (!st || !st.running) return;
+  st.frames++;
+
+  // 중력
+  st.velocity += 0.045;
+  if (st.velocity > 1.8) st.velocity = 1.8;
+  st.dolphinY += st.velocity;
+
+  // 상단 캡
+  if (st.dolphinY < 4) {
+    st.dolphinY = 4;
+    st.velocity = Math.max(0, st.velocity);
+  }
+  // 물에 빠짐 → 게임 오버
+  if (st.dolphinY > 88) {
+    st.dolphinY = 88;
+    parkRunSplash(22, st.dolphinY);
+    parkRunGameOver();
+    return;
+  }
+
+  // 링 이동
+  for (let i = st.rings.length - 1; i >= 0; i--) {
+    const ring = st.rings[i];
+    const prevX = ring.x;
+    ring.x -= st.scrollSpeed;
+    if (!ring.passed && prevX > 22 && ring.x <= 22) {
+      const dy = Math.abs(ring.y - st.dolphinY);
+      if (dy < 14) {
+        ring.passed = true;
+        st.passedRings++;
+        st.goldEarned += PARK_RUN_RING_GOLD;
+      }
+    }
+    if (ring.x < -10) st.rings.splice(i, 1);
+  }
+
+  // 링 스폰
+  st.spawnCounter++;
+  if (st.spawnCounter >= st.ringSpawnInterval) {
+    st.rings.push({
+      id: st.nextRingId++,
+      x: 108,
+      y: 18 + Math.random() * 64,
+      passed: false
+    });
+    st.spawnCounter = 0;
+  }
+
+  // 난이도 증가
+  if (st.frames > 300 && st.frames % 240 === 0) {
+    st.ringSpawnInterval = Math.max(55, st.ringSpawnInterval - 4);
+    st.scrollSpeed = Math.min(0.75, st.scrollSpeed + 0.04);
+  }
+
+  parkRunUpdateDom();
+  st.rafId = requestAnimationFrame(parkRunTick);
+}
+
+function parkRunUpdateDom() {
+  const st = parkRunState;
+  const dolphin = $('run-dolphin');
+  if (dolphin) {
+    const tilt = Math.max(-32, Math.min(48, st.velocity * 28));
+    dolphin.style.top = `${st.dolphinY}%`;
+    dolphin.style.transform = `translateY(-50%) rotate(${tilt}deg)`;
+  }
+  // 링 렌더링 (DOM 재사용을 위해 id로 추적)
+  const layer = $('run-rings-layer');
+  if (!layer) return;
+  const existing = {};
+  layer.querySelectorAll('.run-ring').forEach(el => {
+    existing[el.dataset.id] = el;
+  });
+  const currentIds = new Set();
+  st.rings.forEach(r => {
+    currentIds.add(String(r.id));
+    let el = existing[r.id];
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'run-ring';
+      el.dataset.id = r.id;
+      el.innerHTML = `
+        <svg viewBox="0 0 60 60">
+          <circle cx="30" cy="30" r="24" fill="none" stroke="#ffd040" stroke-width="6"/>
+          <circle cx="30" cy="30" r="16" fill="none" stroke="#fff5b0" stroke-width="2.5"/>
+          <circle cx="30" cy="14" r="2.5" fill="#fff"/>
+        </svg>
+      `;
+      layer.appendChild(el);
+    }
+    el.style.left = `${r.x}%`;
+    el.style.top = `${r.y}%`;
+    if (r.passed && !el.classList.contains('passed')) {
+      el.classList.add('passed');
+    }
+  });
+  // 사라진 링 제거
+  Object.keys(existing).forEach(id => {
+    if (!currentIds.has(id)) existing[id].remove();
+  });
+  $('run-gold').textContent = st.goldEarned;
+  $('run-rings-count').textContent = st.passedRings;
+}
+
+function parkRunSplash(xPct, yPct) {
+  const stage = $('run-stage');
+  if (!stage) return;
+  const splash = document.createElement('div');
+  splash.className = 'run-splash';
+  splash.style.left = `${xPct}%`;
+  splash.style.top = `${yPct}%`;
+  splash.innerHTML = `
+    <svg viewBox="0 0 80 40">
+      <ellipse cx="40" cy="32" rx="32" ry="8" fill="rgba(255,255,255,0.7)"/>
+      <ellipse cx="40" cy="28" rx="24" ry="6" fill="rgba(255,255,255,0.85)"/>
+      <circle cx="14" cy="20" r="3" fill="#fff"/>
+      <circle cx="66" cy="22" r="3.5" fill="#fff"/>
+      <circle cx="22" cy="10" r="2" fill="#fff"/>
+      <circle cx="58" cy="8" r="2.5" fill="#fff"/>
+    </svg>
+  `;
+  stage.appendChild(splash);
+  setTimeout(() => splash.remove(), 600);
+}
+
+function parkRunGameOver() {
+  const st = parkRunState;
+  if (!st) return;
+  st.running = false;
+  if (st.rafId) cancelAnimationFrame(st.rafId);
+  document.removeEventListener('keydown', parkRunKeyHandler);
+  save.gold += st.goldEarned;
+  saveSave();
+  $('park-gold').textContent = save.gold;
+  const stage = $('run-stage');
+  if (stage) {
+    const overlay = document.createElement('div');
+    overlay.className = 'run-go-overlay';
+    overlay.innerHTML = `
+      <h2>🐬 GAME OVER</h2>
+      <div class="row">🎯 통과 링: <b>${st.passedRings}</b></div>
+      <div class="row">🪙 획득 골드: <b>+${st.goldEarned}</b></div>
+      <div class="run-go-actions">
+        <button class="btn success" onclick="parkRunStart()">🐬 다시 (${PARK_RUN_COST}골드)</button>
+        <button class="btn" onclick="parkLobby()">← 게임 선택</button>
+      </div>
+    `;
+    stage.appendChild(overlay);
+  }
+}
+
+function parkRunExit() {
+  if (parkRunState && parkRunState.rafId) cancelAnimationFrame(parkRunState.rafId);
+  document.removeEventListener('keydown', parkRunKeyHandler);
+  parkRunState = null;
+  parkLobby();
 }
 
 function lockedLoc(name) {
