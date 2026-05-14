@@ -1835,6 +1835,192 @@
     transition: filter 0.18s, transform 0.18s;
   }
   .grad-letter-btn:hover { filter: brightness(1.12); transform: translateY(-2px); }
+
+  /* === 루미아 공주 이벤트 === */
+  .princess-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10003;
+    background:
+      radial-gradient(circle at 50% 35%, rgba(255,200,230,0.85) 0%, rgba(220,140,200,0.6) 35%, rgba(80,30,90,0.85) 75%, rgba(20,5,40,0.95) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    animation: princessIn 0.5s ease-out;
+    padding: 20px 12px;
+  }
+  @keyframes princessIn { from { opacity: 0; } to { opacity: 1; } }
+  /* 배경 반짝이 광선 */
+  .princess-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.6) 1.5px, transparent 2px),
+      radial-gradient(circle, rgba(255,220,180,0.5) 1px, transparent 1.5px);
+    background-size: 80px 60px, 50px 40px;
+    background-position: 0 0, 25px 20px;
+    animation: princessSparkles 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes princessSparkles {
+    0%, 100% { opacity: 0.5; }
+    50%      { opacity: 1; }
+  }
+  /* 회전 광선 */
+  .princess-rays {
+    position: absolute;
+    width: 200vw;
+    height: 200vw;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0%, rgba(255,255,255,0.18) 4%, transparent 8%,
+      transparent 24%, rgba(255,200,230,0.22) 28%, transparent 32%,
+      transparent 48%, rgba(255,255,255,0.18) 52%, transparent 56%,
+      transparent 72%, rgba(255,200,230,0.22) 76%, transparent 80%
+    );
+    animation: princessRays 14s linear infinite;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    top: 50%; left: 50%;
+    transform-origin: center;
+    margin: -100vw 0 0 -100vw;
+  }
+  @keyframes princessRays { to { transform: rotate(360deg); } }
+  .princess-stage {
+    position: relative;
+    width: 220px;
+    height: 280px;
+    z-index: 5;
+    animation: princessEnter 0.9s cubic-bezier(0.2, 1.4, 0.4, 1.05);
+  }
+  @keyframes princessEnter {
+    0%   { opacity: 0; transform: translateY(40px) scale(0.7); }
+    60%  { opacity: 1; transform: translateY(-8px) scale(1.05); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .princess-stage svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 8px 20px rgba(180,80,140,0.5)) drop-shadow(0 0 24px rgba(255,220,200,0.7));
+    animation: princessBob 3.2s ease-in-out infinite 0.9s;
+  }
+  @keyframes princessBob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-4px); }
+  }
+  .princess-name {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, #fff5d8, #ffcc44);
+    color: #5a2818;
+    padding: 4px 16px;
+    border: 2px solid #a06010;
+    border-radius: 999px;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 1.5px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+    white-space: nowrap;
+    z-index: 6;
+  }
+  .princess-dialogue {
+    position: relative;
+    z-index: 5;
+    max-width: 460px;
+    width: 100%;
+    margin-top: 28px;
+    background: linear-gradient(180deg, #fff8e8, #ffe8c0);
+    border: 3px solid #a06010;
+    border-radius: 16px;
+    padding: 14px 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    animation: princessDialog 0.6s 0.3s backwards ease-out;
+  }
+  @keyframes princessDialog {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .princess-dialogue::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-bottom: 14px solid #a06010;
+  }
+  .princess-dialogue::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 11px solid transparent;
+    border-right: 11px solid transparent;
+    border-bottom: 11px solid #fff8e8;
+  }
+  .princess-dialogue p {
+    margin: 4px 0;
+    font-family: 'Nanum Pen Script', 'Gaegu', sans-serif;
+    font-size: 1.18rem;
+    line-height: 1.55;
+    color: #4a2810;
+  }
+  .princess-dialogue p b {
+    color: #c03070;
+    font-weight: 700;
+  }
+  .princess-title-grand {
+    z-index: 6;
+    margin-top: 16px;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.6rem;
+    color: #fff5d8;
+    text-shadow: 0 0 14px #ff80b8, 0 0 28px #c04080, 2px 2px 0 #5a1040;
+    letter-spacing: 3px;
+    animation: titleGrand 0.7s cubic-bezier(0.2, 1.5, 0.4, 1) backwards;
+  }
+  @keyframes titleGrand {
+    0%   { opacity: 0; transform: scale(0.3); filter: blur(8px); }
+    60%  { opacity: 1; transform: scale(1.15); filter: blur(0); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .princess-btn {
+    z-index: 6;
+    margin-top: 14px;
+    background: linear-gradient(180deg, #ffb0c8, #c04080);
+    border: 3px solid #fff;
+    border-radius: 999px;
+    padding: 10px 28px;
+    color: #fff;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 5px 14px rgba(0,0,0,0.5), 0 0 22px rgba(255,160,200,0.6);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    letter-spacing: 1.5px;
+    transition: filter 0.18s, transform 0.18s;
+  }
+  .princess-btn:hover { filter: brightness(1.15); transform: translateY(-2px); }
+  .princess-btn-gold {
+    background: linear-gradient(180deg, #ffe070, #c08020);
+    color: #4a2010;
+    box-shadow: 0 5px 14px rgba(0,0,0,0.5), 0 0 26px rgba(255,200,80,0.85);
+    animation: btnGoldPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes btnGoldPulse {
+    0%, 100% { box-shadow: 0 5px 14px rgba(0,0,0,0.5), 0 0 26px rgba(255,200,80,0.85); }
+    50%      { box-shadow: 0 5px 14px rgba(0,0,0,0.5), 0 0 40px rgba(255,220,120,1); }
+  }
   .ev-btn:active { transform: scale(0.95); }
 
   /* === 보호소 / 내 농장 (따뜻한 톤) === */
@@ -6188,6 +6374,102 @@
       <circle cx="86" cy="70" r="1.3" fill="#fff"/>
     </symbol>
 
+    <!-- 루미아 공주 (만화 1화 참고: 갈색 곱슬 + 금빛 왕관 + 핑크 프릴 드레스) -->
+    <symbol id="char-princess" viewBox="0 0 100 130">
+      <defs>
+        <linearGradient id="lumiaDress" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffb0c8"/>
+          <stop offset="60%" stop-color="#f88aa8"/>
+          <stop offset="100%" stop-color="#d05080"/>
+        </linearGradient>
+        <linearGradient id="lumiaHair" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#a86028"/>
+          <stop offset="100%" stop-color="#6a3818"/>
+        </linearGradient>
+        <linearGradient id="lumiaCrown" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#fff0a0"/>
+          <stop offset="55%" stop-color="#ffcc44"/>
+          <stop offset="100%" stop-color="#a06010"/>
+        </linearGradient>
+      </defs>
+      <!-- 그림자 -->
+      <ellipse cx="50" cy="126" rx="32" ry="2.5" fill="#000" opacity="0.28"/>
+      <!-- 머리카락 뒤 (긴 곱슬, 어깨 너머로) -->
+      <path d="M22 38 Q12 60 16 92 Q20 112 30 120 L36 108 Q32 86 36 64 Z" fill="url(#lumiaHair)" stroke="#4a200a" stroke-width="0.8"/>
+      <path d="M78 38 Q88 60 84 92 Q80 112 70 120 L64 108 Q68 86 64 64 Z" fill="url(#lumiaHair)" stroke="#4a200a" stroke-width="0.8"/>
+      <!-- 컬 디테일 -->
+      <path d="M18 70 Q22 78 24 70 Q20 64 18 70 Z" fill="#8a4a20"/>
+      <path d="M82 70 Q78 78 76 70 Q80 64 82 70 Z" fill="#8a4a20"/>
+      <path d="M24 100 Q28 108 30 100 Q26 94 24 100 Z" fill="#8a4a20"/>
+      <path d="M76 100 Q72 108 70 100 Q74 94 76 100 Z" fill="#8a4a20"/>
+      <!-- 드레스 본체 (핑크) -->
+      <path d="M28 92 L20 124 L80 124 L72 92 Q60 88 50 88 Q40 88 28 92 Z" fill="url(#lumiaDress)" stroke="#a04060" stroke-width="1.2"/>
+      <!-- 드레스 앞면 화이트 프릴 (가슴~허리) -->
+      <path d="M40 90 L34 124 L66 124 L60 90 Q55 88 50 88 Q45 88 40 90 Z" fill="#fff8e8" stroke="#c08080" stroke-width="0.8"/>
+      <!-- 프릴 가로 결 -->
+      <path d="M37 100 L63 100" stroke="#d8a0b0" stroke-width="0.6" fill="none"/>
+      <path d="M36 110 L64 110" stroke="#d8a0b0" stroke-width="0.6" fill="none"/>
+      <path d="M35 120 L65 120" stroke="#d8a0b0" stroke-width="0.6" fill="none"/>
+      <!-- 골드 트림 (앞 중앙 단추 3개) -->
+      <circle cx="50" cy="96" r="1.2" fill="#ffcc44" stroke="#a06010" stroke-width="0.4"/>
+      <circle cx="50" cy="104" r="1.2" fill="#ffcc44" stroke="#a06010" stroke-width="0.4"/>
+      <circle cx="50" cy="112" r="1.2" fill="#ffcc44" stroke="#a06010" stroke-width="0.4"/>
+      <!-- 어깨 퍼프 (양옆) -->
+      <ellipse cx="28" cy="86" rx="7" ry="5" fill="#ffb0c8" stroke="#c08080" stroke-width="0.8"/>
+      <ellipse cx="72" cy="86" rx="7" ry="5" fill="#ffb0c8" stroke="#c08080" stroke-width="0.8"/>
+      <!-- 큰 리본 (가슴 위) -->
+      <path d="M38 82 Q50 78 62 82 Q56 88 50 86 Q44 88 38 82 Z" fill="#e8a0c0" stroke="#a04060" stroke-width="0.9"/>
+      <ellipse cx="50" cy="83" rx="2.5" ry="2" fill="#ffcc44" stroke="#a06010" stroke-width="0.5"/>
+      <!-- 목 -->
+      <rect x="46" y="68" width="8" height="9" fill="#fde0c0"/>
+      <!-- 얼굴 -->
+      <ellipse cx="50" cy="50" rx="21" ry="23" fill="#fde6cc" stroke="#d8a880" stroke-width="0.8"/>
+      <!-- 앞머리 (이마 위 곱슬) -->
+      <path d="M28 40 Q30 30 38 28 Q44 24 50 26 Q56 24 62 28 Q70 30 72 40 Q70 34 64 36 Q60 38 56 34 Q52 38 48 34 Q44 38 40 34 Q36 38 32 36 Q28 34 28 40 Z" fill="url(#lumiaHair)" stroke="#4a200a" stroke-width="0.7"/>
+      <!-- 앞머리 하이라이트 -->
+      <path d="M38 32 Q44 30 50 30 Q56 30 62 32" stroke="#c08040" stroke-width="0.6" fill="none" opacity="0.6"/>
+      <!-- 사이드 헤어 (귀 부근) -->
+      <path d="M28 40 Q26 52 30 64 Q34 62 30 50 Z" fill="url(#lumiaHair)" stroke="#4a200a" stroke-width="0.5"/>
+      <path d="M72 40 Q74 52 70 64 Q66 62 70 50 Z" fill="url(#lumiaHair)" stroke="#4a200a" stroke-width="0.5"/>
+      <!-- 왕관 -->
+      <path d="M34 24 L38 16 L42 22 L46 14 L50 20 L54 14 L58 22 L62 16 L66 24 L34 24 Z" fill="url(#lumiaCrown)" stroke="#7a4810" stroke-width="0.9"/>
+      <!-- 왕관 띠 -->
+      <rect x="34" y="24" width="32" height="2.2" fill="#c89040" stroke="#7a4810" stroke-width="0.5"/>
+      <!-- 왕관 중앙 빨강 보석 (만화처럼) -->
+      <ellipse cx="50" cy="19" rx="2.8" ry="3" fill="#d83040" stroke="#7a1010" stroke-width="0.6"/>
+      <ellipse cx="50" cy="18" rx="1.2" ry="1.3" fill="#ff8090"/>
+      <!-- 왕관 양옆 작은 보석 -->
+      <circle cx="42" cy="21" r="1.1" fill="#80c0ff" stroke="#406090" stroke-width="0.3"/>
+      <circle cx="58" cy="21" r="1.1" fill="#80c0ff" stroke="#406090" stroke-width="0.3"/>
+      <!-- 큰 애니메 눈 -->
+      <ellipse cx="42" cy="52" rx="3.8" ry="5.2" fill="#fff" stroke="#5a3010" stroke-width="0.8"/>
+      <ellipse cx="58" cy="52" rx="3.8" ry="5.2" fill="#fff" stroke="#5a3010" stroke-width="0.8"/>
+      <!-- 동공 (갈색) -->
+      <ellipse cx="42" cy="53" rx="3" ry="4" fill="#6a3a18"/>
+      <ellipse cx="58" cy="53" rx="3" ry="4" fill="#6a3a18"/>
+      <!-- 눈 하이라이트 (큰) -->
+      <ellipse cx="43.5" cy="50" rx="1.6" ry="1.8" fill="#fff"/>
+      <ellipse cx="59.5" cy="50" rx="1.6" ry="1.8" fill="#fff"/>
+      <!-- 작은 하이라이트 -->
+      <circle cx="41" cy="54" r="0.6" fill="#fff" opacity="0.7"/>
+      <circle cx="57" cy="54" r="0.6" fill="#fff" opacity="0.7"/>
+      <!-- 속눈썹 -->
+      <path d="M37.5 49 Q40 46 45 47" stroke="#3a1808" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+      <path d="M55 47 Q60 46 62.5 49" stroke="#3a1808" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+      <!-- 눈썹 -->
+      <path d="M38 44 Q42 42 46 44" stroke="#6a3a18" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+      <path d="M54 44 Q58 42 62 44" stroke="#6a3a18" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+      <!-- 볼터치 -->
+      <ellipse cx="36" cy="60" rx="3" ry="1.8" fill="#ffa0b0" opacity="0.65"/>
+      <ellipse cx="64" cy="60" rx="3" ry="1.8" fill="#ffa0b0" opacity="0.65"/>
+      <!-- 코 (살짝) -->
+      <ellipse cx="50" cy="58" rx="0.7" ry="0.5" fill="#d8a080"/>
+      <!-- 입 (작은 미소) -->
+      <path d="M46 64 Q50 67 54 64" stroke="#a04040" stroke-width="1.2" fill="#ff80a0" fill-opacity="0.6" stroke-linecap="round"/>
+      <!-- 입 안 하이라이트 -->
+      <path d="M48 65 Q50 66 52 65" stroke="#fff" stroke-width="0.4" fill="none" opacity="0.7"/>
+    </symbol>
+
     <!-- 두꺼비 상인 -->
     <symbol id="char-toad" viewBox="0 0 100 100">
       <ellipse cx="50" cy="93" rx="36" ry="4" fill="#000" opacity="0.4"/>
@@ -6384,7 +6666,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-20</div>
+    <div class="version-tag" style="color:#a06030;">260514-21</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -7000,6 +7282,7 @@
   <div id="evolve-overlay" class="evolve-overlay hidden"></div>
   <div id="grad-overlay" class="grad-overlay hidden"></div>
   <div id="grad-letter-overlay" class="grad-letter-overlay hidden"></div>
+  <div id="princess-overlay" class="princess-overlay hidden"></div>
 
   <!-- 게임 화면 -->
   <div id="main-game" class="hidden">
@@ -7142,8 +7425,9 @@ const RARITY_COLOR = {
 
 // 유저 등급 (추후 확장 가능)
 const RANK_INFO = {
-  평민: { maxAnimals: 3, color: '#888888', icon: '🪶' }
-  // 향후: 평민 → 시민 → 귀족 → 영주 → 왕족 등 확장
+  평민: { maxAnimals: 3, color: '#888888', icon: '🪶' },
+  남작: { maxAnimals: 6, color: '#a060e0', icon: '👑' }
+  // 향후: 평민 → 남작 → 자작 → 백작 → 후작 → 공작 등 확장
 };
 
 // 미용실 코트 색상 (CSS filter 기반)
@@ -7242,6 +7526,7 @@ function migrateSave(data) {
   if (!data.inventory) data.inventory = { food: 0, book: 0, mirror: 0, toy: 0 };
   if (!data.orchard) data.orchard = { picker: null, carrier: null, lastEarnAt: Date.now() };
   if (!data.miniatures) data.miniatures = {};
+  if (typeof data.baronAwarded !== 'boolean') data.baronAwarded = false;
   // 동물에 color 필드 보장 + 얼룩빛은 강아지만
   data.animals.forEach(a => {
     if (typeof a.color !== 'number') a.color = 0;
@@ -8615,9 +8900,70 @@ function finalizeGraduation(id, letterIdx) {
   }
   saveSave();
   renderMyAnimals();
-  setTimeout(() => {
-    toast(`🌟 ${a.name}을(를) 영원히 기억할게요...\n동물도감의 추억 코너에서 만나요.`, 'magic');
-  }, 200);
+  // 첫 졸업 → 루미아 공주 등장 + 남작 작위
+  const isFirstGraduation = save.humans.length === 1 && !save.baronAwarded;
+  if (isFirstGraduation) {
+    setTimeout(() => playPrincessEvent(a.name), 1200);
+  } else {
+    setTimeout(() => {
+      toast(`🌟 ${a.name}을(를) 영원히 기억할게요...\n동물도감의 추억 코너에서 만나요.`, 'magic');
+    }, 200);
+  }
+}
+
+// === 루미아 공주 첫 졸업 이벤트 ===
+function playPrincessEvent(graduateName) {
+  const overlay = $('princess-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('hidden');
+  const safe = escapeHTML(graduateName || '');
+  overlay.innerHTML = `
+    <div class="princess-bg"></div>
+    <div class="princess-rays"></div>
+    <div class="princess-stage">
+      <svg viewBox="0 0 100 130"><use href="#char-princess"/></svg>
+      <div class="princess-name">루미아 공주</div>
+    </div>
+    <div class="princess-dialogue">
+      <p>안녕하세요! 저는 <b>루미아 공주</b>예요.</p>
+      <p>이 왕국에서 <b>${safe}</b>이(가) 인간이 됐다는 소식을 듣고 한걸음에 달려왔답니다!</p>
+      <p>이건 정말 드문 일이에요... 당신의 따뜻한 마음에 감명받았어요.</p>
+    </div>
+    <button class="princess-btn" onclick="princessGrantBaron('${safe}')">계속 ▶</button>
+  `;
+}
+
+function princessGrantBaron(safeName) {
+  // 남작 작위 부여
+  save.userRank = '남작';
+  save.baronAwarded = true;
+  saveSave();
+  const overlay = $('princess-overlay');
+  if (!overlay) return;
+  overlay.innerHTML = `
+    <div class="princess-bg"></div>
+    <div class="princess-rays"></div>
+    <div class="princess-stage">
+      <svg viewBox="0 0 100 130"><use href="#char-princess"/></svg>
+      <div class="princess-name">루미아 공주</div>
+    </div>
+    <div class="princess-title-grand">🌟 남작 작위 하사 🌟</div>
+    <div class="princess-dialogue">
+      <p>그래서 저는 당신에게 <b>남작(男爵)</b>의 작위를 하사합니다!</p>
+      <p>이제부터 동물을 <b>최대 6마리</b>까지 가족으로 맞이할 수 있어요.</p>
+      <p>앞으로도 그 따뜻한 마음 잊지 마세요. 🌸</p>
+    </div>
+    <button class="princess-btn princess-btn-gold" onclick="closePrincessEvent()">✨ 감사합니다! ✨</button>
+  `;
+}
+
+function closePrincessEvent() {
+  const overlay = $('princess-overlay');
+  if (!overlay) return;
+  overlay.classList.add('hidden');
+  overlay.innerHTML = '';
+  toast(`👑 남작 작위를 받았어요! 이제 동물을 6마리까지 키울 수 있어요.`, 'magic');
+  renderMyAnimals();
 }
 
 // 추억 코너에서 편지 다시 보기
