@@ -1870,7 +1870,7 @@
     top: 0;
     width: 90px;
     height: 110px;
-    transition: transform 0.45s cubic-bezier(.6,-0.25,.35,1.4);
+    transition: transform 0.28s cubic-bezier(.55,-0.2,.4,1.35);
     cursor: pointer;
   }
   .shell-block.locked { cursor: default; }
@@ -5235,7 +5235,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-05</div>
+    <div class="version-tag" style="color:#a06030;">260514-06</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -7378,8 +7378,9 @@ function parkShellStart() {
     if (peng) peng.classList.remove('shown');
     const msg = $('shell-msg');
     if (msg) msg.textContent = '...섞는 중...';
-    parkShellShuffleStep(0, 5 + Math.floor(Math.random()*2));
-  }, 1600);
+    // 난이도: 더 많이, 점점 더 빠르게
+    parkShellShuffleStep(0, 10 + Math.floor(Math.random()*5));
+  }, 1100);
 }
 
 function parkShellShuffleStep(n, total) {
@@ -7408,7 +7409,10 @@ function parkShellShuffleStep(n, total) {
     el.style.setProperty('--tx', `${tx}px`);
     el.style.transform = `translate(${tx}px, 0)`;
   });
-  setTimeout(() => parkShellShuffleStep(n + 1, total), 480);
+  // 진행 비율에 따라 빨라짐: 380ms → 180ms
+  const progress = n / total;
+  const speed = Math.round(380 - progress * 200 + (Math.random()*40 - 20));
+  setTimeout(() => parkShellShuffleStep(n + 1, total), Math.max(150, speed));
 }
 
 function parkShellPick(blockIdx) {
