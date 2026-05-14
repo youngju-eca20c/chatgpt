@@ -6666,7 +6666,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-21</div>
+    <div class="version-tag" style="color:#a06030;">260514-22</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -7426,7 +7426,7 @@ const RARITY_COLOR = {
 // 유저 등급 (추후 확장 가능)
 const RANK_INFO = {
   평민: { maxAnimals: 3, color: '#888888', icon: '🪶' },
-  남작: { maxAnimals: 6, color: '#a060e0', icon: '👑' }
+  남작: { maxAnimals: 5, color: '#a060e0', icon: '👑' }
   // 향후: 평민 → 남작 → 자작 → 백작 → 후작 → 공작 등 확장
 };
 
@@ -8950,7 +8950,7 @@ function princessGrantBaron(safeName) {
     <div class="princess-title-grand">🌟 남작 작위 하사 🌟</div>
     <div class="princess-dialogue">
       <p>그래서 저는 당신에게 <b>남작(男爵)</b>의 작위를 하사합니다!</p>
-      <p>이제부터 동물을 <b>최대 6마리</b>까지 가족으로 맞이할 수 있어요.</p>
+      <p>이제부터 동물을 <b>최대 5마리</b>까지 가족으로 맞이할 수 있어요.</p>
       <p>앞으로도 그 따뜻한 마음 잊지 마세요. 🌸</p>
     </div>
     <button class="princess-btn princess-btn-gold" onclick="closePrincessEvent()">✨ 감사합니다! ✨</button>
@@ -8962,7 +8962,7 @@ function closePrincessEvent() {
   if (!overlay) return;
   overlay.classList.add('hidden');
   overlay.innerHTML = '';
-  toast(`👑 남작 작위를 받았어요! 이제 동물을 6마리까지 키울 수 있어요.`, 'magic');
+  toast(`👑 남작 작위를 받았어요! 이제 동물을 5마리까지 키울 수 있어요.`, 'magic');
   renderMyAnimals();
 }
 
