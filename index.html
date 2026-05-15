@@ -3061,6 +3061,23 @@
     0%, 100% { transform: scale(1); }
     50%      { transform: scale(1.18); }
   }
+  .sort-hud span { position: relative; }
+  .sort-time-penalty {
+    position: absolute;
+    top: -18px;
+    right: 6px;
+    color: #d02020;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1rem;
+    text-shadow: 0 2px 3px rgba(0,0,0,0.4), 0 0 6px rgba(255,80,80,0.7);
+    animation: timePenaltyFly 0.9s ease-out forwards;
+    pointer-events: none;
+  }
+  @keyframes timePenaltyFly {
+    0%   { opacity: 0; transform: translateY(8px) scale(0.6); }
+    25%  { opacity: 1; transform: translateY(-4px) scale(1.25); }
+    100% { opacity: 0; transform: translateY(-24px) scale(1); }
+  }
 
   /* 컨베이어 벨트 */
   .sort-belt {
@@ -6985,7 +7002,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-26</div>
+    <div class="version-tag" style="color:#a06030;">260514-27</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -9444,7 +9461,8 @@ const PARK_CLAW_COST = 50;
 const PARK_RUN_COST = 30;
 const PARK_RUN_RING_GOLD = 2;
 const PARK_SORT_COST = 25;
-const PARK_SORT_DURATION = 45; // seconds
+const PARK_SORT_DURATION = 30; // seconds
+const PARK_SORT_TIME_PENALTY = 2; // seconds per wrong/miss
 
 // 카테고리별 2종, 한눈에 명확히 구분 가능 (동물 먹이 / 농장 가공품 / 명백한 쓰레기)
 const SORT_ITEMS = [
@@ -9480,7 +9498,6 @@ function parkLobby() {
     { icon:'🐧', name:'펭귄 야바위', cost:`${PARK_SHELL_COST}골드`, fn:'parkShellStart()', theme:'shell' },
     { icon:'🪆', name:'인형뽑기',     cost:`${PARK_CLAW_COST}골드`, fn:'parkClawStart()', theme:'claw' },
     { icon:'🐬', name:'돌핀런',       cost:`${PARK_RUN_COST}골드`, fn:'parkRunStart()', theme:'run' },
-    { icon:'🌾', name:'농장 분류',    cost:`${PARK_SORT_COST}골드`, fn:'parkSortStart()', theme:'sort' },
     { icon:'🌾', name:'농장 분류',    cost:`${PARK_SORT_COST}골드`, fn:'parkSortStart()', theme:'sort' }
   ];
   const ferris = `
@@ -10358,6 +10375,7 @@ function parkSortStart() {
     correctCount: 0,
     wrongCount: 0,
     missCount: 0,
+    timePenalty: 0,
     items: [],          // [{ id, name, icon, category, tint, badge, x, judged, result }]
     speed: 0.42,        // % per frame
     spawnInterval: 95,  // frames between spawns
@@ -10409,7 +10427,7 @@ function parkSortTick() {
   if (!st || !st.running) return;
   st.frames++;
   const elapsed = (Date.now() - st.startTime) / 1000;
-  st.timeLeft = Math.max(0, PARK_SORT_DURATION - elapsed);
+  st.timeLeft = Math.max(0, PARK_SORT_DURATION - elapsed - (st.timePenalty || 0));
   if (st.timeLeft <= 0) {
     parkSortEnd();
     return;
@@ -10431,7 +10449,9 @@ function parkSortTick() {
       it.removeAt = Date.now() + 500;
       st.combo = 0;
       st.missCount++;
+      st.timePenalty = (st.timePenalty || 0) + PARK_SORT_TIME_PENALTY;
       flashBelt('bad');
+      showTimePenalty();
     }
   }
 
@@ -10556,10 +10576,12 @@ function parkSortJudge(category) {
     // 오답
     st.combo = 0;
     st.wrongCount++;
+    st.timePenalty = (st.timePenalty || 0) + PARK_SORT_TIME_PENALTY;
     target.judged = true;
     target.result = 'bad';
     target.removeAt = Date.now() + 500;
     flashBelt('bad');
+    showTimePenalty();
     if (btn) {
       btn.classList.remove('feedback-bad');
       void btn.offsetWidth;
@@ -10576,6 +10598,19 @@ function flashBelt(kind) {
   void belt.offsetWidth;
   belt.classList.add(`flash-${kind}`);
   setTimeout(() => belt.classList.remove(`flash-${kind}`), 350);
+}
+
+function showTimePenalty() {
+  const wrap = $('sort-time-wrap');
+  if (!wrap) return;
+  // 페널티 텍스트를 잠깐 띄움
+  let penaltyEl = wrap.querySelector('.sort-time-penalty');
+  if (penaltyEl) penaltyEl.remove();
+  penaltyEl = document.createElement('span');
+  penaltyEl.className = 'sort-time-penalty';
+  penaltyEl.textContent = `-${PARK_SORT_TIME_PENALTY}s`;
+  wrap.appendChild(penaltyEl);
+  setTimeout(() => penaltyEl.remove(), 900);
 }
 
 function showComboMsg(msg) {
