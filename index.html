@@ -7002,7 +7002,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-27</div>
+    <div class="version-tag" style="color:#a06030;">260514-28</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -10377,15 +10377,23 @@ function parkSortStart() {
     missCount: 0,
     timePenalty: 0,
     items: [],          // [{ id, name, icon, category, tint, badge, x, judged, result }]
-    speed: 0.42,        // % per frame
-    spawnInterval: 95,  // frames between spawns
-    spawnCounter: 60,
+    speed: 0.70,        // % per frame (시작부터 빠르게)
+    spawnInterval: 78,  // frames between spawns
+    spawnCounter: 78,   // 첫 tick에 즉시 스폰
     rafId: null,
     frames: 0,
     nextId: 0,
     comboMsg: '',
     comboMsgAt: 0
   };
+  // 첫 아이템 즉시 등장 — 60% 지점에서 시작 → 빨리 판정선 도달
+  const first = SORT_ITEMS[Math.floor(Math.random() * SORT_ITEMS.length)];
+  parkSortState.items.push({
+    id: parkSortState.nextId++,
+    ...first,
+    x: 62,
+    judged: false
+  });
   parkSortRender();
   parkSortState.rafId = requestAnimationFrame(parkSortTick);
 }
@@ -10468,10 +10476,10 @@ function parkSortTick() {
     st.spawnCounter = 0;
   }
 
-  // 난이도 — 4초마다 빨라짐
-  if (st.frames > 180 && st.frames % 240 === 0) {
-    st.spawnInterval = Math.max(48, st.spawnInterval - 5);
-    st.speed = Math.min(0.95, st.speed + 0.06);
+  // 난이도 — 2.5초마다 빨라짐 (더 공격적)
+  if (st.frames > 120 && st.frames % 150 === 0) {
+    st.spawnInterval = Math.max(38, st.spawnInterval - 6);
+    st.speed = Math.min(1.30, st.speed + 0.08);
   }
 
   parkSortUpdateDom();
