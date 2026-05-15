@@ -3102,21 +3102,21 @@
     animation: beltScroll 1.5s linear infinite;
   }
   @keyframes beltScroll { to { background-position: -76px 0, 0 0; } }
-  /* 판정 존 (넓은 영역 + 명확한 표시) */
+  /* 판정 존 (넓은 영역 + 명확한 표시 — x 6% ~ 50%) */
   .sort-judge {
     position: absolute;
     top: 0; bottom: 0;
     left: 6%;
-    width: 26%;
+    width: 44%;
     background:
       repeating-linear-gradient(45deg,
-        rgba(255,200,80,0.22) 0 10px,
-        rgba(255,240,150,0.32) 10px 20px);
-    border-left:  3px solid rgba(255,60,60,0.85);
-    border-right: 3px dashed rgba(255,180,60,0.85);
+        rgba(255,200,80,0.22) 0 12px,
+        rgba(255,240,150,0.32) 12px 24px);
+    border-left:  3px solid rgba(255,60,60,0.9);
+    border-right: 3px dashed rgba(255,180,60,0.9);
     box-shadow:
-      inset 0 0 16px rgba(255,180,40,0.4),
-      -2px 0 8px rgba(255,60,60,0.5);
+      inset 0 0 18px rgba(255,180,40,0.42),
+      -2px 0 8px rgba(255,60,60,0.55);
     z-index: 2;
     pointer-events: none;
     animation: judgeGlow 1.4s ease-in-out infinite;
@@ -7094,7 +7094,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-31</div>
+    <div class="version-tag" style="color:#a06030;">260514-32</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -9555,6 +9555,8 @@ const PARK_RUN_RING_GOLD = 2;
 const PARK_SORT_COST = 25;
 const PARK_SORT_DURATION = 30; // seconds
 const PARK_SORT_TIME_PENALTY = 2; // seconds per wrong/miss
+const PARK_SORT_ZONE_LEFT = 6;   // 미스 임계점 (x < 값이면 놓침)
+const PARK_SORT_ZONE_RIGHT = 50; // 판정존 우측 한계 (x > 값이면 판정 불가)
 
 // 카테고리별 2종, 한눈에 명확히 구분 가능 (동물 먹이 / 농장 가공품 / 명백한 쓰레기)
 const SORT_ITEMS = [
@@ -10535,7 +10537,7 @@ function parkSortTick() {
     }
     it.x -= st.speed;
     // 판정선 (12%) 지나가면 miss
-    if (it.x < 6) {
+    if (it.x < PARK_SORT_ZONE_LEFT) {
       it.judged = true;
       it.result = 'miss';
       it.removeAt = Date.now() + 500;
@@ -10618,10 +10620,11 @@ function parkSortUpdateDom() {
 function parkSortJudge(category) {
   const st = parkSortState;
   if (!st || !st.running) return;
-  // 미판정 아이템 중 가장 왼쪽 (판정선에 가장 가까운) 것 — 거리 제한 없음
+  // 판정존(PARK_SORT_ZONE_LEFT ~ PARK_SORT_ZONE_RIGHT) 안에 있는 미판정 아이템 중 가장 왼쪽
   let target = null;
   for (const it of st.items) {
     if (it.judged) continue;
+    if (it.x > PARK_SORT_ZONE_RIGHT) continue; // 아직 판정존 진입 전
     if (!target || it.x < target.x) target = it;
   }
   // 시각 피드백: 누른 버튼
