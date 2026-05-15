@@ -7048,7 +7048,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-29</div>
+    <div class="version-tag" style="color:#a06030;">260514-30</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -10572,11 +10572,10 @@ function parkSortUpdateDom() {
 function parkSortJudge(category) {
   const st = parkSortState;
   if (!st || !st.running) return;
-  // 왼쪽(판정선 가까이)에서 미판정 첫 아이템 찾기
+  // 미판정 아이템 중 가장 왼쪽 (판정선에 가장 가까운) 것 — 거리 제한 없음
   let target = null;
   for (const it of st.items) {
     if (it.judged) continue;
-    if (it.x > 65) continue; // 너무 멀리 있으면 판정 안 함 (필드 진입)
     if (!target || it.x < target.x) target = it;
   }
   // 시각 피드백: 누른 버튼
