@@ -3389,6 +3389,52 @@
     justify-content: center;
     flex-wrap: wrap;
   }
+  /* 결과창 진입 직후 1.2초간 버튼 잠금 (오탭 방지) */
+  .sort-result-actions.sort-result-actions-locked {
+    opacity: 0;
+    pointer-events: none;
+    animation: sortActionsUnlock 0.6s 1.2s ease-out forwards;
+  }
+  @keyframes sortActionsUnlock {
+    0%   { opacity: 0; transform: translateY(10px); pointer-events: none; }
+    99%  { pointer-events: none; }
+    100% { opacity: 1; transform: translateY(0);   pointer-events: auto; }
+  }
+
+  /* 시간 종료 오버레이 */
+  .sort-finish-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 10, 5, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    animation: sortFinishOverlay 1.3s ease forwards;
+    pointer-events: none;
+    border-radius: 13px;
+  }
+  @keyframes sortFinishOverlay {
+    0%   { opacity: 0; }
+    25%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  .sort-finish-text {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 2.2rem;
+    color: #ffd060;
+    text-shadow: 0 0 18px #ff8030, 0 0 32px #c04010, 3px 4px 0 #5a1010;
+    letter-spacing: 3px;
+    animation: sortFinishText 1.3s cubic-bezier(0.2, 1.5, 0.4, 1) forwards;
+    transform-origin: center;
+  }
+  @keyframes sortFinishText {
+    0%   { opacity: 0; transform: scale(0.3) rotate(-12deg); filter: blur(8px); }
+    35%  { opacity: 1; transform: scale(1.2) rotate(4deg); filter: blur(0); }
+    65%  { opacity: 1; transform: scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: scale(0.85); }
+  }
 
   /* 카드 들어오는 애니메이션 */
   .park-card { animation: cardDrop 0.5s ease backwards; }
@@ -7048,7 +7094,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-30</div>
+    <div class="version-tag" style="color:#a06030;">260514-31</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -10681,28 +10727,40 @@ function parkSortEnd() {
   if (accuracy >= 95 && st.correctCount >= 18) { grade = 'S'; bonus = 60; }
   else if (accuracy >= 80 && st.correctCount >= 14) { grade = 'A'; bonus = 25; }
   else if (accuracy >= 60) { grade = 'B'; bonus = 8; }
-  // 점수당 골드
   const goldFromScore = Math.floor(st.score / 25);
   const totalGold = goldFromScore + bonus;
   save.gold += totalGold;
   saveSave();
   $('park-gold').textContent = save.gold;
 
-  $('park-content').innerHTML = `
-    <div class="sort-result">
-      <h2>🌾 분류 완료!</h2>
-      <div class="sort-grade grade-${grade}">${grade}</div>
-      <div class="sort-result-row">💯 점수: <b>${st.score}</b></div>
-      <div class="sort-result-row">✅ 정답: <b>${st.correctCount}</b> · ❌ 실수: <b>${st.wrongCount + st.missCount}</b></div>
-      <div class="sort-result-row">🎯 정확도: <b>${accuracy.toFixed(0)}%</b></div>
-      <div class="sort-result-row">🔥 최고 콤보: <b>${st.maxCombo}</b></div>
-      <div class="sort-result-row">🪙 획득 골드: <b>+${totalGold}</b>${bonus ? ` <span style="font-size:0.78rem;color:#c04020">(등급 보너스 +${bonus})</span>` : ''}</div>
-      <div class="sort-result-actions">
-        <button class="btn success" onclick="parkSortStart()">🌾 다시 (${PARK_SORT_COST}골드)</button>
-        <button class="btn" onclick="parkLobby()">← 게임 선택</button>
+  // 1단계: "시간 종료" 큰 텍스트로 잠시 표시 (1.2초)
+  const stage = document.querySelector('.sort-stage');
+  if (stage) {
+    const finish = document.createElement('div');
+    finish.className = 'sort-finish-overlay';
+    finish.innerHTML = `<div class="sort-finish-text">⏱ 시간 종료!</div>`;
+    stage.appendChild(finish);
+  }
+
+  // 2단계: 결과 화면 (1.3초 후 천천히 등장)
+  setTimeout(() => {
+    if (!parkSortState) return;
+    $('park-content').innerHTML = `
+      <div class="sort-result">
+        <h2>🌾 분류 완료!</h2>
+        <div class="sort-grade grade-${grade}">${grade}</div>
+        <div class="sort-result-row">💯 점수: <b>${st.score}</b></div>
+        <div class="sort-result-row">✅ 정답: <b>${st.correctCount}</b> · ❌ 실수: <b>${st.wrongCount + st.missCount}</b></div>
+        <div class="sort-result-row">🎯 정확도: <b>${accuracy.toFixed(0)}%</b></div>
+        <div class="sort-result-row">🔥 최고 콤보: <b>${st.maxCombo}</b></div>
+        <div class="sort-result-row">🪙 획득 골드: <b>+${totalGold}</b>${bonus ? ` <span style="font-size:0.78rem;color:#c04020">(등급 보너스 +${bonus})</span>` : ''}</div>
+        <div class="sort-result-actions sort-result-actions-locked">
+          <button class="btn success" onclick="parkSortStart()">🌾 다시 (${PARK_SORT_COST}골드)</button>
+          <button class="btn" onclick="parkLobby()">← 게임 선택</button>
+        </div>
       </div>
-    </div>
-  `;
+    `;
+  }, 1300);
   if (grade === 'S') {
     toast(`🏆 S 등급 달성! 환상적인 분류 실력이에요!`, 'magic');
   }
