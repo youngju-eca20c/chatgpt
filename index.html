@@ -3164,14 +3164,24 @@
     box-shadow: 0 2px 3px rgba(0,0,0,0.25);
   }
 
-  /* 정답/오답 애니메이션 */
-  .sort-item.result-good {
-    animation: sortGood 0.5s ease forwards;
+  /* 정답 애니메이션 — 카테고리별 방향 */
+  .sort-item.result-good.dir-food    { animation: sortGoodDown 0.55s cubic-bezier(.3,1.2,.5,1) forwards; }
+  .sort-item.result-good.dir-product { animation: sortGoodUp   0.55s cubic-bezier(.3,1.2,.5,1) forwards; }
+  .sort-item.result-good.dir-trash   { animation: sortGoodLeft 0.55s cubic-bezier(.3,1.2,.5,1) forwards; }
+  @keyframes sortGoodDown {
+    0%   { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+    40%  { transform: translate(-50%, 60%) scale(1.18) rotate(15deg); filter: brightness(1.4) drop-shadow(0 0 14px #80c060); }
+    100% { transform: translate(-50%, 240%) scale(0.4) rotate(45deg); opacity: 0; }
   }
-  @keyframes sortGood {
-    0%   { transform: translate(-50%, -50%) scale(1); }
-    35%  { transform: translate(-100%, -120%) scale(1.15) rotate(-12deg); filter: brightness(1.4) drop-shadow(0 0 14px #ffe070); }
-    100% { transform: translate(-180%, -180%) scale(0.4) rotate(-30deg); opacity: 0; }
+  @keyframes sortGoodUp {
+    0%   { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+    40%  { transform: translate(-50%, -160%) scale(1.18) rotate(-15deg); filter: brightness(1.4) drop-shadow(0 0 14px #80b0e0); }
+    100% { transform: translate(-50%, -340%) scale(0.4) rotate(-45deg); opacity: 0; }
+  }
+  @keyframes sortGoodLeft {
+    0%   { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+    40%  { transform: translate(-180%, -50%) scale(1.18) rotate(-25deg); filter: brightness(1.4) drop-shadow(0 0 14px #c08850); }
+    100% { transform: translate(-380%, -50%) scale(0.4) rotate(-60deg); opacity: 0; }
   }
   .sort-item.result-bad {
     animation: sortBad 0.5s ease forwards;
@@ -6975,7 +6985,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-24</div>
+    <div class="version-tag" style="color:#a06030;">260514-25</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -9436,21 +9446,17 @@ const PARK_RUN_RING_GOLD = 2;
 const PARK_SORT_COST = 25;
 const PARK_SORT_DURATION = 45; // seconds
 
+// 카테고리별 2종, 한눈에 명확히 구분 가능 (동물 먹이 / 농장 가공품 / 명백한 쓰레기)
 const SORT_ITEMS = [
-  // 먹이 (food)
+  // 먹이 — 동물이 그대로 먹는 사료/채소
   { name:'당근',     icon:'🥕', category:'food' },
-  { name:'사과',     icon:'🍎', category:'food' },
   { name:'옥수수',   icon:'🌽', category:'food' },
-  // 생산품 (product)
-  { name:'우유',     icon:'🥛', category:'product' },
-  { name:'달걀',     icon:'🥚', category:'product' },
+  // 생산품 — 사람이 가공해 만든 농장 부산물 (식품 아님)
   { name:'양털',     icon:'🧶', category:'product' },
   { name:'꿀',       icon:'🍯', category:'product' },
-  // 버리기 (trash)
-  { name:'돌멩이',   icon:'🪨', category:'trash' },
+  // 버리기 — 명백히 망가졌거나 쓰레기
   { name:'썩은 사과', icon:'🍎', category:'trash', tint:'rot',    badge:'🪰' },
-  { name:'깨진 달걀', icon:'🥚', category:'trash', tint:'crack',  badge:'💧' },
-  { name:'잡초',     icon:'🌿', category:'trash', tint:'wither' }
+  { name:'깨진 달걀', icon:'🥚', category:'trash', tint:'crack',  badge:'💧' }
 ];
 const SORT_CATEGORIES = {
   food:    { name:'먹이',   icon:'🥕' },
@@ -9475,9 +9481,7 @@ function parkLobby() {
     { icon:'🪆', name:'인형뽑기',     cost:`${PARK_CLAW_COST}골드`, fn:'parkClawStart()', theme:'claw' },
     { icon:'🐬', name:'돌핀런',       cost:`${PARK_RUN_COST}골드`, fn:'parkRunStart()', theme:'run' },
     { icon:'🌾', name:'농장 분류',    cost:`${PARK_SORT_COST}골드`, fn:'parkSortStart()', theme:'sort' },
-    { icon:'🌾', name:'농장 분류',    cost:`${PARK_SORT_COST}골드`, fn:'parkSortStart()', theme:'sort' },
-    { icon:'🎯', name:'사격장',       cost:'🚧 공사중', disabled:true, theme:'shoot' },
-    { icon:'🎤', name:'노래방',       cost:'🚧 공사중', disabled:true, theme:'sing' }
+    { icon:'🌾', name:'농장 분류',    cost:`${PARK_SORT_COST}골드`, fn:'parkSortStart()', theme:'sort' }
   ];
   const ferris = `
     <svg class="park-ferris" viewBox="0 0 100 100">
@@ -10491,6 +10495,7 @@ function parkSortUpdateDom() {
     if (it.judged && !el.classList.contains('judged-rendered')) {
       el.classList.add('judged-rendered');
       el.classList.add(`result-${it.result}`);
+      if (it.result === 'good') el.classList.add(`dir-${it.category}`);
     }
   });
   Object.keys(existing).forEach(id => {
