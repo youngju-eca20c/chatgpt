@@ -2788,6 +2788,7 @@
   .park-card.themed-shell    { background: linear-gradient(180deg, #d8eef8, #88c0e8); border-color: #4080c0; }
   .park-card.themed-claw     { background: linear-gradient(180deg, #ffd8e8, #ff90b8); border-color: #d04080; }
   .park-card.themed-run      { background: linear-gradient(180deg, #b8e8f8, #4a98c8); border-color: #1a5a8c; }
+  .park-card.themed-sort     { background: linear-gradient(180deg, #ffe8b0, #f0a060); border-color: #a05010; }
   .park-card.themed-shoot    { background: linear-gradient(180deg, #ffd8a0, #f08840); border-color: #b05010; }
   .park-card.themed-sing     { background: linear-gradient(180deg, #d8ffd8, #70d080); border-color: #1a8030; }
   .park-card:hover {
@@ -3010,6 +3011,312 @@
     100% { transform: scale(1.6); opacity: 0; }
   }
 
+  /* === 농장 물건 분류하기 === */
+  .sort-stage {
+    background: linear-gradient(180deg, #fff5e0 0%, #ffe5c0 40%, #fcd8a8 100%);
+    border: 3px solid #c08040;
+    border-radius: 16px;
+    padding: 10px 8px 14px;
+    margin-bottom: 10px;
+    box-shadow: inset 0 0 24px rgba(180,100,40,0.18);
+    position: relative;
+    overflow: hidden;
+    min-height: 380px;
+  }
+  .sort-stage::before {
+    /* 농장 부스 배경 — 깃발/장식 */
+    content: '';
+    position: absolute;
+    top: -8px; left: 0; right: 0;
+    height: 22px;
+    background: repeating-linear-gradient(45deg, #f08850 0 12px, #ffcc70 12px 24px);
+    opacity: 0.35;
+    pointer-events: none;
+    border-radius: 16px 16px 0 0;
+  }
+  .sort-hud {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+  .sort-hud span {
+    flex: 1;
+    background: rgba(255,255,255,0.85);
+    border: 2px solid #b07a3a;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.85rem;
+    color: #5a2818;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(120,60,20,0.2);
+  }
+  .sort-hud b { color: #c04020; }
+  .sort-hud .sort-time-low b { color: #d02020; animation: timeLowPulse 0.6s ease-in-out infinite; }
+  @keyframes timeLowPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.18); }
+  }
+
+  /* 컨베이어 벨트 */
+  .sort-belt {
+    position: relative;
+    height: 130px;
+    background: linear-gradient(180deg, #b0c4d8 0%, #809ab2 100%);
+    border: 3px solid #506a82;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: inset 0 4px 8px rgba(40,60,80,0.4), inset 0 -4px 8px rgba(40,60,80,0.3);
+    margin-bottom: 8px;
+  }
+  /* 벨트 위 스크롤 패턴 (이동 라인) */
+  .sort-belt::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: -100%;
+    height: 100%;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 36px, rgba(255,255,255,0.18) 36px 38px, transparent 38px 76px),
+      repeating-linear-gradient(180deg, transparent 0 18px, rgba(0,0,0,0.05) 18px 19px);
+    animation: beltScroll 1.5s linear infinite;
+  }
+  @keyframes beltScroll { to { background-position: -76px 0, 0 0; } }
+  /* 판정 라인 (왼쪽 가장자리 근처) */
+  .sort-judge {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 12%;
+    width: 3px;
+    background: linear-gradient(180deg, rgba(255,80,80,0) 0%, rgba(255,80,80,0.7) 40%, rgba(255,80,80,0.7) 60%, rgba(255,80,80,0) 100%);
+    box-shadow: 0 0 8px rgba(255,80,80,0.7);
+    z-index: 2;
+    pointer-events: none;
+  }
+  /* 벨트 도착지 (분류 칸) */
+  .sort-dropzone {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 0;
+    width: 12%;
+    background: linear-gradient(90deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* 벨트 위 아이템 */
+  .sort-item {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    transition: transform 0.05s linear;
+    pointer-events: none;
+  }
+  .sort-item-card {
+    width: 62px;
+    height: 62px;
+    background: linear-gradient(180deg, #fff8e8, #ffe0b8);
+    border: 3px solid #a06030;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(120,60,20,0.4);
+    position: relative;
+  }
+  .sort-item-icon {
+    font-size: 2.2rem;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25));
+  }
+  .sort-item-card.tint-rot   .sort-item-icon { filter: sepia(1) hue-rotate(15deg) saturate(2.4) brightness(0.5) drop-shadow(0 1px 2px rgba(0,0,0,0.3)); }
+  .sort-item-card.tint-crack .sort-item-icon { filter: brightness(0.75) saturate(0.6) drop-shadow(0 1px 2px rgba(0,0,0,0.3)); }
+  .sort-item-card.tint-wither .sort-item-icon { filter: sepia(0.7) hue-rotate(-15deg) brightness(0.75) drop-shadow(0 1px 2px rgba(0,0,0,0.3)); }
+  .sort-item-badge {
+    position: absolute;
+    top: -10px;
+    right: -8px;
+    font-size: 1.05rem;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+    animation: sortBadgeFloat 1.2s ease-in-out infinite;
+  }
+  @keyframes sortBadgeFloat {
+    0%, 100% { transform: translateY(0) rotate(-8deg); }
+    50%      { transform: translateY(-3px) rotate(10deg); }
+  }
+  .sort-item-label {
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.72rem;
+    color: #4a2010;
+    background: rgba(255,255,255,0.92);
+    border: 1.5px solid #a06030;
+    border-radius: 999px;
+    padding: 1px 7px;
+    white-space: nowrap;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.25);
+  }
+
+  /* 정답/오답 애니메이션 */
+  .sort-item.result-good {
+    animation: sortGood 0.5s ease forwards;
+  }
+  @keyframes sortGood {
+    0%   { transform: translate(-50%, -50%) scale(1); }
+    35%  { transform: translate(-100%, -120%) scale(1.15) rotate(-12deg); filter: brightness(1.4) drop-shadow(0 0 14px #ffe070); }
+    100% { transform: translate(-180%, -180%) scale(0.4) rotate(-30deg); opacity: 0; }
+  }
+  .sort-item.result-bad {
+    animation: sortBad 0.5s ease forwards;
+  }
+  @keyframes sortBad {
+    0%   { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+    20%  { transform: translate(-50%, -50%) scale(1.05) rotate(-6deg); filter: brightness(1.3) drop-shadow(0 0 10px #ff4040); }
+    40%  { transform: translate(-50%, -50%) scale(1) rotate(6deg); }
+    60%  { transform: translate(-50%, -50%) scale(0.95) rotate(-4deg); }
+    100% { transform: translate(-50%, -50%) scale(0.7) rotate(0deg); opacity: 0; }
+  }
+  .sort-item.result-miss {
+    animation: sortMiss 0.5s ease forwards;
+  }
+  @keyframes sortMiss {
+    0%   { transform: translate(-50%, -50%); opacity: 1; }
+    100% { transform: translate(-100%, 200%) rotate(60deg); opacity: 0; }
+  }
+
+  /* 벨트 플래시 (정답/오답) */
+  .sort-belt.flash-good { animation: beltFlashGood 0.32s ease; }
+  .sort-belt.flash-bad  { animation: beltFlashBad  0.32s ease; }
+  @keyframes beltFlashGood {
+    0%   { box-shadow: inset 0 0 0 0 rgba(120,220,80,0); }
+    50%  { box-shadow: inset 0 0 40px 8px rgba(120,220,80,0.65); }
+    100% { box-shadow: inset 0 0 0 0 rgba(120,220,80,0); }
+  }
+  @keyframes beltFlashBad {
+    0%   { box-shadow: inset 0 0 0 0 rgba(220,60,60,0); }
+    50%  { box-shadow: inset 0 0 40px 8px rgba(220,60,60,0.65); }
+    100% { box-shadow: inset 0 0 0 0 rgba(220,60,60,0); }
+  }
+
+  /* 콤보 메시지 */
+  .sort-combo-msg {
+    text-align: center;
+    height: 28px;
+    margin-bottom: 6px;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.1rem;
+    color: #c0408a;
+    text-shadow: 0 1px 0 #fff, 0 0 8px rgba(255,160,200,0.6);
+    line-height: 28px;
+  }
+  .sort-combo-msg.popping {
+    animation: sortComboPop 0.7s ease forwards;
+  }
+  @keyframes sortComboPop {
+    0%   { opacity: 0; transform: scale(0.4); }
+    40%  { opacity: 1; transform: scale(1.25); }
+    100% { opacity: 0; transform: scale(1); }
+  }
+
+  /* 큰 버튼 3개 */
+  .sort-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding: 0 2px;
+  }
+  .sort-btn {
+    padding: 14px 6px;
+    border: 3px solid;
+    border-radius: 16px;
+    background: linear-gradient(180deg, var(--btn-light), var(--btn-dark));
+    color: #fff;
+    font-family: 'Black Han Sans', sans-serif;
+    cursor: pointer;
+    transition: transform 0.12s, filter 0.12s, box-shadow 0.12s;
+    box-shadow: 0 4px 0 var(--btn-shadow), 0 5px 10px rgba(0,0,0,0.3);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .sort-btn.cat-food    { --btn-light:#a8e070; --btn-dark:#508030; --btn-shadow:#2a4818; border-color:#3a6018; }
+  .sort-btn.cat-product { --btn-light:#a8d8f8; --btn-dark:#4080c0; --btn-shadow:#1a4878; border-color:#205088; }
+  .sort-btn.cat-trash   { --btn-light:#d8c0a0; --btn-dark:#806040; --btn-shadow:#4a2818; border-color:#5a3818; }
+  .sort-btn:hover { filter: brightness(1.08); transform: translateY(-2px); }
+  .sort-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--btn-shadow), 0 3px 6px rgba(0,0,0,0.3); }
+  .sort-btn-icon  { font-size: 1.8rem; line-height: 1; }
+  .sort-btn-label { font-size: 0.95rem; letter-spacing: 1px; }
+
+  /* 버튼 누름 피드백 */
+  .sort-btn.feedback-good { animation: sortBtnGood 0.35s ease; }
+  .sort-btn.feedback-bad  { animation: sortBtnBad  0.35s ease; }
+  @keyframes sortBtnGood {
+    0%   { box-shadow: 0 4px 0 var(--btn-shadow), 0 5px 10px rgba(0,0,0,0.3), 0 0 0 0 rgba(255,255,255,0); }
+    50%  { box-shadow: 0 4px 0 var(--btn-shadow), 0 5px 10px rgba(0,0,0,0.3), 0 0 0 12px rgba(255,255,255,0.45); }
+    100% { box-shadow: 0 4px 0 var(--btn-shadow), 0 5px 10px rgba(0,0,0,0.3), 0 0 0 0 rgba(255,255,255,0); }
+  }
+  @keyframes sortBtnBad {
+    0%, 100% { transform: translate(0, 0); }
+    20%      { transform: translate(-4px, 0); }
+    40%      { transform: translate(4px, 0); }
+    60%      { transform: translate(-3px, 0); }
+    80%      { transform: translate(3px, 0); }
+  }
+
+  /* 결과 화면 */
+  .sort-result {
+    text-align: center;
+    background: linear-gradient(180deg, #fff8e0, #ffe0a0);
+    border: 3px solid #c08040;
+    border-radius: 16px;
+    padding: 18px 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  .sort-result h2 {
+    color: #5a3010;
+    margin: 0 0 8px;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.3rem;
+  }
+  .sort-grade {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 4rem;
+    line-height: 1;
+    margin: 8px 0;
+    animation: gradeIn 0.8s cubic-bezier(0.2, 1.6, 0.3, 1);
+  }
+  .sort-grade.grade-S { color: #ff8030; text-shadow: 0 0 18px #ffd060, 0 3px 0 #c04010; }
+  .sort-grade.grade-A { color: #c060c0; text-shadow: 0 0 14px #ffa0ff, 0 3px 0 #803080; }
+  .sort-grade.grade-B { color: #4090d0; text-shadow: 0 0 12px #a0d0ff, 0 3px 0 #205080; }
+  .sort-grade.grade-C { color: #808080; text-shadow: 0 3px 0 #404040; }
+  @keyframes gradeIn {
+    0%   { opacity: 0; transform: scale(0.2) rotate(-30deg); }
+    60%  { opacity: 1; transform: scale(1.25) rotate(8deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+  .sort-result-row {
+    font-size: 1.05rem;
+    margin: 4px 0;
+    color: #5a3010;
+  }
+  .sort-result-row b { color: #c04020; }
+  .sort-result-actions {
+    margin-top: 14px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
   /* 카드 들어오는 애니메이션 */
   .park-card { animation: cardDrop 0.5s ease backwards; }
   .park-card:nth-child(1) { animation-delay: 0.05s; }
@@ -3017,6 +3324,7 @@
   .park-card:nth-child(3) { animation-delay: 0.19s; }
   .park-card:nth-child(4) { animation-delay: 0.26s; }
   .park-card:nth-child(5) { animation-delay: 0.33s; }
+  .park-card:nth-child(6) { animation-delay: 0.40s; }
   @keyframes cardDrop {
     0% { opacity: 0; transform: translateY(-20px) scale(0.85); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -6666,7 +6974,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-22</div>
+    <div class="version-tag" style="color:#a06030;">260514-23</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -9124,6 +9432,30 @@ const PARK_SHELL_COST = 20;
 const PARK_CLAW_COST = 50;
 const PARK_RUN_COST = 30;
 const PARK_RUN_RING_GOLD = 2;
+const PARK_SORT_COST = 25;
+const PARK_SORT_DURATION = 45; // seconds
+
+const SORT_ITEMS = [
+  // 먹이 (food)
+  { name:'당근',     icon:'🥕', category:'food' },
+  { name:'사과',     icon:'🍎', category:'food' },
+  { name:'옥수수',   icon:'🌽', category:'food' },
+  // 생산품 (product)
+  { name:'우유',     icon:'🥛', category:'product' },
+  { name:'달걀',     icon:'🥚', category:'product' },
+  { name:'양털',     icon:'🧶', category:'product' },
+  { name:'꿀',       icon:'🍯', category:'product' },
+  // 버리기 (trash)
+  { name:'돌멩이',   icon:'🪨', category:'trash' },
+  { name:'썩은 사과', icon:'🍎', category:'trash', tint:'rot',    badge:'🪰' },
+  { name:'깨진 달걀', icon:'🥚', category:'trash', tint:'crack',  badge:'💧' },
+  { name:'잡초',     icon:'🌿', category:'trash', tint:'wither' }
+];
+const SORT_CATEGORIES = {
+  food:    { name:'먹이',   icon:'🥕' },
+  product: { name:'생산품', icon:'🥛' },
+  trash:   { name:'버리기', icon:'🗑' }
+};
 
 function enterPark() {
   if (!save) save = loadSave();
@@ -9141,6 +9473,8 @@ function parkLobby() {
     { icon:'🐧', name:'펭귄 야바위', cost:`${PARK_SHELL_COST}골드`, fn:'parkShellStart()', theme:'shell' },
     { icon:'🪆', name:'인형뽑기',     cost:`${PARK_CLAW_COST}골드`, fn:'parkClawStart()', theme:'claw' },
     { icon:'🐬', name:'돌핀런',       cost:`${PARK_RUN_COST}골드`, fn:'parkRunStart()', theme:'run' },
+    { icon:'🌾', name:'농장 분류',    cost:`${PARK_SORT_COST}골드`, fn:'parkSortStart()', theme:'sort' },
+    { icon:'🌾', name:'농장 분류',    cost:`${PARK_SORT_COST}골드`, fn:'parkSortStart()', theme:'sort' },
     { icon:'🎯', name:'사격장',       cost:'🚧 공사중', disabled:true, theme:'shoot' },
     { icon:'🎤', name:'노래방',       cost:'🚧 공사중', disabled:true, theme:'sing' }
   ];
@@ -9993,6 +10327,304 @@ function parkRunExit() {
   if (parkRunState && parkRunState.rafId) cancelAnimationFrame(parkRunState.rafId);
   document.removeEventListener('keydown', parkRunKeyHandler);
   parkRunState = null;
+  parkLobby();
+}
+
+// ----- 농장 물건 분류하기 -----
+let parkSortState = null;
+
+function parkSortStart() {
+  if (save.gold < PARK_SORT_COST) {
+    toast(`💰 골드가 부족해요! (${PARK_SORT_COST}골드 필요)`, 'warn');
+    return;
+  }
+  save.gold -= PARK_SORT_COST;
+  saveSave();
+  $('park-sub').textContent = '🌾 농장 물건 분류 — 빠르게 분류하세요!';
+  $('park-gold').textContent = save.gold;
+  $('park-actions').innerHTML = `<button class="btn" onclick="parkSortExit()">← 게임 선택</button>`;
+  parkSortState = {
+    running: true,
+    startTime: Date.now(),
+    timeLeft: PARK_SORT_DURATION,
+    score: 0,
+    combo: 0,
+    maxCombo: 0,
+    correctCount: 0,
+    wrongCount: 0,
+    missCount: 0,
+    items: [],          // [{ id, name, icon, category, tint, badge, x, judged, result }]
+    speed: 0.42,        // % per frame
+    spawnInterval: 95,  // frames between spawns
+    spawnCounter: 60,
+    rafId: null,
+    frames: 0,
+    nextId: 0,
+    comboMsg: '',
+    comboMsgAt: 0
+  };
+  parkSortRender();
+  parkSortState.rafId = requestAnimationFrame(parkSortTick);
+}
+
+function parkSortRender() {
+  $('park-content').innerHTML = `
+    <div class="sort-stage">
+      <div class="sort-hud">
+        <span id="sort-time-wrap">⏱ <b id="sort-time">${Math.ceil(PARK_SORT_DURATION)}</b>초</span>
+        <span>💯 <b id="sort-score">0</b></span>
+        <span>🔥 <b id="sort-combo">0</b></span>
+      </div>
+      <div class="sort-belt" id="sort-belt">
+        <div class="sort-dropzone"></div>
+        <div class="sort-judge"></div>
+        <div id="sort-items"></div>
+      </div>
+      <div class="sort-combo-msg" id="sort-combo-msg">&nbsp;</div>
+      <div class="sort-buttons">
+        <button class="sort-btn cat-food" id="sort-btn-food" onclick="parkSortJudge('food')">
+          <span class="sort-btn-icon">🥕</span>
+          <span class="sort-btn-label">먹이</span>
+        </button>
+        <button class="sort-btn cat-product" id="sort-btn-product" onclick="parkSortJudge('product')">
+          <span class="sort-btn-icon">🥛</span>
+          <span class="sort-btn-label">생산품</span>
+        </button>
+        <button class="sort-btn cat-trash" id="sort-btn-trash" onclick="parkSortJudge('trash')">
+          <span class="sort-btn-icon">🗑</span>
+          <span class="sort-btn-label">버리기</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function parkSortTick() {
+  const st = parkSortState;
+  if (!st || !st.running) return;
+  st.frames++;
+  const elapsed = (Date.now() - st.startTime) / 1000;
+  st.timeLeft = Math.max(0, PARK_SORT_DURATION - elapsed);
+  if (st.timeLeft <= 0) {
+    parkSortEnd();
+    return;
+  }
+
+  // 이동 + 미처리 통과 → miss
+  for (let i = st.items.length - 1; i >= 0; i--) {
+    const it = st.items[i];
+    if (it.judged) {
+      // 정답/오답 이미 처리됨 — 잠시 후 제거
+      if (Date.now() > it.removeAt) st.items.splice(i, 1);
+      continue;
+    }
+    it.x -= st.speed;
+    // 판정선 (12%) 지나가면 miss
+    if (it.x < 6) {
+      it.judged = true;
+      it.result = 'miss';
+      it.removeAt = Date.now() + 500;
+      st.combo = 0;
+      st.missCount++;
+      flashBelt('bad');
+    }
+  }
+
+  // 스폰
+  st.spawnCounter++;
+  if (st.spawnCounter >= st.spawnInterval) {
+    const tpl = SORT_ITEMS[Math.floor(Math.random() * SORT_ITEMS.length)];
+    st.items.push({
+      id: st.nextId++,
+      ...tpl,
+      x: 105,
+      judged: false
+    });
+    st.spawnCounter = 0;
+  }
+
+  // 난이도 — 4초마다 빨라짐
+  if (st.frames > 180 && st.frames % 240 === 0) {
+    st.spawnInterval = Math.max(48, st.spawnInterval - 5);
+    st.speed = Math.min(0.95, st.speed + 0.06);
+  }
+
+  parkSortUpdateDom();
+  st.rafId = requestAnimationFrame(parkSortTick);
+}
+
+function parkSortUpdateDom() {
+  const st = parkSortState;
+  // HUD
+  $('sort-time').textContent = Math.ceil(st.timeLeft);
+  $('sort-score').textContent = st.score;
+  $('sort-combo').textContent = st.combo;
+  const timeWrap = $('sort-time-wrap');
+  if (timeWrap) timeWrap.classList.toggle('sort-time-low', st.timeLeft <= 8);
+
+  // 아이템 렌더 (DOM 재사용)
+  const layer = $('sort-items');
+  if (!layer) return;
+  const existing = {};
+  layer.querySelectorAll('.sort-item').forEach(el => { existing[el.dataset.id] = el; });
+  const currentIds = new Set();
+  st.items.forEach(it => {
+    currentIds.add(String(it.id));
+    let el = existing[it.id];
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'sort-item';
+      el.dataset.id = it.id;
+      const tintClass = it.tint ? ` tint-${it.tint}` : '';
+      const badge = it.badge ? `<span class="sort-item-badge">${it.badge}</span>` : '';
+      el.innerHTML = `
+        <div class="sort-item-card${tintClass}">
+          <span class="sort-item-icon">${it.icon}</span>
+          ${badge}
+        </div>
+        <div class="sort-item-label">${it.name}</div>
+      `;
+      layer.appendChild(el);
+    }
+    el.style.left = `${it.x}%`;
+    if (it.judged && !el.classList.contains('judged-rendered')) {
+      el.classList.add('judged-rendered');
+      el.classList.add(`result-${it.result}`);
+    }
+  });
+  Object.keys(existing).forEach(id => {
+    if (!currentIds.has(id)) existing[id].remove();
+  });
+}
+
+function parkSortJudge(category) {
+  const st = parkSortState;
+  if (!st || !st.running) return;
+  // 왼쪽(판정선 가까이)에서 미판정 첫 아이템 찾기
+  let target = null;
+  for (const it of st.items) {
+    if (it.judged) continue;
+    if (it.x > 65) continue; // 너무 멀리 있으면 판정 안 함 (필드 진입)
+    if (!target || it.x < target.x) target = it;
+  }
+  // 시각 피드백: 누른 버튼
+  const btn = $(`sort-btn-${category}`);
+  if (!target) {
+    // 미스 클릭 — 처벌은 가볍게 (콤보만 끊지 않음)
+    if (btn) {
+      btn.classList.remove('feedback-bad');
+      void btn.offsetWidth;
+      btn.classList.add('feedback-bad');
+      setTimeout(() => btn.classList.remove('feedback-bad'), 350);
+    }
+    return;
+  }
+  if (target.category === category) {
+    // 정답
+    const comboBonus = Math.floor(st.combo / 5);
+    const pts = 100 * (1 + comboBonus);
+    st.score += pts;
+    st.combo++;
+    if (st.combo > st.maxCombo) st.maxCombo = st.combo;
+    st.correctCount++;
+    target.judged = true;
+    target.result = 'good';
+    target.removeAt = Date.now() + 550;
+    flashBelt('good');
+    if (btn) {
+      btn.classList.remove('feedback-good');
+      void btn.offsetWidth;
+      btn.classList.add('feedback-good');
+      setTimeout(() => btn.classList.remove('feedback-good'), 380);
+    }
+    // 콤보 메시지
+    const msg =
+      st.combo === 5  ? '좋아요!' :
+      st.combo === 10 ? '척척 분류중!' :
+      st.combo === 15 ? '완벽해요!' :
+      st.combo === 20 ? '환상적!' :
+      st.combo === 30 ? '신의 손!' :
+      st.combo === 50 ? '🏆 전설의 분류사!' : null;
+    if (msg) showComboMsg(msg);
+  } else {
+    // 오답
+    st.combo = 0;
+    st.wrongCount++;
+    target.judged = true;
+    target.result = 'bad';
+    target.removeAt = Date.now() + 500;
+    flashBelt('bad');
+    if (btn) {
+      btn.classList.remove('feedback-bad');
+      void btn.offsetWidth;
+      btn.classList.add('feedback-bad');
+      setTimeout(() => btn.classList.remove('feedback-bad'), 380);
+    }
+  }
+}
+
+function flashBelt(kind) {
+  const belt = $('sort-belt');
+  if (!belt) return;
+  belt.classList.remove('flash-good', 'flash-bad');
+  void belt.offsetWidth;
+  belt.classList.add(`flash-${kind}`);
+  setTimeout(() => belt.classList.remove(`flash-${kind}`), 350);
+}
+
+function showComboMsg(msg) {
+  const el = $('sort-combo-msg');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.remove('popping');
+  void el.offsetWidth;
+  el.classList.add('popping');
+  setTimeout(() => { el.textContent = ' '; el.classList.remove('popping'); }, 750);
+}
+
+function parkSortEnd() {
+  const st = parkSortState;
+  if (!st) return;
+  st.running = false;
+  if (st.rafId) cancelAnimationFrame(st.rafId);
+  // 등급 산정 (정확도 기반)
+  const total = st.correctCount + st.wrongCount + st.missCount;
+  const accuracy = total > 0 ? (st.correctCount / total) * 100 : 0;
+  let grade = 'C';
+  let bonus = 0;
+  if (accuracy >= 95 && st.correctCount >= 18) { grade = 'S'; bonus = 60; }
+  else if (accuracy >= 80 && st.correctCount >= 14) { grade = 'A'; bonus = 25; }
+  else if (accuracy >= 60) { grade = 'B'; bonus = 8; }
+  // 점수당 골드
+  const goldFromScore = Math.floor(st.score / 25);
+  const totalGold = goldFromScore + bonus;
+  save.gold += totalGold;
+  saveSave();
+  $('park-gold').textContent = save.gold;
+
+  $('park-content').innerHTML = `
+    <div class="sort-result">
+      <h2>🌾 분류 완료!</h2>
+      <div class="sort-grade grade-${grade}">${grade}</div>
+      <div class="sort-result-row">💯 점수: <b>${st.score}</b></div>
+      <div class="sort-result-row">✅ 정답: <b>${st.correctCount}</b> · ❌ 실수: <b>${st.wrongCount + st.missCount}</b></div>
+      <div class="sort-result-row">🎯 정확도: <b>${accuracy.toFixed(0)}%</b></div>
+      <div class="sort-result-row">🔥 최고 콤보: <b>${st.maxCombo}</b></div>
+      <div class="sort-result-row">🪙 획득 골드: <b>+${totalGold}</b>${bonus ? ` <span style="font-size:0.78rem;color:#c04020">(등급 보너스 +${bonus})</span>` : ''}</div>
+      <div class="sort-result-actions">
+        <button class="btn success" onclick="parkSortStart()">🌾 다시 (${PARK_SORT_COST}골드)</button>
+        <button class="btn" onclick="parkLobby()">← 게임 선택</button>
+      </div>
+    </div>
+  `;
+  if (grade === 'S') {
+    toast(`🏆 S 등급 달성! 환상적인 분류 실력이에요!`, 'magic');
+  }
+}
+
+function parkSortExit() {
+  if (parkSortState && parkSortState.rafId) cancelAnimationFrame(parkSortState.rafId);
+  parkSortState = null;
   parkLobby();
 }
 
