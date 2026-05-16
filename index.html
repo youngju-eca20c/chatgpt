@@ -7296,7 +7296,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-36</div>
+    <div class="version-tag" style="color:#a06030;">260514-37</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -9753,7 +9753,7 @@ function enterTower() {
 const PARK_SHELL_COST = 20;
 const PARK_CLAW_COST = 50;
 const PARK_RUN_COST = 30;
-const PARK_RUN_RING_GOLD = 2;
+const PARK_RUN_RING_GOLD = 3;
 const PARK_SORT_COST = 50;
 const PARK_SORT_DURATION = 30; // seconds
 const PARK_SORT_TIME_PENALTY = 2; // seconds per wrong/miss
@@ -10495,17 +10495,20 @@ function parkRunTick() {
   for (let i = st.swordfish.length - 1; i >= 0; i--) {
     const sf = st.swordfish[i];
     sf.x -= st.scrollSpeed * 1.05; // 약간 더 빠름
-    const dx = sf.x - 22;
-    const dy = sf.y - st.dolphinY;
-    // 청새치 SVG에 맞춘 정밀 hitbox
-    // - 청새치는 오른쪽에서 들어오며 LEFT를 향함 → 칼날이 LEADING edge
-    // - dx > 0: 청새치 element 중심이 돌고래 오른쪽 (들어오는 중)
-    // - dx < 0: 지나간 후
-    // 본체 (가운데 통통한 타원 + 꼬리): dx ∈ [-9, +7], |dy| < 3
-    // 칼날 (가늘고 길게 좌측으로 뻗음, 돌고래 X에 도달하는 시점은 dx > 0): dx ∈ [+1, +16], |dy| < 1.2
-    const bodyHit  = dx >= -9 && dx <= 7  && Math.abs(dy) < 3;
-    const swordHit = dx >= 1  && dx <= 16 && Math.abs(dy) < 1.2;
-    if (bodyHit || swordHit) {
+    // 청새치 본체 타원에 정밀히 맞춘 hitbox (시각과 일치)
+    //  - SVG viewBox 100×50 안 body ellipse cx=58, rx=32, ry=9
+    //  - element 92×44 (margin -46,-22) → 본체 중심은 sf.x보다 약 +2% 오른쪽
+    //  - 본체 가로 반지름 ≈ 8.5%, 세로 반지름 ≈ 2.5% (좁고 긴 모양)
+    //  - 돌고래 본체 반지름 ≈ x:5%, y:4.5%
+    //  - 합: rx ~13.5, ry ~7 → 약간 보수적으로 rx=11, ry=5.5 (시각상 분명히 겹쳐야 충돌)
+    //  - 얇은 칼날(코) 라인은 시각상 가늘어 hitbox 제외 (페어플레이)
+    //  - 타원 거리식 사용 → 모서리 관대
+    const bodyDx = (sf.x + 2) - 22;
+    const bodyDy = sf.y - st.dolphinY;
+    const rx = 11;
+    const ry = 5.5;
+    const norm = (bodyDx / rx) * (bodyDx / rx) + (bodyDy / ry) * (bodyDy / ry);
+    if (norm < 1) {
       parkRunHit(sf);
       return;
     }
