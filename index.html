@@ -3119,6 +3119,100 @@
     100% { opacity: 0; transform: scale(2.6) rotate(2deg); }
   }
 
+  /* === 농장 물건 분류 — 오프닝 (룰 안내) === */
+  .sort-intro {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255,220,140,0.6), transparent 65%),
+      linear-gradient(180deg, #fff2c8 0%, #ffd58a 55%, #f0a046 100%);
+    border: 3px solid #b06010;
+    border-radius: 16px;
+    padding: 22px 14px 18px;
+    text-align: center;
+    color: #5a2810;
+    margin-bottom: 10px;
+    box-shadow: inset 0 0 26px rgba(180,90,20,0.22), 0 4px 12px rgba(0,0,0,0.25);
+    position: relative;
+    overflow: hidden;
+  }
+  .sort-intro::before {
+    content: '';
+    position: absolute;
+    top: -8px; left: 0; right: 0;
+    height: 22px;
+    background: repeating-linear-gradient(45deg, #f08850 0 12px, #ffcc70 12px 24px);
+    opacity: 0.45;
+    pointer-events: none;
+    border-radius: 14px 14px 0 0;
+  }
+  .sort-intro-icon {
+    font-size: 4rem;
+    line-height: 1;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    animation: sortIntroBob 2.4s ease-in-out infinite;
+    margin-top: 8px;
+  }
+  @keyframes sortIntroBob {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%      { transform: translateY(-6px) rotate(4deg); }
+  }
+  .sort-intro-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.6rem;
+    margin: 6px 0 2px;
+    letter-spacing: 3px;
+    color: #4a1810;
+    text-shadow: 0 2px 0 rgba(255,255,255,0.5), 0 0 14px rgba(255,180,80,0.45);
+  }
+  .sort-intro-sub {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.85rem;
+    color: #8a4010;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+  .sort-intro-rules {
+    background: rgba(255,255,255,0.62);
+    border: 1.5px solid #c08040;
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 0.92rem;
+    text-align: left;
+    line-height: 1.75;
+    margin: 0 auto 16px;
+    max-width: 340px;
+    color: #4a2010;
+  }
+  .sort-intro-rules b { color: #c04020; }
+  .sort-intro-rules div { margin: 3px 0; }
+  .sort-intro-cat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0 !important;
+  }
+  .sort-intro-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+    flex: 0 0 auto;
+    min-width: 72px;
+    justify-content: center;
+  }
+  .sort-intro-tag.cat-food    { background: linear-gradient(180deg, #80b040, #4a7820); }
+  .sort-intro-tag.cat-product { background: linear-gradient(180deg, #4090c0, #205070); }
+  .sort-intro-tag.cat-trash   { background: linear-gradient(180deg, #a08060, #5a3818); }
+  .sort-intro-start {
+    font-size: 1.05rem !important;
+    letter-spacing: 1px;
+    animation: introStartPulse 1.6s ease-in-out infinite;
+  }
+
   /* === 농장 물건 분류하기 === */
   .sort-stage {
     background: linear-gradient(180deg, #fff5e0 0%, #ffe5c0 40%, #fcd8a8 100%);
@@ -7202,7 +7296,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-34</div>
+    <div class="version-tag" style="color:#a06030;">260514-35</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -10615,6 +10709,33 @@ let parkSortState = null;
 function parkSortStart() {
   if (save.gold < PARK_SORT_COST) {
     toast(`💰 골드가 부족해요! (${PARK_SORT_COST}골드 필요)`, 'warn');
+    return;
+  }
+  // 오프닝 — 룰 안내 (실제 차감은 parkSortBegin)
+  $('park-sub').textContent = '🌾 농장 물건 분류';
+  $('park-gold').textContent = save.gold;
+  $('park-actions').innerHTML = `<button class="btn" onclick="parkLobby()">← 게임 선택</button>`;
+  $('park-content').innerHTML = `
+    <div class="sort-intro">
+      <div class="sort-intro-icon">🌾</div>
+      <div class="sort-intro-title">농장 물건 분류</div>
+      <div class="sort-intro-sub">— 한 눈에 보고 빠르게! —</div>
+      <div class="sort-intro-rules">
+        <div>📦 벨트 위 물건이 <b>판정존(👇)</b>에 들어오면 알맞은 버튼을 누르세요</div>
+        <div class="sort-intro-cat"><span class="sort-intro-tag cat-food">🥕 먹이</span> 당근 · 옥수수</div>
+        <div class="sort-intro-cat"><span class="sort-intro-tag cat-product">🧶 생산품</span> 양털 · 깃털</div>
+        <div class="sort-intro-cat"><span class="sort-intro-tag cat-trash">🗑 버리기</span> 썩은사과 · 깨진달걀</div>
+        <div>❌ 틀리거나 놓치면 <b>시간 -${PARK_SORT_TIME_PENALTY}초</b></div>
+        <div>⚡ 점점 빨라져요! (<b>${PARK_SORT_DURATION}초</b> 도전)</div>
+      </div>
+      <button class="btn success sort-intro-start" onclick="parkSortBegin()">🌾 시작! (${PARK_SORT_COST}골드)</button>
+    </div>
+  `;
+}
+
+function parkSortBegin() {
+  if (save.gold < PARK_SORT_COST) {
+    toast(`💰 골드가 부족해요!`, 'warn');
     return;
   }
   save.gold -= PARK_SORT_COST;
