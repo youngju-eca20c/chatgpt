@@ -7296,7 +7296,7 @@
 
   <!-- 월드맵 (따뜻한 농장) -->
   <div id="world-map" class="world-map-panel hidden">
-    <div class="version-tag" style="color:#a06030;">260514-35</div>
+    <div class="version-tag" style="color:#a06030;">260514-36</div>
     <div class="map-title">🐾 동물농장</div>
     <div class="map-subtitle">동물들과 함께하는 따뜻한 일상 — 모험을 떠날 곳을 선택하세요</div>
 
@@ -10497,8 +10497,15 @@ function parkRunTick() {
     sf.x -= st.scrollSpeed * 1.05; // 약간 더 빠름
     const dx = sf.x - 22;
     const dy = sf.y - st.dolphinY;
-    // 청새치 몸체 hitbox (가로 길고 세로 좁음): x ±12%, y ±6%
-    if (Math.abs(dx) < 12 && Math.abs(dy) < 6.5) {
+    // 청새치 SVG에 맞춘 정밀 hitbox
+    // - 청새치는 오른쪽에서 들어오며 LEFT를 향함 → 칼날이 LEADING edge
+    // - dx > 0: 청새치 element 중심이 돌고래 오른쪽 (들어오는 중)
+    // - dx < 0: 지나간 후
+    // 본체 (가운데 통통한 타원 + 꼬리): dx ∈ [-9, +7], |dy| < 3
+    // 칼날 (가늘고 길게 좌측으로 뻗음, 돌고래 X에 도달하는 시점은 dx > 0): dx ∈ [+1, +16], |dy| < 1.2
+    const bodyHit  = dx >= -9 && dx <= 7  && Math.abs(dy) < 3;
+    const swordHit = dx >= 1  && dx <= 16 && Math.abs(dy) < 1.2;
+    if (bodyHit || swordHit) {
       parkRunHit(sf);
       return;
     }
